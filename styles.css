@@ -1,0 +1,14 @@
+html, body { margin: 0; padding: 0; background: #d7ecff; }
+a { color: #2F5BEA; }
+a:hover { color: #1e42b8; }
+button { font-family: inherit; }
+*:focus-visible { outline: 3px solid #2F5BEA; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+@keyframes seal-spin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
+@keyframes seal-spin-b { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes sparkle-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+@keyframes nudge-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
