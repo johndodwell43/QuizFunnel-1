@@ -4,6 +4,7 @@ import ImageSlot from './ImageSlot.jsx';
 export default function ProofBlock() {
   return (
     <div
+      id="proof-section"
       style={{
         margin: '0 0 26px 0',
         background: '#ffffff',
@@ -18,13 +19,13 @@ export default function ProofBlock() {
 
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '16px 16px 0 16px' }}>
         <div style={{ flex: '1 1 0', minWidth: 0 }}>
-          <ImageSlot src="/images/patient-before.jpg" alt="Before photo" label="Before photo" height={300} />
+          <ImageSlot src="/images/beforecomp.png" alt="Before photo" label="Before photo" height={300} />
           <p style={{ margin: '8px 0 0 0', textAlign: 'center', fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: '#6b7381' }}>
             BEFORE
           </p>
         </div>
         <div style={{ flex: '1 1 0', minWidth: 0 }}>
-          <ImageSlot src="/images/patient-after.jpg" alt="After photo" label="After photo" height={300} />
+          <ImageSlot src="/images/aftercomp.png" alt="After photo" label="After photo" height={300} />
           <p style={{ margin: '8px 0 0 0', textAlign: 'center', fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', color: '#6b7381' }}>
             AFTER
           </p>

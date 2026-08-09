@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProofBlock from './ProofBlock.jsx';
 import ValueList from './ValueList.jsx';
 import HowItWorks from './HowItWorks.jsx';
 import ProductCard from './ProductCard.jsx';
 import Footer from './Footer.jsx';
-import { PRICING, CHECKOUT, money, buildCheckoutHref } from '../config.js';
+import { PRICING, money } from '../config.js';
+import { checkoutOneArch, checkoutBothArches } from '../lib/checkout.js';
+import { trackSendKitClicked, trackOfferPageViewed, setupScrollTracking } from '../lib/track.js';
 
 function Seal() {
   const square = {
@@ -36,8 +38,36 @@ export default function OfferScreen({ answers, flagged }) {
   const [arrowDone, setArrowDone] = useState(false);
   const hideArrow = () => setArrowDone(true);
 
-  const flexPrice = money(PRICING.flexPrice);
-  const proPrice = money(PRICING.precisionPrice);
+  // Fire offer-page analytics once, after the section ids are in the DOM.
+  useEffect(() => {
+    trackOfferPageViewed();
+    setupScrollTracking();
+  }, []);
+
+  // Runtime confirmation that the arch answer drives price + variant.
+  useEffect(() => {
+    console.log(
+      '[OfferScreen] answers.arch =', answers.arch,
+      '| isBoth =', answers.arch === 'both',
+      '| Flex price =', money(answers.arch === 'both' ? PRICING.flexPrice + PRICING.flexSecondArch : PRICING.flexPrice),
+      '| Precision price =', money(answers.arch === 'both' ? PRICING.precisionPrice + PRICING.precisionSecondArch : PRICING.precisionPrice)
+    );
+  }, [answers.arch]);
+
+  const step1Answer = answers.arch || '';
+  const isBoth = step1Answer === 'both';
+
+  // Both-arches totals match the Shopify "both" variants (Flex 859 / Precision 1479).
+  const flexBothTotal = PRICING.flexPrice + PRICING.flexSecondArch;
+  const precisionBothTotal = PRICING.precisionPrice + PRICING.precisionSecondArch;
+
+  // Headline price follows the arch the user picked in Q1.
+  const flexAmount = isBoth ? flexBothTotal : PRICING.flexPrice;
+  const precisionAmount = isBoth ? precisionBothTotal : PRICING.precisionPrice;
+
+  const flexPrice = money(flexAmount);
+  const proPrice = money(precisionAmount);
+  const priceNote = isBoth ? 'for both arches (upper and lower)' : 'for one arch (upper or lower)';
 
   return (
     <main data-screen-label="Offer">
@@ -82,17 +112,17 @@ export default function OfferScreen({ answers, flagged }) {
 
       <HowItWorks />
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 16 }}>
+      <div id="offer-cards" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 16 }}>
         <ProductCard
           badge="MOST POPULAR"
-          photo="/images/flexible-partial.jpg"
+          photo="/images/lightcomp.png"
           photoAlt="Flexible Partial photo"
           title="Flexible Partial"
           anchorPrice="A dentist's office: $1,500–$4,000"
           price={flexPrice}
-          priceNote="for one arch (upper or lower)"
+          priceNote={priceNote}
           secondArchLine={`Add your second arch for just ${money(PRICING.flexSecondArch)} — both arches ${money(
-            PRICING.flexPrice + PRICING.flexSecondArch
+            flexBothTotal
           )}`}
           supportLine="This one price covers it all: the dentist's review, your kit, and a partial made just for you."
           affirmLine={`or ${PRICING.flexMonthly}`}
@@ -101,21 +131,22 @@ export default function OfferScreen({ answers, flagged }) {
             ['Acrylic resin teeth', '— look like real teeth']
           ]}
           allOfItLine={`All of it, for ${flexPrice}.`}
-          href={buildCheckoutHref(CHECKOUT.flex, answers, flagged)}
+          onCta={() => checkoutOneArch('flex', step1Answer, trackSendKitClicked('flex', step1Answer, flexAmount))}
+          onSecondArch={() => checkoutBothArches('flex', trackSendKitClicked('flex', 'both', flexBothTotal))}
           onCtaFocus={hideArrow}
         />
 
         <ProductCard
           dark
           badge="BEST LONG-TERM VALUE"
-          photo="/images/precision-partial.jpg"
+          photo="/images/darkcomp.png"
           photoAlt="Precision Partial Pro photo"
           title="Precision Partial Pro™"
           anchorPrice="A dentist's office: $2,000–$4,000"
           price={proPrice}
-          priceNote="for one arch (upper or lower)"
+          priceNote={priceNote}
           secondArchLine={`Add your second arch for just ${money(PRICING.precisionSecondArch)} — both arches ${money(
-            PRICING.precisionPrice + PRICING.precisionSecondArch
+            precisionBothTotal
           )}`}
           supportLine="Built even tougher. Made from a stronger material that stands up to daily wear — so it lasts even longer and you replace it less often. Buy once, and mostly forget about it."
           affirmLine={`or ${PRICING.precisionMonthly}`}
@@ -125,7 +156,8 @@ export default function OfferScreen({ answers, flagged }) {
             ['Finished by hand', 'by dental experts']
           ]}
           allOfItLine={`All of it, for ${proPrice}.`}
-          href={buildCheckoutHref(CHECKOUT.precision, answers, flagged)}
+          onCta={() => checkoutOneArch('precision', step1Answer, trackSendKitClicked('precision', step1Answer, precisionAmount))}
+          onSecondArch={() => checkoutBothArches('precision', trackSendKitClicked('precision', 'both', precisionBothTotal))}
           onCtaFocus={hideArrow}
         />
       </div>

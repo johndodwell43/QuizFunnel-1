@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { QUESTIONS, TOTAL_STEPS } from './data/questions.js';
 import Header from './components/Header.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import QuestionScreen from './components/QuestionScreen.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
+import { trackQuizStarted, trackStep, trackDisqualified } from './lib/track.js';
 
 const SELECT_DELAY_MS = 170;
 
@@ -19,12 +20,18 @@ export default function App() {
   const isPause = screen === 'pause';
   const isOffer = screen === 'offer';
 
+  // Fire once when the quiz first mounts (Step 1).
+  useEffect(() => {
+    trackQuizStarted();
+  }, []);
+
   const flagged =
     answers.extraction === 'yes' || answers.pain === 'yes' || answers.loose === 'yes';
 
   const advance = useCallback((stepIndex, value) => {
     const q = QUESTIONS[stepIndex];
     if (value === 'yes' && q.pauseKind) {
+      trackDisqualified(q.pauseKind);
       setPause({ kind: q.pauseKind, step: stepIndex });
       setScreen('pause');
       setSel(null);
@@ -44,6 +51,7 @@ export default function App() {
       if (sel !== null) return;
       setAnswers((prev) => ({ ...prev, [key]: value }));
       setSel(index);
+      trackStep(step + 1, value);
       const reduce =
         window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       setTimeout(() => advance(step, value), reduce ? 0 : SELECT_DELAY_MS);

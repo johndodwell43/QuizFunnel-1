@@ -30,7 +30,8 @@ export default function ProductCard({
   affirmLine,
   materials,
   allOfItLine,
-  href,
+  onCta,
+  onSecondArch,
   onCtaFocus
 }) {
   const tick = dark ? '#8fb5ff' : '#2F5BEA';
@@ -81,6 +82,10 @@ export default function ProductCard({
           <span style={{ fontSize: 16, color: dark ? '#b9c2d2' : '#454e5c' }}>{priceNote}</span>
         </div>
         <div
+          onClick={onSecondArch}
+          role={onSecondArch ? 'button' : undefined}
+          tabIndex={onSecondArch ? 0 : undefined}
+          onKeyDown={onSecondArch ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSecondArch(); } } : undefined}
           style={{
             marginTop: 10,
             background: dark ? 'rgba(215,236,255,0.12)' : '#f2f7ff',
@@ -89,7 +94,8 @@ export default function ProductCard({
             fontSize: 16,
             lineHeight: 1.4,
             color: dark ? '#d7ecff' : '#1e3fa8',
-            fontWeight: 700
+            fontWeight: 700,
+            cursor: onSecondArch ? 'pointer' : 'default'
           }}
         >
           {secondArchLine}
@@ -137,8 +143,9 @@ export default function ProductCard({
 
       <p style={{ margin: 0, fontSize: 16, color: muted }}>{allOfItLine}</p>
 
-      <a
-        href={href}
+      <button
+        type="button"
+        onClick={onCta}
         onFocus={onCtaFocus}
         onMouseEnter={onCtaFocus}
         style={{
@@ -147,16 +154,20 @@ export default function ProductCard({
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: 66,
+          width: '100%',
+          border: 'none',
           background: dark ? '#ffffff' : '#2F5BEA',
           color: dark ? '#111827' : '#ffffff',
           borderRadius: 16,
           fontSize: 21,
           fontWeight: 700,
+          fontFamily: 'inherit',
+          cursor: 'pointer',
           textDecoration: 'none'
         }}
       >
         Send My Kit →
-      </a>
+      </button>
 
       <p style={{ margin: '10px 0 0 0', fontSize: 13, lineHeight: 1.45, color: muted }}>{LAB_NOTE}</p>
       <p style={{ margin: '8px 0 0 0', fontSize: 13, lineHeight: 1.45, color: muted }}>
