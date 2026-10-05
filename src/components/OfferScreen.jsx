@@ -166,7 +166,7 @@ export default function OfferScreen({ answers, flagged }) {
         Her smile is back. Yours can be, too.
       </p>
       <p style={{ fontSize: 16, color: '#454e5c', marginTop: 10, textAlign: 'center' }}>
-        Free 2-day mail both ways · Planned by a licensed U.S. dentist · Fit Assurance™
+        Free 2-day mail both ways · Planned by a licensed U.S. dentist · 60-Day Fit Assurance™
       </p>
 
       <Footer />

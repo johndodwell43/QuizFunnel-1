@@ -8,7 +8,7 @@ const ITEMS = [
   'Made in the USA by dental lab pros — in a licensed lab',
   'As many tries on your mold as you want, free — with a guide, an app, and real help',
   'You pick your shade — choose your gum and tooth color, so it matches your smile',
-  "Fit Assurance™ — if it doesn't feel right, we help make it right",
+  "60-Day Fit Assurance™ — Up to 3 free dentist-reviewed adjustments within 60 days of delivery. If adjustments can't fix the fit, we remake it free.",
   'Free 2-day UPS both ways — with tracking and updates at every step'
 ];
 

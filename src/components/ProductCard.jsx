@@ -8,7 +8,7 @@ const INCLUDED = [
   'Your impression kit — with unlimited free tries',
   "Take it out. Pop it back in. Nothing glued. Nothing forever. You're in charge.",
   'Your partial, custom made in a licensed US lab',
-  "Fit Assurance™ — if it doesn't feel right, we help make it right",
+  "60-Day Fit Assurance™ — Up to 3 free dentist-reviewed adjustments within 60 days of delivery. If adjustments can't fix the fit, we remake it free.",
   'You pick your shade — choose your gum and tooth color during the process, so it matches your smile and looks natural',
   'Free 2-day UPS both ways, with tracking at every step'
 ];
