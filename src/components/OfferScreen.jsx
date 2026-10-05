@@ -104,7 +104,7 @@ export default function OfferScreen({ answers, flagged }) {
           </svg>
           <p style={{ margin: 0, fontSize: 17, lineHeight: 1.55, color: '#6b5410' }}>
             <strong style={{ color: '#55430c' }}>Your case gets extra attention.</strong> One of your
-            answers means your dentist will take a closer look before we make anything. That's normal
+            answers means a licensed dentist in our network will take a closer look before we make anything. That's normal
             — and it won't slow down your order.
           </p>
         </div>
