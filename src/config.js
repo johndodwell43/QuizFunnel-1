@@ -22,14 +22,3 @@ export const LINKS = {
 };
 
 export const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
-
-// Appends the quiz answers so the product page can preselect the right variant.
-export function buildCheckoutHref(base, answers, flagged) {
-  const params = new URLSearchParams({
-    arch: answers.arch || '',
-    teeth: answers.teeth || '',
-    flagged: flagged ? '1' : '0',
-    utm_source: 'quiz'
-  });
-  return base + '?' + params.toString();
-}

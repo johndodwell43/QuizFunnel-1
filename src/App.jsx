@@ -5,7 +5,7 @@ import ProgressBar from './components/ProgressBar.jsx';
 import QuestionScreen from './components/QuestionScreen.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
-import { trackQuizStarted, trackStep, trackDisqualified } from './lib/track.js';
+import { trackQuizStarted, trackStep } from './lib/track.js';
 
 const SELECT_DELAY_MS = 170;
 
@@ -31,7 +31,6 @@ export default function App() {
   const advance = useCallback((stepIndex, value) => {
     const q = QUESTIONS[stepIndex];
     if (value === 'yes' && q.pauseKind) {
-      trackDisqualified();
       setPause({ kind: q.pauseKind, step: stepIndex });
       setScreen('pause');
       setSel(null);

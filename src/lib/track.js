@@ -24,7 +24,7 @@ const fb = (name, params = {}, id) =>
   window.fbq && window.fbq('track', name, params, id ? { eventID: id } : undefined);
 
 // PRIVACY: never send quiz answers, health details or free text to PostHog or
-// Meta. Steps are identified by number only; disqualification carries nothing.
+// Meta. Steps are identified by number only.
 
 export function trackQuizStarted() {
   ensureId();
@@ -33,9 +33,6 @@ export function trackQuizStarted() {
 }
 export function trackStep(n) {
   posthog.capture('quiz_step_completed', { step_number: n, step_name: `step_${n}` });
-}
-export function trackDisqualified() {
-  posthog.capture('quiz_disqualified');
 }
 export function trackOfferPageViewed() {
   posthog.capture('offer_page_viewed');
