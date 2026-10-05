@@ -1,0 +1,5 @@
+# quiz.klyrosdental.com is a funnel page and is kept out of search results
+# with <meta name="robots" content="noindex">. Crawling stays allowed on
+# purpose: blocking it here would stop crawlers from seeing that noindex.
+User-agent: *
+Allow: /
