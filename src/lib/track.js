@@ -23,19 +23,16 @@ function ensureId() {
 const fb = (name, params = {}, id) =>
   window.fbq && window.fbq('track', name, params, id ? { eventID: id } : undefined);
 
-// Matches the live 5-question quiz (src/data/questions.js).
-const STEP_NAMES = { 1:'teeth_location', 2:'teeth_count', 3:'recent_extraction', 4:'pain_swelling', 5:'loose_teeth' };
+// PRIVACY: never send quiz answers, health details or free text to PostHog or
+// Meta. Steps are identified by number only.
 
 export function trackQuizStarted() {
   ensureId();
   posthog.capture('quiz_started', getUTMs());
   fb('Lead');
 }
-export function trackStep(n, answer) {
-  posthog.capture('quiz_step_completed', { step_number: n, step_name: STEP_NAMES[n], answer });
-}
-export function trackDisqualified(reason) {
-  posthog.capture('quiz_disqualified', { reason });
+export function trackStep(n) {
+  posthog.capture('quiz_step_completed', { step_number: n, step_name: `step_${n}` });
 }
 export function trackOfferPageViewed() {
   posthog.capture('offer_page_viewed');
