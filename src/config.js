@@ -14,10 +14,10 @@ export const CHECKOUT = {
 };
 
 export const LINKS = {
-  home: 'https://klyrosdental.com',
-  refund: 'https://klyrosdental.com/policies/refund-policy',
-  fitAssurance: 'https://klyrosdental.com/pages/fit-assurance',
-  privacy: 'https://klyrosdental.com/policies/privacy-policy',
+  home: 'https://www.klyrosdental.com',
+  refund: 'https://www.klyrosdental.com/refund-policy',
+  fitAssurance: 'https://www.klyrosdental.com/fit-assurance',
+  privacy: 'https://www.klyrosdental.com/privacy-policy',
   email: 'help@klyrosdental.com'
 };
 

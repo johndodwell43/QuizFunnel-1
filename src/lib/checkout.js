@@ -1,4 +1,4 @@
-const SHOP = 'klyroscare.myshopify.com'; // confirm this is your checkout domain
+const SHOP = 'tfvziu-ia.myshopify.com';
 
 const VARIANTS = {
   flex:      { upper: '63304031961457', lower: '63304032158065', both: '63304032354673' }, // 489/489/859

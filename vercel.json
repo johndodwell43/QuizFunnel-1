@@ -5,7 +5,7 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!robots\\.txt).*)",
       "destination": "/index.html"
     }
   ]

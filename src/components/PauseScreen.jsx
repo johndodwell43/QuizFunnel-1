@@ -22,7 +22,7 @@ const COPY = {
 };
 
 const TIP_1 = "We're keeping your spot. Nothing has been charged and nothing has been ordered.";
-const TIP_3 = "When your dentist says the time is right, come back and finish the quiz. We'll be here.";
+const TIP_3 = "When your own dentist says the time is right, come back and finish the quiz. We'll be here.";
 
 function Bullet({ children }) {
   return (

@@ -33,7 +33,7 @@ export default function Footer() {
 
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px 18px', margin: '16px 0' }}>
         <a href={LINKS.refund} style={{ color: '#2F5BEA' }}>Refund Policy</a>
-        <a href={LINKS.fitAssurance} style={{ color: '#2F5BEA' }}>Fit Assurance™</a>
+        <a href={LINKS.fitAssurance} style={{ color: '#2F5BEA' }}>60-Day Fit Assurance™</a>
         <a href={LINKS.privacy} style={{ color: '#2F5BEA' }}>Privacy Policy</a>
       </div>
 
