@@ -31,7 +31,7 @@ export default function App() {
   const advance = useCallback((stepIndex, value) => {
     const q = QUESTIONS[stepIndex];
     if (value === 'yes' && q.pauseKind) {
-      trackDisqualified(q.pauseKind);
+      trackDisqualified();
       setPause({ kind: q.pauseKind, step: stepIndex });
       setScreen('pause');
       setSel(null);
@@ -51,7 +51,7 @@ export default function App() {
       if (sel !== null) return;
       setAnswers((prev) => ({ ...prev, [key]: value }));
       setSel(index);
-      trackStep(step + 1, value);
+      trackStep(step + 1);
       const reduce =
         window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       setTimeout(() => advance(step, value), reduce ? 0 : SELECT_DELAY_MS);
