@@ -1,5 +1,6 @@
 import React from 'react';
 import Check from './Check.jsx';
+import { FitAssuranceShort } from './PolicyCopy.jsx';
 
 const ITEMS = [
   'Your partial is custom made to match your mouth',
@@ -8,7 +9,7 @@ const ITEMS = [
   'Made in the USA by dental lab pros — in a licensed lab',
   'As many tries on your mold as you want, free — with a guide, an app, and real help',
   'You pick your shade — choose your gum and tooth color, so it matches your smile',
-  "Fit Assurance™ — if it doesn't feel right, we help make it right",
+  <FitAssuranceShort key="fit-assurance" />,
   'Free 2-day UPS both ways — with tracking and updates at every step'
 ];
 
@@ -19,8 +20,8 @@ export default function ValueList() {
         Here's what you get — every time:
       </h2>
       <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, fontSize: 17, lineHeight: 1.45, color: '#454e5c' }}>
-        {ITEMS.map((item) => (
-          <li key={item} style={{ display: 'flex', gap: 10 }}>
+        {ITEMS.map((item, i) => (
+          <li key={i} style={{ display: 'flex', gap: 10 }}>
             <Check />
             <span>{item}</span>
           </li>

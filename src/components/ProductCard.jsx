@@ -2,13 +2,14 @@ import React from 'react';
 import Check from './Check.jsx';
 import ImageSlot from './ImageSlot.jsx';
 import { LINKS } from '../config.js';
+import { FitAssuranceShort, CHECKOUT_TERMS_TEXT } from './PolicyCopy.jsx';
 
 const INCLUDED = [
   'A licensed dentist reviews your case and plans your fit',
   'Your impression kit — with unlimited free tries',
   "Take it out. Pop it back in. Nothing glued. Nothing forever. You're in charge.",
   'Your partial, custom made in a licensed US lab',
-  "Fit Assurance™ — if it doesn't feel right, we help make it right",
+  <FitAssuranceShort key="fit-assurance" />,
   'You pick your shade — choose your gum and tooth color during the process, so it matches your smile and looks natural',
   'Free 2-day UPS both ways, with tracking at every step'
 ];
@@ -121,8 +122,8 @@ export default function ProductCard({
           Everything's included:
         </h3>
         <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 9, fontSize: 16, lineHeight: 1.4, color: body }}>
-          {INCLUDED.map((item) => (
-            <li key={item} style={{ display: 'flex', gap: 8 }}>
+          {INCLUDED.map((item, i) => (
+            <li key={i} style={{ display: 'flex', gap: 8 }}>
               <Check stroke={tick} size={17} marginTop={2} />
               <span>{item}</span>
             </li>
@@ -169,14 +170,13 @@ export default function ProductCard({
         Send My Kit →
       </button>
 
+      <p style={{ margin: '10px 0 0 0', fontSize: 13, lineHeight: 1.45, color: muted, textAlign: 'center' }}>
+        {CHECKOUT_TERMS_TEXT}{' '}
+        <a href={LINKS.refund} style={{ color: link }}>Refund Policy</a>
+      </p>
       <p style={{ margin: '10px 0 0 0', fontSize: 13, lineHeight: 1.45, color: muted }}>{LAB_NOTE}</p>
       <p style={{ margin: '8px 0 0 0', fontSize: 13, lineHeight: 1.45, color: muted }}>
-        A licensed dentist reviews your case before anything is made. If they can't help you, you're
-        refunded — see our{' '}
-        <a href={LINKS.refund} style={{ color: link }}>
-          Refund Policy
-        </a>
-        .
+        A licensed dentist in our network reviews your case before anything is made.
       </p>
     </div>
   );

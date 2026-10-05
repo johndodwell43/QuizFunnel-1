@@ -104,7 +104,7 @@ export default function OfferScreen({ answers, flagged }) {
           </svg>
           <p style={{ margin: 0, fontSize: 17, lineHeight: 1.55, color: '#6b5410' }}>
             <strong style={{ color: '#55430c' }}>Your case gets extra attention.</strong> One of your
-            answers means your dentist will take a closer look before we make anything. That's normal
+            answers means a licensed dentist in our network will take a closer look before we make anything. That's normal
             — and it won't slow down your order.
           </p>
         </div>
@@ -166,7 +166,7 @@ export default function OfferScreen({ answers, flagged }) {
         Her smile is back. Yours can be, too.
       </p>
       <p style={{ fontSize: 16, color: '#454e5c', marginTop: 10, textAlign: 'center' }}>
-        Free 2-day mail both ways · Planned by a licensed U.S. dentist · Fit Assurance™
+        Free 2-day mail both ways · Planned by a licensed U.S. dentist · 60-Day Fit Assurance™
       </p>
 
       <Footer />
