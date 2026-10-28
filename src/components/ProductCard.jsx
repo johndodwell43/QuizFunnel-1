@@ -6,12 +6,12 @@ import { FitAssuranceShort, CHECKOUT_TERMS_TEXT } from './PolicyCopy.jsx';
 
 const INCLUDED = [
   'A licensed dentist reviews your case and plans your fit',
-  'Your impression kit — with unlimited free tries',
+  'Your impression kit — with unlimited tries under 60-Day Fit Assurance™',
   "Take it out. Pop it back in. Nothing glued. Nothing forever. You're in charge.",
   'Your partial, custom made in a licensed US lab',
   <FitAssuranceShort key="fit-assurance" />,
   'You pick your shade — choose your gum and tooth color during the process, so it matches your smile and looks natural',
-  'Free 2-day UPS both ways, with tracking at every step'
+  '2-day UPS both ways, with tracking at every step'
 ];
 
 const LAB_NOTE =

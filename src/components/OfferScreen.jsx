@@ -4,7 +4,7 @@ import ValueList from './ValueList.jsx';
 import HowItWorks from './HowItWorks.jsx';
 import ProductCard from './ProductCard.jsx';
 import Footer from './Footer.jsx';
-import { PRICING, money } from '../config.js';
+import { AFFIRM_LINE, PRICING, money } from '../config.js';
 import { checkoutOneArch, checkoutBothArches } from '../lib/checkout.js';
 import { trackSendKitClicked, trackOfferPageViewed, setupScrollTracking } from '../lib/track.js';
 
@@ -125,7 +125,7 @@ export default function OfferScreen({ answers, flagged }) {
             flexBothTotal
           )}`}
           supportLine="This one price covers it all: the dentist's review, your kit, and a partial made just for you."
-          affirmLine={`or ${PRICING.flexMonthly}`}
+          affirmLine={AFFIRM_LINE}
           materials={[
             ['Valplast gum base', '— light and flexible'],
             ['Acrylic resin teeth', '— look like real teeth']
@@ -149,7 +149,7 @@ export default function OfferScreen({ answers, flagged }) {
             precisionBothTotal
           )}`}
           supportLine="Built even tougher. Made from a stronger material that stands up to daily wear — so it lasts even longer and you replace it less often. Buy once, and mostly forget about it."
-          affirmLine={`or ${PRICING.precisionMonthly}`}
+          affirmLine={AFFIRM_LINE}
           materials={[
             ['Duraflex gum base', '— stays snug for years'],
             ['Premium PMMA teeth', '— keep their shape and color for years'],
@@ -166,7 +166,7 @@ export default function OfferScreen({ answers, flagged }) {
         Her smile is back. Yours can be, too.
       </p>
       <p style={{ fontSize: 16, color: '#454e5c', marginTop: 10, textAlign: 'center' }}>
-        Free 2-day mail both ways · Planned by a licensed U.S. dentist · 60-Day Fit Assurance™
+        2-day mail both ways · Planned by a licensed U.S. dentist · 60-Day Fit Assurance™
       </p>
 
       <Footer />
