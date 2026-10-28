@@ -10,7 +10,7 @@ export const CHECKOUT_TERMS_TEXT =
 export function FitAssuranceShort() {
   return (
     <>
-      60-Day Fit Assurance™: up to 3 dentist-reviewed adjustments within 60 days of delivery.{' '}
+      60-Day Fit Assurance™: up to 3 DDS-reviewed adjustments within 60 days, then a $199 Priority Remake.{' '}
       <a href={LINKS.fitAssurance} style={{ color: 'inherit', textDecoration: 'underline' }}>Terms apply</a>.
     </>
   );

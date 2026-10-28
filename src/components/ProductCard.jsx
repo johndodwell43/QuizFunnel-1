@@ -6,16 +6,16 @@ import { FitAssuranceShort, CHECKOUT_TERMS_TEXT } from './PolicyCopy.jsx';
 
 const INCLUDED = [
   'A licensed dentist reviews your case and plans your fit',
-  'Your impression kit — with unlimited tries under 60-Day Fit Assurance™',
+  'Your impression kit — with unlimited tries',
   "Take it out. Pop it back in. Nothing glued. Nothing forever. You're in charge.",
   'Your partial, custom made in a licensed US lab',
   <FitAssuranceShort key="fit-assurance" />,
   'You pick your shade — choose your gum and tooth color during the process, so it matches your smile and looks natural',
-  '2-day UPS both ways, with tracking at every step'
+  '2-day UPS both ways included, with tracking at every step'
 ];
 
 const LAB_NOTE =
-  'Once your approved impressions reach the licensed lab, your partial is built in about 10 business days. We keep you posted by text or email — your choice — and cover fast 2-day shipping every step, no questions asked.';
+  'Once your approved impressions reach the licensed lab, your partial is built in about 10 business days. We keep you posted by text or email — your choice — and 2-day shipping both ways is included every step.';
 
 export default function ProductCard({
   dark = false,

@@ -4,7 +4,7 @@ const STEPS = [
   ['We mail you everything', 'Your kit comes in 2 days. Everything you need is inside.'],
   [
     'You make a mold at home',
-    'Take as many tries as you want under 60-Day Fit Assurance™. A guide, an app, and step-by-step help are right there with you.'
+    'Take as many tries as you want. A guide, an app, and step-by-step help are right there with you.'
   ],
   [
     'A dentist checks it',
@@ -12,7 +12,7 @@ const STEPS = [
   ],
   [
     'Your partial is made just for you',
-    'A licensed US lab builds it to fit only your mouth. About 10 business days, then 2-day mail to your door.'
+    'A licensed US lab builds it to fit only your mouth. About 10 business days, with 2-day mail included to your door.'
   ]
 ];
 
