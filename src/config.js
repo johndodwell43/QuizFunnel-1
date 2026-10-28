@@ -4,8 +4,9 @@ export const PRICING = {
   flexSecondArch: 370,
   precisionPrice: 789,
   precisionSecondArch: 690,
-  flexMonthly: '$41 a month with Affirm. Checking your rate won\'t hurt your credit score.',
-  precisionMonthly: '$66 a month for 12 months with Affirm.'
+  // Affirm is offered with no dollar amount, APR, or month count.
+  flexMonthly: 'pay over time with Affirm. Checking your rate won\'t hurt your credit score.',
+  precisionMonthly: 'pay over time with Affirm.'
 };
 
 export const CHECKOUT = {
@@ -22,3 +23,14 @@ export const LINKS = {
 };
 
 export const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+// Public company id from the Klaviyo onsite embed already installed on
+// tfvziu-ia.myshopify.com (Klaviyo Email Marketing & SMS). Not a private key.
+// Onsite forms are off and the theme publishes no list id, so quiz leads are
+// written to this account with the client Profiles + Events APIs.
+export const KLAVIYO = {
+  companyId: 'XaqymG',
+  revision: '2024-10-15',
+  source: 'quiz_results_gate',
+  metric: 'Quiz Results Requested'
+};

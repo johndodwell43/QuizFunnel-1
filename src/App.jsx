@@ -5,19 +5,23 @@ import ProgressBar from './components/ProgressBar.jsx';
 import QuestionScreen from './components/QuestionScreen.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
-import { trackQuizStarted, trackStep } from './lib/track.js';
+import EmailGate from './components/EmailGate.jsx';
+import { trackQuizStarted, trackStep, trackResultsGateCompleted } from './lib/track.js';
+import { saveQuizLead } from './lib/lead.js';
 
 const SELECT_DELAY_MS = 170;
 
 export default function App() {
   const [step, setStep] = useState(0);
-  const [screen, setScreen] = useState('quiz'); // quiz | pause | offer
+  const [screen, setScreen] = useState('quiz'); // quiz | pause | email | offer
   const [answers, setAnswers] = useState({});
   const [sel, setSel] = useState(null);
   const [pause, setPause] = useState({ kind: 'pain', step: 3 });
+  const [lead, setLead] = useState({ email: '', firstName: '' });
 
   const isQuiz = screen === 'quiz';
   const isPause = screen === 'pause';
+  const isEmail = screen === 'email';
   const isOffer = screen === 'offer';
 
   // Fire once when the quiz first mounts (Step 1).
@@ -37,7 +41,7 @@ export default function App() {
       return;
     }
     if (stepIndex >= QUESTIONS.length - 1) {
-      setScreen('offer');
+      setScreen('email');
       setSel(null);
       return;
     }
@@ -60,6 +64,8 @@ export default function App() {
 
   const goBack = useCallback(() => {
     if (isOffer) {
+      setScreen('email');
+    } else if (isEmail) {
       setScreen('quiz');
       setStep(QUESTIONS.length - 1);
     } else if (isPause) {
@@ -68,7 +74,14 @@ export default function App() {
     } else if (step > 0) {
       setStep(step - 1);
     }
-  }, [isOffer, isPause, pause.step, step]);
+  }, [isOffer, isEmail, isPause, pause.step, step]);
+
+  const submitLead = useCallback(async ({ email, firstName }) => {
+    await saveQuizLead({ email, firstName });
+    setLead({ email, firstName });
+    trackResultsGateCompleted();
+    setScreen('offer');
+  }, []);
 
   const restart = useCallback(() => {
     setStep(0);
@@ -76,10 +89,11 @@ export default function App() {
     setAnswers({});
     setSel(null);
     setPause({ kind: 'pain', step: 3 });
+    setLead({ email: '', firstName: '' });
   }, []);
 
   const stepNum = isQuiz ? step + 1 : isPause ? pause.step + 1 : TOTAL_STEPS;
-  const progress = isOffer ? 100 : Math.round((stepNum / TOTAL_STEPS) * 100);
+  const progress = isOffer ? 100 : isEmail ? 92 : Math.round((stepNum / TOTAL_STEPS) * 100);
 
   return (
     <div
@@ -107,6 +121,13 @@ export default function App() {
           <QuestionScreen question={QUESTIONS[step]} sel={sel} onPick={pick} />
         )}
         {isPause && <PauseScreen kind={pause.kind} onRestart={restart} />}
+        {isEmail && (
+          <EmailGate
+            initialEmail={lead.email}
+            initialFirstName={lead.firstName}
+            onSubmit={submitLead}
+          />
+        )}
         {isOffer && <OfferScreen answers={answers} flagged={flagged} />}
       </div>
     </div>

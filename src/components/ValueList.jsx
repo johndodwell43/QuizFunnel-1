@@ -10,7 +10,7 @@ const ITEMS = [
   'As many tries on your mold as you want, free — with a guide, an app, and real help',
   'You pick your shade — choose your gum and tooth color, so it matches your smile',
   <FitAssuranceShort key="fit-assurance" />,
-  'Free 2-day UPS both ways — with tracking and updates at every step'
+  'Shipping included both ways — with tracking and updates at every step'
 ];
 
 export default function ValueList() {

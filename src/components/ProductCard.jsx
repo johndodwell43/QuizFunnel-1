@@ -11,11 +11,11 @@ const INCLUDED = [
   'Your partial, custom made in a licensed US lab',
   <FitAssuranceShort key="fit-assurance" />,
   'You pick your shade — choose your gum and tooth color during the process, so it matches your smile and looks natural',
-  'Free 2-day UPS both ways, with tracking at every step'
+  'Shipping included both ways, with tracking at every step'
 ];
 
 const LAB_NOTE =
-  'Once your approved impressions reach the licensed lab, your partial is built in about 10 business days. We keep you posted by text or email — your choice — and cover fast 2-day shipping every step, no questions asked.';
+  'Once your approved impressions reach the licensed lab, your partial is built in about 10 business days. We keep you posted by text or email — your choice — and shipping is included every step.';
 
 export default function ProductCard({
   dark = false,
