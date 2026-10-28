@@ -45,24 +45,23 @@ Drop these into `public/images/` using these exact filenames:
 
 ## Flow
 
-Five questions, one per screen, tap-to-advance (~170ms), then the offer.
+Five questions, one per screen, tap-to-advance (~170ms), then an email gate, then the result.
 
 1. Where are your missing teeth?
 2. About how many teeth are you missing?
 3. Tooth removed in the last 90 days?
 4. Tooth pain or swelling?
 5. Loose or shifting teeth?
-6. Offer
+6. Email gate — required before any result
+7. Offer, or the healing pause
 
-**Routing.** A "Yes" on question 3, 4, or 5 routes to the pause screen
-(`PauseScreen.jsx`) with copy matched to that answer — healing / pain / loose.
-Everyone else reaches the offer. The yellow "extra attention" banner on the offer
-renders whenever any flag answer is `yes` (currently unreachable, since all three
-route out — it stays in the code so re-enabling a flag is a one-line change in
-`data/questions.js`: drop `pauseKind` from a question and its "yes" flows through
-to the offer instead).
+**Email gate.** The offer and the healing pause both stay hidden until a valid email is submitted. First name is optional. There is no skip control. Back returns to the question they just left; it does not reveal the result.
 
-The back arrow returns to the question the user left, from any screen.
+**Routing.** A "Yes" on question 3 (recent extraction) opens the email gate and, after submit, the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors still submit email, then see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
+
+The back arrow from a result returns to the email gate, not past it.
+
+**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). Submit writes a profile and a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo onsite forms are off, so no list ID is published. Set `VITE_KLAVIYO_LIST_ID` to also subscribe that profile to a list via `/client/subscriptions/`. Saved fields are email, optional first name, and coded quiz answers — not photos or a medical note.
 
 ## Checkout hand-off
 
@@ -85,6 +84,8 @@ Make sure the Shopify product page reads these to preselect the variant.
 | What | Where |
 | --- | --- |
 | Questions, options, routing | `src/data/questions.js` |
+| Email gate | `src/components/EmailGate.jsx` |
+| Lead save (Klaviyo) | `src/lib/lead.js` |
 | Prices, Affirm lines, checkout URLs, policy links | `src/config.js` |
 | Offer page layout and copy | `src/components/OfferScreen.jsx` |
 | Card copy (included list, small print) | `src/components/ProductCard.jsx` |
@@ -121,6 +122,7 @@ klyros-quiz/
         ├── Header.jsx
         ├── ProgressBar.jsx
         ├── QuestionScreen.jsx
+        ├── EmailGate.jsx
         ├── PauseScreen.jsx
         ├── OfferScreen.jsx
         ├── ProofBlock.jsx

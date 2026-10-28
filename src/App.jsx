@@ -3,6 +3,7 @@ import { QUESTIONS, TOTAL_STEPS } from './data/questions.js';
 import Header from './components/Header.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import QuestionScreen from './components/QuestionScreen.jsx';
+import EmailGate from './components/EmailGate.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
 import { trackQuizStarted, trackStep } from './lib/track.js';
@@ -11,33 +12,37 @@ const SELECT_DELAY_MS = 170;
 
 export default function App() {
   const [step, setStep] = useState(0);
-  const [screen, setScreen] = useState('quiz'); // quiz | pause | offer
+  const [screen, setScreen] = useState('quiz'); // quiz | email | pause | offer
+  const [outcome, setOutcome] = useState('offer'); // offer | pause, applied only after email
   const [answers, setAnswers] = useState({});
+  const [lead, setLead] = useState(null);
   const [sel, setSel] = useState(null);
-  const [pause, setPause] = useState({ kind: 'pain', step: 3 });
+  const [pause, setPause] = useState({ kind: 'healing', step: 2 });
 
   const isQuiz = screen === 'quiz';
-  const isPause = screen === 'pause';
-  const isOffer = screen === 'offer';
+  const isEmail = screen === 'email';
+  const isPause = screen === 'pause' && lead !== null;
+  const isOffer = screen === 'offer' && lead !== null;
 
   // Fire once when the quiz first mounts (Step 1).
   useEffect(() => {
     trackQuizStarted();
   }, []);
 
-  const flagged =
-    answers.extraction === 'yes' || answers.pain === 'yes' || answers.loose === 'yes';
+  const inPersonFirst = answers.pain === 'yes' || answers.loose === 'yes';
 
   const advance = useCallback((stepIndex, value) => {
     const q = QUESTIONS[stepIndex];
     if (value === 'yes' && q.pauseKind) {
       setPause({ kind: q.pauseKind, step: stepIndex });
-      setScreen('pause');
+      setOutcome('pause');
+      setScreen('email');
       setSel(null);
       return;
     }
     if (stepIndex >= QUESTIONS.length - 1) {
-      setScreen('offer');
+      setOutcome('offer');
+      setScreen('email');
       setSel(null);
       return;
     }
@@ -59,27 +64,37 @@ export default function App() {
   );
 
   const goBack = useCallback(() => {
-    if (isOffer) {
-      setScreen('quiz');
-      setStep(QUESTIONS.length - 1);
-    } else if (isPause) {
-      setScreen('quiz');
-      setStep(pause.step);
-    } else if (step > 0) {
-      setStep(step - 1);
+    if (screen === 'offer' || screen === 'pause') {
+      setScreen('email');
+      setSel(null);
+      return;
     }
-  }, [isOffer, isPause, pause.step, step]);
+    if (screen === 'email') {
+      setScreen('quiz');
+      setStep(outcome === 'pause' ? pause.step : QUESTIONS.length - 1);
+      setSel(null);
+      return;
+    }
+    if (step > 0) setStep(step - 1);
+  }, [outcome, pause.step, screen, step]);
 
   const restart = useCallback(() => {
     setStep(0);
     setScreen('quiz');
+    setOutcome('offer');
     setAnswers({});
+    setLead(null);
     setSel(null);
-    setPause({ kind: 'pain', step: 3 });
+    setPause({ kind: 'healing', step: 2 });
   }, []);
 
-  const stepNum = isQuiz ? step + 1 : isPause ? pause.step + 1 : TOTAL_STEPS;
-  const progress = isOffer ? 100 : Math.round((stepNum / TOTAL_STEPS) * 100);
+  const showResults = useCallback((saved) => {
+    setLead(saved);
+    setScreen(outcome === 'pause' ? 'pause' : 'offer');
+  }, [outcome]);
+
+  const stepNum = isQuiz ? step + 1 : isEmail ? QUESTIONS.length + 1 : TOTAL_STEPS;
+  const progress = isOffer || isPause ? 100 : Math.round((stepNum / TOTAL_STEPS) * 100);
 
   return (
     <div
@@ -106,8 +121,16 @@ export default function App() {
         {isQuiz && (
           <QuestionScreen question={QUESTIONS[step]} sel={sel} onPick={pick} />
         )}
+        {isEmail && (
+          <EmailGate
+            answers={answers}
+            initialEmail={lead?.email || ''}
+            initialFirstName={lead?.firstName || ''}
+            onSuccess={showResults}
+          />
+        )}
         {isPause && <PauseScreen kind={pause.kind} onRestart={restart} />}
-        {isOffer && <OfferScreen answers={answers} flagged={flagged} />}
+        {isOffer && <OfferScreen answers={answers} inPersonFirst={inPersonFirst} />}
       </div>
     </div>
   );

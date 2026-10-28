@@ -5,13 +5,13 @@ import { LINKS } from '../config.js';
 import { FitAssuranceShort, CHECKOUT_TERMS_TEXT } from './PolicyCopy.jsx';
 
 const INCLUDED = [
-  'A licensed dentist reviews your case and plans your fit',
-  'Your impression kit — with unlimited free tries',
+  'A licensed dentist in your state reviews your case and plans your fit',
+  'Your impression kit — with unlimited tries',
   "Take it out. Pop it back in. Nothing glued. Nothing forever. You're in charge.",
   'Your partial, custom made in a licensed US lab',
   <FitAssuranceShort key="fit-assurance" />,
   'You pick your shade — choose your gum and tooth color during the process, so it matches your smile and looks natural',
-  'Free 2-day UPS both ways, with tracking at every step'
+  '2-day UPS both ways, with tracking at every step'
 ];
 
 const LAB_NOTE =
@@ -176,7 +176,7 @@ export default function ProductCard({
       </p>
       <p style={{ margin: '10px 0 0 0', fontSize: 13, lineHeight: 1.45, color: muted }}>{LAB_NOTE}</p>
       <p style={{ margin: '8px 0 0 0', fontSize: 13, lineHeight: 1.45, color: muted }}>
-        A licensed dentist in our network reviews your case before anything is made.
+        A licensed dentist in your state reviews your case before anything is made.
       </p>
     </div>
   );

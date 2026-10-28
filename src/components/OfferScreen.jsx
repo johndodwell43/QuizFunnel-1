@@ -34,7 +34,7 @@ function Seal() {
   );
 }
 
-export default function OfferScreen({ answers, flagged }) {
+export default function OfferScreen({ answers, inPersonFirst }) {
   const [arrowDone, setArrowDone] = useState(false);
   const hideArrow = () => setArrowDone(true);
 
@@ -88,14 +88,14 @@ export default function OfferScreen({ answers, flagged }) {
       </div>
 
       <p style={{ fontSize: 'clamp(18px, 3vw, 21px)', lineHeight: 1.55, color: '#454e5c', margin: '0 0 24px 0' }}>
-        A licensed dentist plans your fit, a US lab builds it, and it ships to your door. Starting at{' '}
-        {flexPrice} — no office visit.
+        A licensed dentist in your state plans your fit, a US lab builds it, and it ships to your door. Starting at{' '}
+        {flexPrice}.
       </p>
 
       <ProofBlock />
       <ValueList />
 
-      {flagged && (
+      {inPersonFirst && (
         <div style={{ background: '#fdf3d1', borderRadius: 16, padding: '16px 18px', marginBottom: 22, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8a6d1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
             <circle cx="12" cy="12" r="10" />
@@ -103,9 +103,9 @@ export default function OfferScreen({ answers, flagged }) {
             <path d="M12 16h.01" />
           </svg>
           <p style={{ margin: 0, fontSize: 17, lineHeight: 1.55, color: '#6b5410' }}>
-            <strong style={{ color: '#55430c' }}>Your case gets extra attention.</strong> One of your
-            answers means a licensed dentist in our network will take a closer look before we make anything. That's normal
-            — and it won't slow down your order.
+            <strong style={{ color: '#55430c' }}>See a dentist in person first.</strong> Pain, swelling,
+            a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
+            dentist in your state can tell you what is going on.
           </p>
         </div>
       )}
@@ -166,7 +166,7 @@ export default function OfferScreen({ answers, flagged }) {
         Her smile is back. Yours can be, too.
       </p>
       <p style={{ fontSize: 16, color: '#454e5c', marginTop: 10, textAlign: 'center' }}>
-        Free 2-day mail both ways · Planned by a licensed U.S. dentist · 60-Day Fit Assurance™
+        2-day mail both ways · Planned by a licensed dentist in your state · 60-Day Fit Assurance™
       </p>
 
       <Footer />

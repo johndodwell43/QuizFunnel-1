@@ -34,6 +34,13 @@ export function trackQuizStarted() {
 export function trackStep(n) {
   posthog.capture('quiz_step_completed', { step_number: n, step_name: `step_${n}` });
 }
+export function trackEmailGateViewed() {
+  posthog.capture('quiz_email_gate_viewed');
+}
+export function trackLeadCaptured() {
+  // No email, name, or quiz answers — those stay off PostHog and Meta.
+  posthog.capture('quiz_email_submitted');
+}
 export function trackOfferPageViewed() {
   posthog.capture('offer_page_viewed');
   fb('ViewContent');

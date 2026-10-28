@@ -4,10 +4,10 @@ const STEPS = [
   ['We mail you everything', 'Your kit comes in 2 days. Everything you need is inside.'],
   [
     'You make a mold at home',
-    'Take as many tries as you want, free. A guide, an app, and step-by-step help are right there with you.'
+    'Take as many tries as you want. A guide, an app, and step-by-step help are right there with you.'
   ],
   [
-    'A dentist checks it',
+    'A licensed dentist in your state checks it',
     'Send photos — private and secure. You hear back in 1 to 2 days. Nothing is made until they say yes.'
   ],
   [
