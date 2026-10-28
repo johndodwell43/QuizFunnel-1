@@ -61,7 +61,7 @@ Five questions, one per screen, tap-to-advance (~170ms), then an email gate, the
 
 The back arrow from a result returns to the email gate, not past it.
 
-**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). Submit writes a profile and a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo onsite forms are off, so no list ID is published. Set `VITE_KLAVIYO_LIST_ID` to also subscribe that profile to a list via `/client/subscriptions/`. Saved fields are email, optional first name, and coded quiz answers — not photos or a medical note.
+**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email, optional first name, and coded quiz answers — not photos or a medical note.
 
 ## Checkout hand-off
 
