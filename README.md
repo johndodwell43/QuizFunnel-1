@@ -61,12 +61,17 @@ spam. Unsubscribe anytime." CTA: "See my results". A "Yes" on question 3, 4,
 or 5 still goes to the pause screen and never reaches the gate.
 
 The gate stores a non-PHI lead only (email, optional first name, source
-`quiz_results_gate`). Quiz answers are not sent. Destination is the Klaviyo
-account already installed on the Shopify store (`tfvziu-ia.myshopify.com`,
-public company id `XaqymG`, Klaviyo Email Marketing & SMS). The theme does not
-publish a list id and onsite forms are disabled, so `src/lib/lead.js` writes a
-Klaviyo profile and a `Quiz Results Requested` event with the public client
-API. Klaviyo's Shopify app is the sync between that account and the shop.
+`quiz_results_gate`). Quiz answers are not sent. The browser posts that payload
+to same-origin `/api/lead` (`api/lead.js` on Vercel; Vite dev and preview expose
+the same route). That route writes a Klaviyo profile and a `Quiz Results Requested`
+event.
+
+Destination is the Klaviyo account already installed on the Shopify store
+(`tfvziu-ia.myshopify.com`, public company id `XaqymG`, Klaviyo Email Marketing
+& SMS). The theme does not publish a list id and onsite forms are disabled, and
+this repo has no Klaviyo private key or Shopify Admin token, so the server uses
+Klaviyo's public client API. Klaviyo's Shopify app is the sync between that
+account and the shop.
 
 **Routing.** A "Yes" on question 3, 4, or 5 routes to the pause screen
 (`PauseScreen.jsx`) with copy matched to that answer — healing / pain / loose.
@@ -127,10 +132,12 @@ klyros-quiz/
 ├── vercel.json
 ├── vite.config.js
 ├── public/images/          # logo + your photos
+├── api/lead.js             # Vercel function: non-PHI lead → existing Klaviyo account
 └── src/
     ├── App.jsx             # state machine: step, screen, answers, routing
     ├── config.js           # pricing, checkout URLs, policy links, Klaviyo id
-    ├── lib/lead.js         # non-PHI results lead → existing Klaviyo account
+    ├── lib/lead.js         # browser: POST non-PHI lead to /api/lead
+    ├── lib/klaviyoLead.js  # server writer used by api/lead.js and Vite
     ├── styles.css          # resets, link colors, keyframes
     ├── data/questions.js
     └── components/

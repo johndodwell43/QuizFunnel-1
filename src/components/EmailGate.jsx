@@ -75,7 +75,10 @@ export default function EmailGate({ initialEmail = '', initialFirstName = '', on
             value={email}
             aria-invalid={error ? 'true' : 'false'}
             aria-describedby="results-email-note"
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (error) setError('');
+            }}
             style={fieldInput}
           />
         </div>
