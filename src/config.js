@@ -4,8 +4,9 @@ export const PRICING = {
   flexSecondArch: 370,
   precisionPrice: 789,
   precisionSecondArch: 690,
-  flexMonthly: '$41 a month with Affirm. Checking your rate won\'t hurt your credit score.',
-  precisionMonthly: '$66 a month for 12 months with Affirm.'
+  // Affirm is offered with no dollar amount, APR, or month count.
+  flexMonthly: 'pay over time with Affirm. Checking your rate won\'t hurt your credit score.',
+  precisionMonthly: 'pay over time with Affirm.'
 };
 
 export const CHECKOUT = {
