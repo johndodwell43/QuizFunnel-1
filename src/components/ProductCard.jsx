@@ -5,7 +5,7 @@ import { LINKS } from '../config.js';
 import { CHECKOUT_TERMS_TEXT } from './PolicyCopy.jsx';
 
 const LAB_NOTE =
-  'Once your approved impressions reach the licensed lab, your partial is built in about 10 business days. We keep you posted by text or email — your choice.';
+  'Once your approved impressions reach the licensed lab, your partial is built in 10–14 business days. We keep you posted by text or email — your choice.';
 
 export default function ProductCard({
   dark = false,

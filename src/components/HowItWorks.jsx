@@ -8,11 +8,11 @@ const STEPS = [
   ],
   [
     'A dentist checks it',
-    'Send photos — private and secure. You hear back in 1 to 2 days. Nothing is made until they say yes.'
+    'Send photos — private and secure. Licensed dentist review within 24–48 hours. Nothing is made until they say yes.'
   ],
   [
     'Your partial is made just for you',
-    'A licensed U.S. lab builds it. About 10 business days after the lab has your approved impression.'
+    'A licensed U.S. lab builds it. 10–14 business days after the lab has your approved impression.'
   ]
 ];
 

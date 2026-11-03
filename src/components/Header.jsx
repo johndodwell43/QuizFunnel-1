@@ -51,7 +51,7 @@ export default function Header({ showBack, onBack, stepLabel, chrome }) {
       >
         <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: 30, width: 'auto', display: 'block' }} />
         <div style={{ fontSize: 15, color: '#454e5c', whiteSpace: 'nowrap' }}>
-          {chrome ?? `Find Your Fit · ${stepLabel}`}
+          {chrome ?? `Quick case check · ${stepLabel}`}
         </div>
       </div>
 
