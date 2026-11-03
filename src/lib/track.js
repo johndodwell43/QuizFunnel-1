@@ -31,6 +31,14 @@ export function trackQuizStarted() {
   posthog.capture('quiz_started', getUTMs());
   fb('Lead');
 }
+// Gate events carry no address. Email is PII and stays out of PostHog and Meta.
+export function trackEmailGateViewed() {
+  ensureId();
+  posthog.capture('quiz_email_gate_viewed', {});
+}
+export function trackEmailCaptured() {
+  posthog.capture('quiz_email_captured', {});
+}
 export function trackStep(n) {
   posthog.capture('quiz_step_completed', { step_number: n, step_name: `step_${n}` });
 }

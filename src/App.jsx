@@ -5,24 +5,37 @@ import ProgressBar from './components/ProgressBar.jsx';
 import QuestionScreen from './components/QuestionScreen.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
-import { trackQuizStarted, trackStep } from './lib/track.js';
+import EmailGate from './components/EmailGate.jsx';
+import { trackQuizStarted, trackStep, trackEmailGateViewed, trackEmailCaptured } from './lib/track.js';
 
 const SELECT_DELAY_MS = 170;
 
 export default function App() {
   const [step, setStep] = useState(0);
-  const [screen, setScreen] = useState('quiz'); // quiz | pause | offer
+  const [screen, setScreen] = useState('email'); // email | quiz | pause | offer
+  const [email, setEmail] = useState('');
   const [answers, setAnswers] = useState({});
   const [sel, setSel] = useState(null);
   const [pause, setPause] = useState({ kind: 'pain', step: 3 });
 
+  const isEmail = screen === 'email';
   const isQuiz = screen === 'quiz';
   const isPause = screen === 'pause';
   const isOffer = screen === 'offer';
 
-  // Fire once when the quiz first mounts (Step 1).
   useEffect(() => {
+    if (isEmail) trackEmailGateViewed();
+  }, [isEmail]);
+
+  // TODO: send `address` to the owned-list endpoint.
+  // Unknown in this repo — no Klaviyo key, API route, or env.
+  // smile.klyrosdental.com posts /api/quiz-lead; that route is not here.
+  // Do not hardcode secrets. Email stays in component state only.
+  const continueFromEmail = useCallback((address) => {
+    setEmail(address);
+    trackEmailCaptured();
     trackQuizStarted();
+    setScreen('quiz');
   }, []);
 
   const flagged =
@@ -97,13 +110,16 @@ export default function App() {
     >
       <div style={{ width: '100%', maxWidth: isOffer ? '960px' : '560px' }}>
         <Header
-          showBack={!(isQuiz && step === 0)}
+          showBack={!(isEmail || (isQuiz && step === 0))}
           onBack={goBack}
           stepLabel={`Step ${stepNum} of ${TOTAL_STEPS}`}
-          chrome={isOffer ? 'Quick case check · Step 6 of 6' : undefined}
+          chrome={
+            isEmail ? 'Quick case check' : isOffer ? 'Quick case check · Step 6 of 6' : undefined
+          }
         />
-        <ProgressBar progress={progress} />
+        {!isEmail && <ProgressBar progress={progress} />}
 
+        {isEmail && <EmailGate onContinue={continueFromEmail} />}
         {isQuiz && (
           <QuestionScreen question={QUESTIONS[step]} sel={sel} onPick={pick} />
         )}
