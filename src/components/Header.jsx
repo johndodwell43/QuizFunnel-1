@@ -12,7 +12,7 @@ const chromeButton = {
   color: '#111827'
 };
 
-export default function Header({ showBack, onBack, stepLabel }) {
+export default function Header({ showBack, onBack, stepLabel, chrome }) {
   return (
     <header
       style={{
@@ -51,7 +51,7 @@ export default function Header({ showBack, onBack, stepLabel }) {
       >
         <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: 30, width: 'auto', display: 'block' }} />
         <div style={{ fontSize: 15, color: '#454e5c', whiteSpace: 'nowrap' }}>
-          Find Your Fit · {stepLabel}
+          {chrome ?? `Find Your Fit · ${stepLabel}`}
         </div>
       </div>
 

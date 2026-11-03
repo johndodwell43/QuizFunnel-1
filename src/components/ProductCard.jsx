@@ -2,20 +2,10 @@ import React from 'react';
 import Check from './Check.jsx';
 import ImageSlot from './ImageSlot.jsx';
 import { LINKS } from '../config.js';
-import { FitAssuranceShort, CHECKOUT_TERMS_TEXT } from './PolicyCopy.jsx';
-
-const INCLUDED = [
-  'A licensed dentist reviews your case and plans your fit',
-  'Your impression kit — with unlimited free tries',
-  "Take it out. Pop it back in. Nothing glued. Nothing forever. You're in charge.",
-  'Your partial, custom made in a licensed US lab',
-  <FitAssuranceShort key="fit-assurance" />,
-  'You pick your shade — choose your gum and tooth color during the process, so it matches your smile and looks natural',
-  'Free 2-day UPS both ways, with tracking at every step'
-];
+import { CHECKOUT_TERMS_TEXT } from './PolicyCopy.jsx';
 
 const LAB_NOTE =
-  'Once your approved impressions reach the licensed lab, your partial is built in about 10 business days. We keep you posted by text or email — your choice — and cover fast 2-day shipping every step, no questions asked.';
+  'Once your approved impressions reach the licensed lab, your partial is built in about 10 business days. We keep you posted by text or email — your choice.';
 
 export default function ProductCard({
   dark = false,
@@ -37,7 +27,6 @@ export default function ProductCard({
 }) {
   const tick = dark ? '#8fb5ff' : '#2F5BEA';
   const muted = dark ? '#98a2b3' : '#6b7381';
-  const body = dark ? '#c8d2e2' : '#454e5c';
   const border = dark ? 'rgba(255,255,255,0.16)' : '#e6eaf2';
   const link = dark ? '#8fb5ff' : '#2F5BEA';
 
@@ -117,21 +106,7 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div style={{ borderTop: `1px solid ${border}`, paddingTop: 14 }}>
-        <h3 style={{ margin: '0 0 10px 0', fontSize: 17, fontWeight: 700, color: dark ? '#ffffff' : '#111827' }}>
-          Everything's included:
-        </h3>
-        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 9, fontSize: 16, lineHeight: 1.4, color: body }}>
-          {INCLUDED.map((item, i) => (
-            <li key={i} style={{ display: 'flex', gap: 8 }}>
-              <Check stroke={tick} size={17} marginTop={2} />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 17, lineHeight: 1.45 }}>
+      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 17, lineHeight: 1.45, borderTop: `1px solid ${border}`, paddingTop: 14 }}>
         {materials.map(([lead, rest]) => (
           <li key={lead} style={{ display: 'flex', gap: 8 }}>
             <Check stroke={tick} size={18} marginTop={2} />

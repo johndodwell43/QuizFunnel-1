@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import ProofBlock from './ProofBlock.jsx';
+import React, { useEffect } from 'react';
 import ValueList from './ValueList.jsx';
 import HowItWorks from './HowItWorks.jsx';
 import ProductCard from './ProductCard.jsx';
@@ -7,6 +6,8 @@ import Footer from './Footer.jsx';
 import { PRICING, money } from '../config.js';
 import { checkoutOneArch, checkoutBothArches } from '../lib/checkout.js';
 import { trackSendKitClicked, trackOfferPageViewed, setupScrollTracking } from '../lib/track.js';
+
+const STEP6_TITLE = 'Quick case check · Step 6 of 6';
 
 function Seal() {
   const square = {
@@ -35,16 +36,25 @@ function Seal() {
 }
 
 export default function OfferScreen({ answers, flagged }) {
-  const [arrowDone, setArrowDone] = useState(false);
-  const hideArrow = () => setArrowDone(true);
-
-  // Fire offer-page analytics once, after the section ids are in the DOM.
   useEffect(() => {
+    const previousTitle = document.title;
+    document.title = STEP6_TITLE;
+    const meta = document.querySelector('meta[name="description"]');
+    const previousDescription = meta ? meta.getAttribute('content') : null;
+    if (meta) {
+      meta.setAttribute(
+        'content',
+        `A licensed dentist reviews your case. A U.S. lab builds it. It ships to your door. Flex Partial™ from ${money(PRICING.flexPrice)}.`
+      );
+    }
     trackOfferPageViewed();
     setupScrollTracking();
+    return () => {
+      document.title = previousTitle;
+      if (meta && previousDescription !== null) meta.setAttribute('content', previousDescription);
+    };
   }, []);
 
-  // Runtime confirmation that the arch answer drives price + variant.
   useEffect(() => {
     console.log(
       '[OfferScreen] answers.arch =', answers.arch,
@@ -57,42 +67,55 @@ export default function OfferScreen({ answers, flagged }) {
   const step1Answer = answers.arch || '';
   const isBoth = step1Answer === 'both';
 
-  // Both-arches totals match the Shopify "both" variants (Flex 859 / Precision 1479).
   const flexBothTotal = PRICING.flexPrice + PRICING.flexSecondArch;
   const precisionBothTotal = PRICING.precisionPrice + PRICING.precisionSecondArch;
 
-  // Headline price follows the arch the user picked in Q1.
   const flexAmount = isBoth ? flexBothTotal : PRICING.flexPrice;
   const precisionAmount = isBoth ? precisionBothTotal : PRICING.precisionPrice;
 
   const flexPrice = money(flexAmount);
   const proPrice = money(precisionAmount);
+  const flexFromPrice = money(PRICING.flexPrice);
   const priceNote = isBoth ? 'for both arches (upper and lower)' : 'for one arch (upper or lower)';
+
+  const sendFlexKit = () => checkoutOneArch('flex', step1Answer, trackSendKitClicked('flex', step1Answer, flexAmount));
 
   return (
     <main data-screen-label="Offer">
       <Seal />
 
-      <p style={{ margin: '0 0 8px 0', fontSize: 15, fontWeight: 700, letterSpacing: '0.09em', textTransform: 'uppercase', color: '#2F5BEA' }}>
-        You've waited long enough.
-      </p>
       <h1 style={{ fontSize: 'clamp(34px, 5.5vw, 44px)', lineHeight: 1.15, fontWeight: 700, margin: '0 0 12px 0', textWrap: 'pretty' }}>
-        Your missing tooth, fixed from home.
+        A custom partial planned with a licensed dentist.
       </h1>
 
-      <div aria-hidden="true" style={{ display: 'flex', justifyContent: 'center', margin: '4px 0 12px 0', opacity: arrowDone ? 0 : 1, transition: 'opacity 0.4s ease' }}>
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2F5BEA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'nudge-down 1.5s ease-in-out infinite' }}>
-          <path d="M12 5v14" />
-          <path d="M19 12l-7 7-7-7" />
-        </svg>
-      </div>
-
-      <p style={{ fontSize: 'clamp(18px, 3vw, 21px)', lineHeight: 1.55, color: '#454e5c', margin: '0 0 24px 0' }}>
-        A licensed dentist plans your fit, a US lab builds it, and it ships to your door. Starting at{' '}
-        {flexPrice} — no office visit.
+      <p style={{ fontSize: 'clamp(18px, 3vw, 21px)', lineHeight: 1.55, color: '#454e5c', margin: '0 0 18px 0' }}>
+        A licensed dentist reviews your case. A U.S. lab builds it. It ships to your door. Flex Partial™ from {flexFromPrice}.
       </p>
 
-      <ProofBlock />
+      <button
+        type="button"
+        id="offer-primary-cta"
+        onClick={sendFlexKit}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 66,
+          width: '100%',
+          border: 'none',
+          background: '#2F5BEA',
+          color: '#ffffff',
+          borderRadius: 16,
+          fontSize: 21,
+          fontWeight: 700,
+          fontFamily: 'inherit',
+          cursor: 'pointer',
+          margin: '0 0 22px 0'
+        }}
+      >
+        Send My Kit →
+      </button>
+
       <ValueList />
 
       {flagged && (
@@ -131,9 +154,8 @@ export default function OfferScreen({ answers, flagged }) {
             ['Acrylic resin teeth', '— look like real teeth']
           ]}
           allOfItLine={`All of it, for ${flexPrice}.`}
-          onCta={() => checkoutOneArch('flex', step1Answer, trackSendKitClicked('flex', step1Answer, flexAmount))}
+          onCta={sendFlexKit}
           onSecondArch={() => checkoutBothArches('flex', trackSendKitClicked('flex', 'both', flexBothTotal))}
-          onCtaFocus={hideArrow}
         />
 
         <ProductCard
@@ -158,16 +180,8 @@ export default function OfferScreen({ answers, flagged }) {
           allOfItLine={`All of it, for ${proPrice}.`}
           onCta={() => checkoutOneArch('precision', step1Answer, trackSendKitClicked('precision', step1Answer, precisionAmount))}
           onSecondArch={() => checkoutBothArches('precision', trackSendKitClicked('precision', 'both', precisionBothTotal))}
-          onCtaFocus={hideArrow}
         />
       </div>
-
-      <p style={{ fontSize: 20, fontWeight: 700, color: '#111827', marginTop: 26, textAlign: 'center' }}>
-        Her smile is back. Yours can be, too.
-      </p>
-      <p style={{ fontSize: 16, color: '#454e5c', marginTop: 10, textAlign: 'center' }}>
-        Free 2-day mail both ways · Planned by a licensed U.S. dentist · 60-Day Fit Assurance™
-      </p>
 
       <Footer />
     </main>

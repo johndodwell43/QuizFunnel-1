@@ -100,6 +100,7 @@ export default function App() {
           showBack={!(isQuiz && step === 0)}
           onBack={goBack}
           stepLabel={`Step ${stepNum} of ${TOTAL_STEPS}`}
+          chrome={isOffer ? 'Quick case check · Step 6 of 6' : undefined}
         />
         <ProgressBar progress={progress} />
 

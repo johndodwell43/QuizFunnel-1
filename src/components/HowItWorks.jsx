@@ -1,10 +1,10 @@
 import React from 'react';
 
 const STEPS = [
-  ['We mail you everything', 'Your kit comes in 2 days. Everything you need is inside.'],
+  ['We mail you everything', 'Everything you need is inside.'],
   [
-    'You make a mold at home',
-    'Take as many tries as you want, free. A guide, an app, and step-by-step help are right there with you.'
+    'You make your impression',
+    'Remake your impression with a guide, app, and help — as needed.'
   ],
   [
     'A dentist checks it',
@@ -12,7 +12,7 @@ const STEPS = [
   ],
   [
     'Your partial is made just for you',
-    'A licensed US lab builds it to fit only your mouth. About 10 business days, then 2-day mail to your door.'
+    'A licensed U.S. lab builds it. About 10 business days after the lab has your approved impression.'
   ]
 ];
 
