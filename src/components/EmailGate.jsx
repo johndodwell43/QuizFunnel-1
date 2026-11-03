@@ -6,6 +6,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function EmailGate({ onContinue }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -14,15 +15,23 @@ export default function EmailGate({ onContinue }) {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
+    if (submitting) return;
     const address = email.trim();
     if (address.length < 3 || address.length > 254 || !EMAIL_RE.test(address)) {
       setError('Enter your email to continue.');
       return;
     }
     setError('');
-    onContinue(address);
+    setSubmitting(true);
+    try {
+      await onContinue(address);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "We couldn't save your email. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -86,6 +95,7 @@ export default function EmailGate({ onContinue }) {
         ) : null}
         <button
           type="submit"
+          disabled={submitting}
           style={{
             display: 'flex',
             alignItems: 'center',

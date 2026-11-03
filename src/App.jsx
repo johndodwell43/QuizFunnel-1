@@ -27,11 +27,20 @@ export default function App() {
     if (isEmail) trackEmailGateViewed();
   }, [isEmail]);
 
-  // TODO: send `address` to the owned-list endpoint.
-  // Unknown in this repo — no Klaviyo key, API route, or env.
-  // smile.klyrosdental.com posts /api/quiz-lead; that route is not here.
-  // Do not hardcode secrets. Email stays in component state only.
-  const continueFromEmail = useCallback((address) => {
+  const continueFromEmail = useCallback(async (address) => {
+    const response = await fetch('/api/quiz-lead', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: address })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload.ok) {
+      const message =
+        response.status === 400 && typeof payload.error === 'string'
+          ? payload.error
+          : "We couldn't save your email. Please try again.";
+      throw new Error(message);
+    }
     setEmail(address);
     trackEmailCaptured();
     trackQuizStarted();
