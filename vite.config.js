@@ -24,6 +24,7 @@ function quizLeadDevApi() {
         }
         if (req.method !== 'POST') {
           res.statusCode = 405;
+          res.setHeader('Allow', 'POST');
           res.setHeader('content-type', 'application/json');
           res.end(JSON.stringify({ ok: false }));
           return;

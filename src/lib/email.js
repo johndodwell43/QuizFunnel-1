@@ -5,7 +5,7 @@ const EMAIL_RE =
 
 export function isValidEmail(value) {
   const email = String(value || '').trim();
-  if (!email || email.length > 254) return false;
+  if (!email || email.length > 254 || /\s/.test(email)) return false;
   return EMAIL_RE.test(email);
 }
 

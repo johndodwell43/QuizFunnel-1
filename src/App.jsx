@@ -116,7 +116,7 @@ export default function App() {
           onBack={goBack}
           stepLabel={`Step ${stepNum} of ${TOTAL_STEPS}`}
         />
-        <ProgressBar progress={progress} />
+        <ProgressBar progress={progress} label={`Step ${stepNum} of ${TOTAL_STEPS}`} />
 
         {isQuiz && (
           <QuestionScreen question={QUESTIONS[step]} sel={sel} onPick={pick} />

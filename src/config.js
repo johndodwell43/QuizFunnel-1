@@ -1,5 +1,9 @@
 // Single source of truth for pricing and checkout hand-off.
 // Both-arch amounts are the Shopify variant prices, not a derived discount.
+
+// Store credit stays off. Do not set this to true until John unlocks it
+// and real codes exist. Step 6 has no credit sentence to show either way.
+export const QUIZ_CREDIT_ENABLED = false;
 export const PRICING = {
   flexPrice: 489,
   flexBoth: 859,

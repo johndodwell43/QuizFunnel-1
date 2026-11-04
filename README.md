@@ -1,4 +1,4 @@
-# Klyros — Find Your Fit quiz funnel
+# Klyros quiz funnel
 
 Mobile-first qualification quiz. An email is required before the offer. Checkout
 opens the matching Shopify cart variant. Quiz answers are not sent with the lead.
@@ -54,9 +54,9 @@ Five questions, one per screen, tap-to-advance (~170ms), then an email gate, the
 6. Email gate — required before any result
 7. Offer, or the healing pause
 
-**Email gate.** The offer and the healing pause both stay hidden until a valid email is submitted. First name is optional. There is no skip control. Back returns to the question they just left; it does not reveal the result.
+**Email gate.** The offer and the healing pause both stay hidden until a valid email is saved. First name is optional. There is no skip control. Back returns to the question they just left; it does not reveal the result. `QUIZ_CREDIT_ENABLED` is `false`. The step 6 subhead does not mention a credit.
 
-**Routing.** A "Yes" on question 3 (recent extraction) opens the email gate and, after submit, the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors still submit email, then see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
+**Routing.** A "Yes" on question 3 (recent extraction) opens the email gate and, after the save, the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors still submit email, then see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
 
 The back arrow from a result returns to the email gate, not past it.
 
@@ -71,8 +71,9 @@ Checkout opens the Shopify cart for the variant that matches the product and the
 | What | Where |
 | --- | --- |
 | Questions, options, routing | `src/data/questions.js` |
+| Step 6 email copy | `src/i18n/step6.js` |
 | Email gate | `src/components/EmailGate.jsx` |
-| Lead save (Klaviyo) | `src/lib/lead.js` |
+| Lead save (Klaviyo) | `api/saveLead.js` |
 | Prices, Affirm line, shipping line, dentist line, policy links | `src/config.js` |
 | Offer page layout and copy | `src/components/OfferScreen.jsx` |
 | Included list | `src/components/ValueList.jsx` |

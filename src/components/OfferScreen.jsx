@@ -89,7 +89,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
           color: '#111827'
         }}
       >
-        Partial prices, before checkout.
+        Your missing tooth.
       </h1>
       <p style={{ ...body, marginBottom: 22 }}>
         Flex Partial and Precision Partial Pro. The price depends on one arch or both. {DENTIST_LINE}

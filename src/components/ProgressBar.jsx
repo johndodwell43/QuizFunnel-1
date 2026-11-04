@@ -1,12 +1,13 @@
 import React from 'react';
 
-export default function ProgressBar({ progress }) {
+export default function ProgressBar({ progress, label }) {
   return (
     <div
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={progress}
+      aria-label={label}
       style={{
         height: 6,
         background: 'rgba(255,255,255,0.7)',

@@ -6,11 +6,18 @@ import posthog from 'posthog-js';
 
 function getUTMs() {
   const p = new URLSearchParams(window.location.search);
+  const read = (key) => p.get(key) || sessionStorage.getItem(key) || '';
   const u = {
-    utm_source:  p.get('utm_source')  || sessionStorage.getItem('utm_source')  || '',
-    utm_campaign:p.get('utm_campaign')|| sessionStorage.getItem('utm_campaign')|| '',
-    utm_content: p.get('utm_content') || sessionStorage.getItem('utm_content') || '',
+    utm_source: read('utm_source'),
+    utm_campaign: read('utm_campaign'),
+    utm_content: read('utm_content')
   };
+  // Keep extra tags when the visit arrived with them. Empty values stay off
+  // the checkout URL so we don't invent blank parameters.
+  for (const key of ['utm_medium', 'utm_term']) {
+    const value = read(key).trim();
+    if (value) u[key] = value;
+  }
   Object.entries(u).forEach(([k, v]) => v && sessionStorage.setItem(k, v));
   return u;
 }
@@ -34,12 +41,28 @@ export function trackQuizStarted() {
 export function trackStep(n) {
   posthog.capture('quiz_step_completed', { step_number: n, step_name: `step_${n}` });
 }
+const HEADLINE_VARIANT = /^[a-z0-9_-]{1,40}$/;
 export function trackEmailGateViewed() {
-  posthog.capture('quiz_email_gate_viewed');
+  // step6_headline is an optional PostHog flag. Only a short variant key is
+  // sent. The on-screen headline does not change with the flag.
+  const props = { step_number: 6, step_name: 'step_6' };
+  try {
+    const value = posthog.getFeatureFlag && posthog.getFeatureFlag('step6_headline');
+    if (typeof value === 'string' && HEADLINE_VARIANT.test(value)) props.step6_headline = value;
+    else if (value === true || value === false) props.step6_headline = String(value);
+  } catch {
+    // Flags are optional.
+  }
+  posthog.capture('quiz_email_gate_viewed', props);
 }
-export function trackLeadCaptured() {
+export function trackLeadCaptured(hasFirstName) {
   // No email, name, or quiz answers — those stay off PostHog and Meta.
-  posthog.capture('quiz_email_submitted');
+  posthog.capture('quiz_email_submitted', {
+    step_number: 6,
+    step_name: 'step_6',
+    has_first_name: Boolean(hasFirstName)
+  });
+  posthog.capture('quiz_step_completed', { step_number: 6, step_name: 'step_6' });
 }
 export function trackOfferPageViewed() {
   posthog.capture('offer_page_viewed');
