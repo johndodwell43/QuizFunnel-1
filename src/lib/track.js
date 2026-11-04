@@ -23,8 +23,8 @@ function ensureId() {
 const fb = (name, params = {}, id) =>
   window.fbq && window.fbq('track', name, params, id ? { eventID: id } : undefined);
 
-// PRIVACY: never send quiz answers, health details or free text to PostHog or
-// Meta. Steps are identified by number only.
+// PRIVACY: never send quiz answers, health details, or typed notes to PostHog
+// or Meta. Steps are identified by number only.
 
 export function trackQuizStarted() {
   ensureId();
@@ -33,6 +33,13 @@ export function trackQuizStarted() {
 }
 export function trackStep(n) {
   posthog.capture('quiz_step_completed', { step_number: n, step_name: `step_${n}` });
+}
+export function trackEmailGateViewed() {
+  posthog.capture('quiz_email_gate_viewed');
+}
+export function trackLeadCaptured() {
+  // No email, name, or quiz answers — those stay off PostHog and Meta.
+  posthog.capture('quiz_email_submitted');
 }
 export function trackOfferPageViewed() {
   posthog.capture('offer_page_viewed');

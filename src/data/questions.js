@@ -1,4 +1,6 @@
-// The quiz, in order. A "yes" on extraction / pain / loose routes to the pause screen.
+// The quiz, in order. A "yes" on extraction still pauses (after the email gate).
+// Pain and loose do not pause: those answers continue, and the results screen
+// tells the visitor to see a dentist in person first.
 export const QUESTIONS = [
   {
     key: 'arch',
@@ -27,17 +29,15 @@ export const QUESTIONS = [
     label: 'Q4 Pain',
     title: 'Are you experiencing tooth pain or swelling?',
     sub: 'Dentists in our network ask about this before they take on a case.',
-    opts: [['No, I feel fine', 'no'], ['Yes, I have pain or swelling', 'yes']],
-    pauseKind: 'pain'
+    opts: [['No, I feel fine', 'no'], ['Yes, I have pain or swelling', 'yes']]
   },
   {
     key: 'loose',
     label: 'Q5 Loose teeth',
     title: 'Do you have any loose or shifting teeth?',
     sub: 'Dentists in our network ask about this before they take on a case.',
-    opts: [['No, my teeth feel stable', 'no'], ['Yes, some teeth feel loose', 'yes']],
-    pauseKind: 'loose'
+    opts: [['No, my teeth feel stable', 'no'], ['Yes, some teeth feel loose', 'yes']]
   }
 ];
 
-export const TOTAL_STEPS = QUESTIONS.length + 1; // questions + offer
+export const TOTAL_STEPS = QUESTIONS.length + 2; // questions + email gate + result

@@ -50,7 +50,7 @@ export default function Header({ showBack, onBack, stepLabel }) {
         }}
       >
         <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: 30, width: 'auto', display: 'block' }} />
-        <div style={{ fontSize: 15, color: '#454e5c', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 18, color: '#454e5c', lineHeight: 1.3 }}>
           Find Your Fit · {stepLabel}
         </div>
       </div>

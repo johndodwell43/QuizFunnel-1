@@ -8,7 +8,18 @@ button { font-family: inherit; }
   * { transition: none !important; animation: none !important; }
 }
 
-@keyframes seal-spin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
-@keyframes seal-spin-b { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes sparkle-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-@keyframes nudge-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+.proof-pair {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: 16px 16px 0 16px;
+}
+.proof-shot {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+}
+@media (max-width: 720px) {
+  .proof-pair { flex-direction: column; }
+  .proof-shot { flex-basis: auto; width: 100%; }
+}

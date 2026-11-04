@@ -4,20 +4,20 @@ const COPY = {
   healing: {
     title: "Let's pick this up a little later.",
     body:
-      "Thanks for telling us. Based on your answer, we can't send your case to a dentist in our network just yet. Dentists usually want the gums to settle for a few months after a tooth is taken out, since a partial is made to match the shape of your mouth that day.",
-    tip2: 'Your own dentist can tell you when your mouth is ready for a partial.'
+      "Thanks for telling us. Based on your answer, we can't send your case to a licensed dentist in your state just yet. A licensed dentist in your state usually wants the gums to settle for a few months after a tooth is taken out, since a partial is made to match the shape of your mouth that day.",
+    tip2: 'A licensed dentist in your state can tell you when your mouth is ready for a partial.'
   },
   loose: {
     title: "Let's start with your own dentist.",
     body:
-      "Thanks for telling us. Based on your answer, we can't send your case to a dentist in our network right now. Loose or shifting teeth are something a dentist needs to look at in person first, and only they can say what it means for you.",
-    tip2: 'Your own dentist can look at this in person and tell you what it means for a partial.'
+      "Thanks for telling us. Based on your answer, we can't send your case to a dentist in our network right now. Loose or shifting teeth are something a licensed dentist in your state needs to look at in person first, and only they can say what it means for you.",
+    tip2: 'A licensed dentist in your state can look at this in person and tell you what it means for a partial.'
   },
   pain: {
     title: "Let's start with your own dentist.",
     body:
-      "Thanks for telling us. Based on your answer, we can't send your case to a dentist in our network right now. Pain or swelling is something a dentist needs to look at in person, and only they can say what is going on.",
-    tip2: 'Your own dentist can look at this in person and tell you what it means for a partial.'
+      "Thanks for telling us. Based on your answer, we can't send your case to a dentist in our network right now. Pain, swelling, or bleeding is something a licensed dentist in your state needs to look at in person, and only they can say what is going on.",
+    tip2: 'A licensed dentist in your state can look at this in person and tell you what it means for a partial.'
   }
 };
 
@@ -67,7 +67,7 @@ export default function PauseScreen({ kind, onRestart }) {
 
       <div style={{ background: '#ffffff', borderRadius: 20, boxShadow: '0 2px 10px rgba(17,24,39,0.07)', padding: '20px 22px', marginBottom: 22 }}>
         <h2 style={{ margin: '0 0 12px 0', fontSize: 20, fontWeight: 700 }}>Where things stand</h2>
-        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, fontSize: 17, lineHeight: 1.45, color: '#454e5c' }}>
+        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, fontSize: 18, lineHeight: 1.45, color: '#454e5c' }}>
           <Bullet>{TIP_1}</Bullet>
           <Bullet>{copy.tip2}</Bullet>
           <Bullet>{TIP_3}</Bullet>
@@ -91,9 +91,9 @@ export default function PauseScreen({ kind, onRestart }) {
         Back to the start
       </button>
 
-      <p style={{ fontSize: 15, lineHeight: 1.5, color: '#6b7381', margin: '14px 0 0 0', textAlign: 'center' }}>
+      <p style={{ fontSize: 18, lineHeight: 1.5, color: '#454e5c', margin: '14px 0 0 0', textAlign: 'center' }}>
         Klyros handles the paperwork and shipping. We don't practice dentistry and nothing here is
-        dental advice — only a dentist who sees you in person can tell you what is right for you.
+        dental advice — only a licensed dentist in your state who sees you in person can tell you what is right for you.
       </p>
     </main>
   );
