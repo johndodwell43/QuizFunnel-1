@@ -23,8 +23,8 @@ function ensureId() {
 const fb = (name, params = {}, id) =>
   window.fbq && window.fbq('track', name, params, id ? { eventID: id } : undefined);
 
-// PRIVACY: never send quiz answers, health details or free text to PostHog or
-// Meta. Steps are identified by number only.
+// PRIVACY: never send quiz answers, health details, or typed notes to PostHog
+// or Meta. Steps are identified by number only.
 
 export function trackQuizStarted() {
   ensureId();

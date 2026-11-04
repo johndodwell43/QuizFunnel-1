@@ -1,7 +1,7 @@
 # Klyros — Find Your Fit quiz funnel
 
-Mobile-first qualification quiz that ends on a two-option offer and hands off to
-Shopify checkout with the quiz answers attached as query params.
+Mobile-first qualification quiz. An email is required before the offer. Checkout
+opens the matching Shopify cart variant. Quiz answers are not sent with the lead.
 
 React 18 + Vite. No CSS framework, no UI library — styles are inline so the
 markup and its styling travel together.
@@ -34,10 +34,9 @@ Drop these into `public/images/` using these exact filenames:
 
 | File | Where it appears |
 | --- | --- |
-| `patient-before.jpg` | Real Patient Result — BEFORE |
-| `patient-after.jpg` | Real Patient Result — AFTER |
-| `flexible-partial.jpg` | Flexible Partial card |
-| `precision-partial.jpg` | Precision Partial Pro™ card |
+| `beforecomp.png` | Offer — BEFORE. Shown at the file's own ratio so the lower space stays in frame. |
+| `aftercomp.png` | Offer — AFTER, paired with the before photo. |
+| `lightcomp.png` / `darkcomp.png` | Product reference photos (not used on the offer). |
 | `klyros-logo.png` | Header logo (already included) |
 
 `.jpg` or `.png` both work — if you use `.png`, update the `src` in
@@ -61,23 +60,11 @@ Five questions, one per screen, tap-to-advance (~170ms), then an email gate, the
 
 The back arrow from a result returns to the email gate, not past it.
 
-**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email, optional first name, and coded quiz answers — not photos or a medical note.
+**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email and an optional first name only. Quiz answers are not sent. List id is still unknown until it is set in `KLAVIYO_LIST_ID`.
 
 ## Checkout hand-off
 
-`buildCheckoutHref()` in `src/config.js` appends the answers:
-
-```
-https://klyrosdental.com/products/flexible-partial-denture?arch=upper&teeth=2-3&flagged=0&utm_source=quiz
-https://klyrosdental.com/products/pmma-milled-partial-denture?arch=upper&teeth=2-3&flagged=0&utm_source=quiz
-```
-
-- `arch` — `upper` | `lower` | `both`
-- `teeth` — `1` | `2-3` | `4-6` | `most`
-- `flagged` — `1` when any clinical answer was "yes"
-- `utm_source` — always `quiz`
-
-Make sure the Shopify product page reads these to preselect the variant.
+Checkout opens the Shopify cart for the variant that matches the product and the arch from question 1 (upper, lower, or both). Quiz answers are not put on the URL. Prices live in `PRICING`: Flex $489 / $859 both, Precision $789 / $1,479 both.
 
 ## Editing content
 
@@ -86,15 +73,14 @@ Make sure the Shopify product page reads these to preselect the variant.
 | Questions, options, routing | `src/data/questions.js` |
 | Email gate | `src/components/EmailGate.jsx` |
 | Lead save (Klaviyo) | `src/lib/lead.js` |
-| Prices, Affirm lines, checkout URLs, policy links | `src/config.js` |
+| Prices, Affirm line, shipping line, dentist line, policy links | `src/config.js` |
 | Offer page layout and copy | `src/components/OfferScreen.jsx` |
-| Card copy (included list, small print) | `src/components/ProductCard.jsx` |
-| Value list | `src/components/ValueList.jsx` |
+| Included list | `src/components/ValueList.jsx` |
 | 4-step explainer | `src/components/HowItWorks.jsx` |
 | Legal footer | `src/components/Footer.jsx` |
 
-Prices live in one place — `PRICING` in `src/config.js`. Both-arch totals are
-computed, so changing a base price updates every derived number.
+Prices live in one place — `PRICING` in `src/config.js`. One-arch and both-arch
+amounts are the Shopify prices.
 
 ## Accessibility / quality floor
 
@@ -128,7 +114,6 @@ klyros-quiz/
         ├── ProofBlock.jsx
         ├── ValueList.jsx
         ├── HowItWorks.jsx
-        ├── ProductCard.jsx
         ├── ImageSlot.jsx
         ├── Check.jsx
         └── Footer.jsx

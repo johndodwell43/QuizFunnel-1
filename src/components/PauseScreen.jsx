@@ -67,7 +67,7 @@ export default function PauseScreen({ kind, onRestart }) {
 
       <div style={{ background: '#ffffff', borderRadius: 20, boxShadow: '0 2px 10px rgba(17,24,39,0.07)', padding: '20px 22px', marginBottom: 22 }}>
         <h2 style={{ margin: '0 0 12px 0', fontSize: 20, fontWeight: 700 }}>Where things stand</h2>
-        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, fontSize: 17, lineHeight: 1.45, color: '#454e5c' }}>
+        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, fontSize: 18, lineHeight: 1.45, color: '#454e5c' }}>
           <Bullet>{TIP_1}</Bullet>
           <Bullet>{copy.tip2}</Bullet>
           <Bullet>{TIP_3}</Bullet>
@@ -91,7 +91,7 @@ export default function PauseScreen({ kind, onRestart }) {
         Back to the start
       </button>
 
-      <p style={{ fontSize: 15, lineHeight: 1.5, color: '#6b7381', margin: '14px 0 0 0', textAlign: 'center' }}>
+      <p style={{ fontSize: 18, lineHeight: 1.5, color: '#454e5c', margin: '14px 0 0 0', textAlign: 'center' }}>
         Klyros handles the paperwork and shipping. We don't practice dentistry and nothing here is
         dental advice — only a licensed dentist in your state who sees you in person can tell you what is right for you.
       </p>

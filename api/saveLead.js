@@ -10,22 +10,10 @@ const KLAVIYO_METRIC = 'Quiz Results Requested';
 const KLAVIYO_REVISION = '2026-10-15';
 const KLAVIYO_ORIGIN = 'https://a.klaviyo.com';
 
-const ANSWER_KEYS = {
-  arch: ['upper', 'lower', 'both'],
-  teeth: ['1', '2-3', '4-6', 'most'],
-  extraction: ['no', 'yes'],
-  pain: ['no', 'yes'],
-  loose: ['no', 'yes']
-};
-
 function fail(statusCode) {
   const error = new Error('lead-save-failed');
   error.statusCode = statusCode;
   return error;
-}
-
-function allowedAnswer(key, value) {
-  return ANSWER_KEYS[key].includes(value) ? value : '';
 }
 
 function safeTag(value) {
@@ -35,14 +23,9 @@ function safeTag(value) {
   return tag;
 }
 
-function quizProperties(answers, utm) {
+function quizProperties(utm) {
   const properties = {
-    quiz_source: 'quiz.klyrosdental.com',
-    quiz_arch: allowedAnswer('arch', answers?.arch),
-    quiz_teeth: allowedAnswer('teeth', answers?.teeth),
-    quiz_extraction: allowedAnswer('extraction', answers?.extraction),
-    quiz_pain: allowedAnswer('pain', answers?.pain),
-    quiz_loose: allowedAnswer('loose', answers?.loose)
+    quiz_source: 'quiz.klyrosdental.com'
   };
   const source = safeTag(utm?.utm_source);
   const campaign = safeTag(utm?.utm_campaign);
@@ -74,7 +57,7 @@ export async function saveQuizLead(input) {
   const firstName = normalizeFirstName(input?.firstName);
   if (!isValidEmail(email) || firstName === null) throw fail(400);
 
-  const properties = quizProperties(input?.answers, input);
+  const properties = quizProperties(input);
   const attributes = { email, properties };
   if (firstName) attributes.first_name = firstName;
 
@@ -107,7 +90,7 @@ export async function saveQuizLead(input) {
       data: {
         type: 'subscription',
         attributes: {
-          custom_source: 'quiz.klyrosdental.com results gate',
+          custom_source: 'quiz.klyrosdental.com email gate',
           profile: {
             data: {
               type: 'profile',

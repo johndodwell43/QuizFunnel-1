@@ -5,7 +5,7 @@ import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
 const labelStyle = {
   display: 'block',
-  fontSize: 15,
+  fontSize: 18,
   fontWeight: 700,
   marginBottom: 8,
   color: '#111827'
@@ -24,7 +24,7 @@ const inputStyle = {
   color: '#111827'
 };
 
-export default function EmailGate({ answers, initialEmail = '', initialFirstName = '', onSuccess }) {
+export default function EmailGate({ initialEmail = '', initialFirstName = '', onSuccess }) {
   const emailId = useId();
   const nameId = useId();
   const errorId = useId();
@@ -46,7 +46,7 @@ export default function EmailGate({ answers, initialEmail = '', initialFirstName
     const nextEmail = email.trim();
     const nextName = normalizeFirstName(firstName);
     if (!isValidEmail(nextEmail)) {
-      setError('Enter a valid email to see your results.');
+      setError('Enter a valid email to continue.');
       return;
     }
     if (nextName === null) {
@@ -60,8 +60,7 @@ export default function EmailGate({ answers, initialEmail = '', initialFirstName
     try {
       const saved = await persistQuizLead({
         email: nextEmail,
-        firstName: nextName,
-        answers
+        firstName: nextName
       });
       trackLeadCaptured();
       onSuccess(saved);
@@ -73,17 +72,17 @@ export default function EmailGate({ answers, initialEmail = '', initialFirstName
   }
 
   return (
-    <main data-screen-label="Send results">
+    <main data-screen-label="Email">
       <h1
         style={{
-          fontSize: 'clamp(34px, 5.5vw, 44px)',
+          fontSize: 'clamp(30px, 5.5vw, 40px)',
           lineHeight: 1.15,
           fontWeight: 700,
           margin: '0 0 20px 0',
           textWrap: 'pretty'
         }}
       >
-        Where should we send your results?
+        Where should we reach you?
       </h1>
 
       <form onSubmit={onSubmit} noValidate>
@@ -125,12 +124,12 @@ export default function EmailGate({ answers, initialEmail = '', initialFirstName
           />
         </div>
 
-        <p id={microId} style={{ fontSize: 16, lineHeight: 1.5, color: '#5b6472', margin: '0 0 18px 0' }}>
-          We'll email your results. No spam. Unsubscribe anytime.
+        <p id={microId} style={{ fontSize: 18, lineHeight: 1.5, color: '#5b6472', margin: '0 0 18px 0' }}>
+          Email is required. We save the address and first name only. Unsubscribe anytime.
         </p>
 
         {error ? (
-          <p id={errorId} role="alert" style={{ fontSize: 16, lineHeight: 1.45, color: '#9b2c2c', margin: '0 0 14px 0' }}>
+          <p id={errorId} role="alert" style={{ fontSize: 18, lineHeight: 1.45, color: '#9b2c2c', margin: '0 0 14px 0' }}>
             {error}
           </p>
         ) : null}
@@ -150,7 +149,7 @@ export default function EmailGate({ answers, initialEmail = '', initialFirstName
             cursor: submitting ? 'wait' : 'pointer'
           }}
         >
-          {submitting ? 'Sending…' : 'See my results'}
+          {submitting ? 'Sending…' : 'Continue'}
         </button>
       </form>
     </main>

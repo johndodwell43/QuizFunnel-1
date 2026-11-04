@@ -13,8 +13,9 @@ function readUtm(name) {
   }
 }
 
-// Same-origin save. api/quiz-lead.js forwards a non-PHI lead to Klaviyo.
-export async function persistQuizLead({ email, firstName, answers }) {
+// Same-origin save. api/quiz-lead.js forwards email and optional first name only.
+// Quiz answers stay in the browser for routing and are not part of the lead.
+export async function persistQuizLead({ email, firstName }) {
   const trimmedEmail = String(email || '').trim();
   const name = normalizeFirstName(firstName);
   if (!isValidEmail(trimmedEmail) || name === null) {
@@ -27,7 +28,6 @@ export async function persistQuizLead({ email, firstName, answers }) {
     body: JSON.stringify({
       email: trimmedEmail,
       firstName: name,
-      answers,
       utm_source: readUtm('utm_source'),
       utm_campaign: readUtm('utm_campaign'),
       utm_content: readUtm('utm_content')

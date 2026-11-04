@@ -123,7 +123,6 @@ export default function App() {
         )}
         {isEmail && (
           <EmailGate
-            answers={answers}
             initialEmail={lead?.email || ''}
             initialFirstName={lead?.firstName || ''}
             onSuccess={showResults}
