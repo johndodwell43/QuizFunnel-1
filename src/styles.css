@@ -23,3 +23,83 @@ button { font-family: inherit; }
   .proof-pair { flex-direction: column; }
   .proof-shot { flex-basis: auto; width: 100%; }
 }
+
+/* Step 1. Sizes step up at desktop; nothing here drops below 18px. */
+.lead-pair {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+}
+.lead-photo {
+  height: 104px;
+  width: auto;
+  max-width: calc(50% - 5px);
+  object-fit: contain;
+  object-position: center center;
+  border-radius: 12px;
+  display: block;
+  flex: 0 1 auto;
+}
+.lead-photo-before { object-position: center center; }
+.lead-title {
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #111827;
+  text-wrap: pretty;
+}
+.lead-copy,
+.lead-label,
+.lead-input {
+  font-size: 18px;
+  line-height: 1.45;
+  color: #111827;
+}
+.lead-label {
+  display: block;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.lead-input {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(17, 24, 39, 0.07);
+  padding: 14px 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.lead-input[aria-invalid='true'] { border-color: #9b2c2c; }
+.lead-policy {
+  color: #2F5BEA;
+  font-weight: 700;
+  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+}
+.lead-submit {
+  width: 100%;
+  min-height: 64px;
+  border: none;
+  border-radius: 16px;
+  background: #2F5BEA;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+.lead-submit:disabled { cursor: wait; }
+@media (min-width: 900px) {
+  .lead-photo { height: 188px; }
+  .lead-title { font-size: 40px; }
+  .lead-copy,
+  .lead-label,
+  .lead-input { font-size: 20px; }
+}

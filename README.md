@@ -1,7 +1,8 @@
 # Klyros — Find Your Fit quiz funnel
 
-Mobile-first qualification quiz. An email is required before the offer. Checkout
-opens the matching Shopify cart variant. Quiz answers are not sent with the lead.
+Mobile-first qualification quiz. Name and email are collected on step 1, before
+the questions. Checkout opens the matching Shopify cart variant. Quiz answers
+are not sent with the lead.
 
 React 18 + Vite. No CSS framework, no UI library — styles are inline so the
 markup and its styling travel together.
@@ -44,21 +45,21 @@ Drop these into `public/images/` using these exact filenames:
 
 ## Flow
 
-Five questions, one per screen, tap-to-advance (~170ms), then an email gate, then the result.
+Name and email on step 1, then five questions, one per screen, tap-to-advance (~170ms), then the result. There is no second email step.
 
-1. Where are your missing teeth?
-2. About how many teeth are you missing?
-3. Tooth removed in the last 90 days?
-4. Tooth pain or swelling?
-5. Loose or shifting teeth?
-6. Email gate — required before any result
+1. First name and email
+2. Where are your missing teeth?
+3. About how many teeth are you missing?
+4. Tooth removed in the last 90 days?
+5. Tooth pain or swelling?
+6. Loose or shifting teeth?
 7. Offer, or the healing pause
 
-**Email gate.** The offer and the healing pause both stay hidden until a valid email is submitted. First name is optional. There is no skip control. Back returns to the question they just left; it does not reveal the result.
+**Step 1.** A valid email is required before any question. First name is optional. There is no skip control. Back from the first question returns to step 1. Submitting the same name and email again does not send another lead.
 
-**Routing.** A "Yes" on question 3 (recent extraction) opens the email gate and, after submit, the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors still submit email, then see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
+**Routing.** A "Yes" on the extraction question opens the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
 
-The back arrow from a result returns to the email gate, not past it.
+The back arrow from a result returns to the question they just left.
 
 **Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email and an optional first name only. Quiz answers are not sent. List id is still unknown until it is set in `KLAVIYO_LIST_ID`.
 

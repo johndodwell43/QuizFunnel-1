@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import posthog from 'posthog-js';
 import App from './App.jsx';
+import { trackQuizArrival } from './lib/track.js';
 import './styles.css';
 
 // Initialize PostHog once, before the app renders. Guarded so we never double-init
@@ -20,6 +21,9 @@ if (!posthog.__loaded) {
     session_recording: { maskAllInputs: true, maskTextSelector: '*' }
   });
 }
+
+// Fires before the step 1 email gate renders. UTMs only.
+trackQuizArrival();
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

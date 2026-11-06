@@ -5,7 +5,7 @@ import HowItWorks from './HowItWorks.jsx';
 import Footer from './Footer.jsx';
 import { AFFIRM_LINE, DENTIST_LINE, LINKS, PRICING, money } from '../config.js';
 import { checkoutOneArch, checkoutBothArches } from '../lib/checkout.js';
-import { trackSendKitClicked, trackOfferPageViewed, setupScrollTracking } from '../lib/track.js';
+import { trackSendKitClicked, trackOfferPageViewed, trackQuizCheckoutClick, setupScrollTracking } from '../lib/track.js';
 
 const primaryButton = {
   marginTop: 16,
@@ -71,6 +71,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
   const precisionPay = isBoth ? PRICING.precisionBoth : PRICING.precisionPrice;
 
   const buy = (sku, amount) => {
+    trackQuizCheckoutClick();
     const arch = isBoth ? 'both' : answers.arch || 'upper';
     const tracking = trackSendKitClicked(sku, arch, amount);
     if (isBoth) checkoutBothArches(sku, tracking);

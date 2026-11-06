@@ -41,6 +41,27 @@ export function trackLeadCaptured() {
   // No email, name, or quiz answers — those stay off PostHog and Meta.
   posthog.capture('quiz_email_submitted');
 }
+
+// Ordered funnel. Properties never include an email, a name, or an answer.
+let arrivalTracked = false;
+export function trackQuizArrival() {
+  if (arrivalTracked) return;
+  arrivalTracked = true;
+  ensureId();
+  posthog.capture('quiz_arrival', getUTMs());
+}
+export function trackQuizEmailSubmit() {
+  posthog.capture('quiz_email_submit');
+}
+export function trackQuizQ1Answered() {
+  posthog.capture('quiz_q1_answered');
+}
+export function trackQuizCompleted() {
+  posthog.capture('quiz_completed');
+}
+export function trackQuizCheckoutClick() {
+  posthog.capture('quiz_checkout_click');
+}
 export function trackOfferPageViewed() {
   posthog.capture('offer_page_viewed');
   fb('ViewContent');
