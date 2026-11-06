@@ -25,4 +25,7 @@ export const LINKS = {
   email: 'help@klyrosdental.com'
 };
 
+// TODO: pending John cut of full refund line on ToS
+export const TERMS_URL = '#';
+
 export const money = (n) => '$' + Math.round(n).toLocaleString('en-US');

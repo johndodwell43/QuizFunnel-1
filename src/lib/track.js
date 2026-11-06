@@ -56,6 +56,7 @@ export function trackQuizEmailSubmit() {
 export function trackQuizQ1Answered() {
   posthog.capture('quiz_q1_answered');
 }
+// Fired only after the last question is answered. No properties.
 export function trackQuizCompleted() {
   posthog.capture('quiz_completed');
 }

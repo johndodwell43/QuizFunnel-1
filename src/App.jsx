@@ -19,7 +19,6 @@ export default function App() {
   const [sel, setSel] = useState(null);
   const [pause, setPause] = useState({ kind: 'healing', step: 2 });
   const q1Tracked = useRef(false);
-  const completedTracked = useRef(false);
 
   const isLead = screen === 'lead';
   const isQuiz = screen === 'quiz';
@@ -38,11 +37,7 @@ export default function App() {
     heading.focus({ preventScroll: true });
   }, [screen, step]);
 
-  const finish = useCallback((next) => {
-    if (!completedTracked.current) {
-      completedTracked.current = true;
-      trackQuizCompleted();
-    }
+  const showResult = useCallback((next) => {
     setScreen(next);
     setSel(null);
   }, []);
@@ -52,17 +47,18 @@ export default function App() {
     if (value === 'yes' && q.pauseKind) {
       setPause({ kind: q.pauseKind, step: stepIndex });
       setOutcome('pause');
-      finish('pause');
+      showResult('pause');
       return;
     }
     if (stepIndex >= QUESTIONS.length - 1) {
       setOutcome('offer');
-      finish('offer');
+      trackQuizCompleted();
+      showResult('offer');
       return;
     }
     setStep(stepIndex + 1);
     setSel(null);
-  }, [finish]);
+  }, [showResult]);
 
   const pick = useCallback(
     (key, value, index) => {
@@ -105,7 +101,6 @@ export default function App() {
     setSel(null);
     setPause({ kind: 'healing', step: 2 });
     q1Tracked.current = false;
-    completedTracked.current = false;
   }, []);
 
   const continueFromLead = useCallback((saved) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
-import { LINKS } from '../config.js';
+import { LINKS, TERMS_URL } from '../config.js';
 import { isValidEmail, normalizeFirstName } from '../lib/email.js';
 import { persistQuizLead } from '../lib/lead.js';
 import { trackEmailGateViewed, trackLeadCaptured, trackQuizEmailSubmit } from '../lib/track.js';
@@ -162,9 +162,12 @@ export default function EmailGate({ initialEmail = '', initialFirstName = '', sa
         <p id={consentId} className="lead-copy" style={{ margin: '4px 0 0 0' }}>
           {CONSENT}
         </p>
-        <p style={{ margin: '0 0 12px 0' }}>
+        <p style={{ margin: '0 0 12px 0', display: 'flex', flexWrap: 'wrap', columnGap: 16 }}>
           <a className="lead-copy lead-policy" href={LINKS.privacy}>
             Privacy Policy
+          </a>
+          <a className="lead-copy lead-policy" href={TERMS_URL}>
+            Terms
           </a>
         </p>
 
