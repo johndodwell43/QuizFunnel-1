@@ -5,6 +5,7 @@ import {
   resolveEmailMarketingConsent,
   resolveSmsConsent
 } from '../src/lib/email.js';
+import { saveShopifyCustomer } from './shopifyCustomer.js';
 
 // Klaviyo public site ID on the Klyros Shopify store
 // (shop metafield klaviyo.company_id, onsite embed on tfvziu-ia.myshopify.com).
@@ -72,8 +73,8 @@ export function normalizeQuizLead(input) {
   };
 }
 
-export async function saveQuizLead(input) {
-  const { email, firstName, phone, emailMarketingConsent, smsConsent } = normalizeQuizLead(input);
+async function saveKlaviyoLead(lead, input) {
+  const { email, firstName, phone, emailMarketingConsent, smsConsent } = lead;
 
   const properties = quizProperties(input);
   properties.email_marketing_consent = emailMarketingConsent;
@@ -133,6 +134,22 @@ export async function saveQuizLead(input) {
       });
     }
   }
+}
 
-  return { email, firstName, phone, emailMarketingConsent, smsConsent };
+export async function saveQuizLead(input) {
+  const lead = normalizeQuizLead(input);
+
+  try {
+    await saveKlaviyoLead(lead, input);
+  } catch (error) {
+    console.error(`Klaviyo lead save failed: ${error?.message || 'unknown'}`);
+  }
+
+  try {
+    await saveShopifyCustomer(lead);
+  } catch (error) {
+    console.error(`Shopify customer save failed: ${error?.message || 'unknown'}`);
+  }
+
+  return lead;
 }
