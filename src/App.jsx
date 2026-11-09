@@ -113,7 +113,10 @@ export default function App() {
         boxSizing: 'border-box'
       }}
     >
-      <div style={{ width: '100%', maxWidth: isOffer ? '960px' : '560px' }}>
+      <div
+        className={onGate ? 'gate-screen' : undefined}
+        style={onGate ? { width: '100%' } : { width: '100%', maxWidth: isOffer ? '960px' : '560px' }}
+      >
         <Header
           showBack={!onGate}
           onBack={goBack}

@@ -3,8 +3,8 @@
 Mobile-first qualification quiz. An email is required before question 1. Checkout
 opens the matching Shopify cart variant. Quiz answers are not sent with the lead.
 
-React 18 + Vite. No CSS framework, no UI library — styles are inline so the
-markup and its styling travel together.
+React 18 + Vite. No CSS framework, no UI library. Question and result screens
+keep inline styles. The results gate uses `styles.css` for its desktop width.
 
 ## Run it
 
