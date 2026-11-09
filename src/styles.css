@@ -61,6 +61,36 @@ button { font-family: inherit; }
   box-sizing: border-box;
   color: #111827;
 }
+.email-gate-consents {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.email-gate-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-height: 48px;
+  margin: 0;
+  padding: 8px 0;
+  cursor: pointer;
+}
+.email-gate-check {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #2F5BEA;
+}
+.email-gate-consent-copy {
+  font-size: 18px;
+  line-height: 1.45;
+  color: #111827;
+  padding-top: 8px;
+}
 .email-gate-error {
   font-size: 18px;
   line-height: 1.45;

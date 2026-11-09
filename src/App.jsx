@@ -126,6 +126,8 @@ export default function App() {
             initialEmail={lead?.email || ''}
             initialFirstName={lead?.firstName || ''}
             initialPhone={lead?.phone || ''}
+            initialEmailConsent={lead ? lead.emailMarketingConsent === true : true}
+            initialSmsConsent={lead?.smsConsent === true}
             onSuccess={continueAfterLead}
           />
         )}

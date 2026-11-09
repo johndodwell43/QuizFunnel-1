@@ -1,5 +1,17 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
-import { isValidEmail, normalizeFirstName, normalizePhone } from '../lib/email.js';
+import {
+  EMAIL_CONSENT_DEFAULT,
+  EMAIL_CONSENT_TEXT,
+  SMS_CONSENT_DEFAULT,
+  SMS_CONSENT_TEXT
+} from '../lib/consent.js';
+import {
+  isValidEmail,
+  normalizeFirstName,
+  normalizePhone,
+  resolveEmailMarketingConsent,
+  resolveSmsConsent
+} from '../lib/email.js';
 import { persistQuizLead } from '../lib/lead.js';
 import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
@@ -7,15 +19,21 @@ export default function EmailGate({
   initialEmail = '',
   initialFirstName = '',
   initialPhone = '',
+  initialEmailConsent = EMAIL_CONSENT_DEFAULT,
+  initialSmsConsent = SMS_CONSENT_DEFAULT,
   onSuccess
 }) {
   const emailId = useId();
   const nameId = useId();
   const phoneId = useId();
+  const emailConsentId = useId();
+  const smsConsentId = useId();
   const errorId = useId();
   const [email, setEmail] = useState(initialEmail);
   const [firstName, setFirstName] = useState(initialFirstName);
   const [phone, setPhone] = useState(initialPhone);
+  const [emailChecked, setEmailChecked] = useState(initialEmailConsent === true);
+  const [smsChecked, setSmsChecked] = useState(initialSmsConsent === true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const lock = useRef(false);
@@ -51,7 +69,9 @@ export default function EmailGate({
       const saved = await persistQuizLead({
         email: nextEmail,
         firstName: nextName,
-        phone: nextPhone
+        phone: nextPhone,
+        emailMarketingConsent: resolveEmailMarketingConsent(emailChecked),
+        smsConsent: resolveSmsConsent(smsChecked, nextPhone)
       });
       trackLeadCaptured();
       onSuccess(saved);
@@ -125,6 +145,32 @@ export default function EmailGate({
               onChange={(event) => setFirstName(event.target.value)}
             />
           </div>
+        </div>
+
+        <div className="email-gate-consents">
+          <label htmlFor={emailConsentId} className="email-gate-consent">
+            <input
+              id={emailConsentId}
+              className="email-gate-check"
+              name="email-marketing-consent"
+              type="checkbox"
+              checked={emailChecked}
+              onChange={(event) => setEmailChecked(event.target.checked)}
+            />
+            <span className="email-gate-consent-copy">{EMAIL_CONSENT_TEXT}</span>
+          </label>
+
+          <label htmlFor={smsConsentId} className="email-gate-consent">
+            <input
+              id={smsConsentId}
+              className="email-gate-check"
+              name="sms-consent"
+              type="checkbox"
+              checked={smsChecked}
+              onChange={(event) => setSmsChecked(event.target.checked)}
+            />
+            <span className="email-gate-consent-copy">{SMS_CONSENT_TEXT}</span>
+          </label>
         </div>
 
         {error ? (

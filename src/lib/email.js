@@ -29,3 +29,12 @@ export function normalizePhone(value) {
   if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(national)) return null;
   return `+1${national}`;
 }
+
+export function resolveEmailMarketingConsent(checked) {
+  return checked === true;
+}
+
+// SMS consent is true only when that box is checked and a phone was entered.
+export function resolveSmsConsent(checked, phone) {
+  return checked === true && typeof phone === 'string' && phone.length > 0;
+}

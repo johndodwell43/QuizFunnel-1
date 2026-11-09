@@ -1,4 +1,10 @@
-import { isValidEmail, normalizeFirstName, normalizePhone } from '../src/lib/email.js';
+import {
+  isValidEmail,
+  normalizeFirstName,
+  normalizePhone,
+  resolveEmailMarketingConsent,
+  resolveSmsConsent
+} from '../src/lib/email.js';
 
 // Klaviyo public site ID on the Klyros Shopify store
 // (shop metafield klaviyo.company_id, onsite embed on tfvziu-ia.myshopify.com).
@@ -57,13 +63,21 @@ export function normalizeQuizLead(input) {
   const firstName = normalizeFirstName(input?.firstName);
   const phone = normalizePhone(input?.phone);
   if (!isValidEmail(email) || firstName === null || phone === null) throw fail(400);
-  return { email, firstName, phone };
+  return {
+    email,
+    firstName,
+    phone,
+    emailMarketingConsent: resolveEmailMarketingConsent(input?.emailMarketingConsent),
+    smsConsent: resolveSmsConsent(input?.smsConsent, phone)
+  };
 }
 
 export async function saveQuizLead(input) {
-  const { email, firstName, phone } = normalizeQuizLead(input);
+  const { email, firstName, phone, emailMarketingConsent, smsConsent } = normalizeQuizLead(input);
 
   const properties = quizProperties(input);
+  properties.email_marketing_consent = emailMarketingConsent;
+  properties.sms_consent = smsConsent;
   const attributes = { email, properties };
   if (firstName) attributes.first_name = firstName;
   if (phone) attributes.phone_number = phone;
@@ -94,27 +108,31 @@ export async function saveQuizLead(input) {
 
   const listId = String(process.env.KLAVIYO_LIST_ID || '').trim();
   if (/^[A-Za-z0-9]{4,12}$/.test(listId)) {
-    const subscriptionProfile = { email, properties };
-    if (firstName) subscriptionProfile.first_name = firstName;
-    await postKlaviyo('/client/subscriptions/', {
-      data: {
-        type: 'subscription',
-        attributes: {
-          custom_source: 'quiz.klyrosdental.com email gate',
-          profile: {
-            data: {
-              type: 'profile',
-              attributes: {
-                ...subscriptionProfile,
-                subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } }
-              }
+    const subscriptions = {};
+    if (emailMarketingConsent) {
+      subscriptions.email = { marketing: { consent: 'SUBSCRIBED' } };
+    }
+    if (smsConsent && phone) {
+      subscriptions.sms = { marketing: { consent: 'SUBSCRIBED' } };
+    }
+    if (Object.keys(subscriptions).length > 0) {
+      const subscriptionProfile = { email, properties, subscriptions };
+      if (firstName) subscriptionProfile.first_name = firstName;
+      if (smsConsent && phone) subscriptionProfile.phone_number = phone;
+      await postKlaviyo('/client/subscriptions/', {
+        data: {
+          type: 'subscription',
+          attributes: {
+            custom_source: 'quiz.klyrosdental.com email gate',
+            profile: {
+              data: { type: 'profile', attributes: subscriptionProfile }
             }
-          }
-        },
-        relationships: { list: { data: { type: 'list', id: listId } } }
-      }
-    });
+          },
+          relationships: { list: { data: { type: 'list', id: listId } } }
+        }
+      });
+    }
   }
 
-  return { email, firstName, phone };
+  return { email, firstName, phone, emailMarketingConsent, smsConsent };
 }

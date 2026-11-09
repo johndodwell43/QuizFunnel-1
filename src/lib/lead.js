@@ -1,4 +1,10 @@
-import { isValidEmail, normalizeFirstName, normalizePhone } from './email.js';
+import {
+  isValidEmail,
+  normalizeFirstName,
+  normalizePhone,
+  resolveEmailMarketingConsent,
+  resolveSmsConsent
+} from './email.js';
 
 function readUtm(name) {
   try {
@@ -14,14 +20,16 @@ function readUtm(name) {
 }
 
 // Same-origin save. api/quiz-lead.js forwards email, optional first name,
-// and optional phone. Quiz answers stay in the browser.
-export async function persistQuizLead({ email, firstName, phone }) {
+// optional phone, and the consent checkbox states. Quiz answers stay in the browser.
+export async function persistQuizLead({ email, firstName, phone, emailMarketingConsent, smsConsent }) {
   const trimmedEmail = String(email || '').trim();
   const name = normalizeFirstName(firstName);
   const normalizedPhone = normalizePhone(phone);
   if (!isValidEmail(trimmedEmail) || name === null || normalizedPhone === null) {
     throw new Error('invalid-lead');
   }
+  const emailConsent = resolveEmailMarketingConsent(emailMarketingConsent);
+  const textConsent = resolveSmsConsent(smsConsent, normalizedPhone);
 
   const response = await fetch('/api/quiz-lead', {
     method: 'POST',
@@ -30,6 +38,8 @@ export async function persistQuizLead({ email, firstName, phone }) {
       email: trimmedEmail,
       firstName: name,
       phone: normalizedPhone,
+      emailMarketingConsent: emailConsent,
+      smsConsent: textConsent,
       utm_source: readUtm('utm_source'),
       utm_campaign: readUtm('utm_campaign'),
       utm_content: readUtm('utm_content')
@@ -37,5 +47,11 @@ export async function persistQuizLead({ email, firstName, phone }) {
   });
 
   if (!response.ok) throw new Error('lead-save-failed');
-  return { email: trimmedEmail, firstName: name, phone: normalizedPhone };
+  return {
+    email: trimmedEmail,
+    firstName: name,
+    phone: normalizedPhone,
+    emailMarketingConsent: emailConsent,
+    smsConsent: textConsent
+  };
 }

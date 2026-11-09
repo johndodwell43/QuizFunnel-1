@@ -54,13 +54,13 @@ The email and phone gate is the first screen. Then five questions, one per scree
 6. Loose or shifting teeth?
 7. Offer, or the healing pause
 
-**Email gate.** Question 1 stays hidden until a valid email is submitted. Phone and first name are optional. There is no skip control. Back on question 1 returns to this same gate.
+**Email gate.** Question 1 stays hidden until a valid email is submitted. Phone and first name are optional. The email updates box starts checked. The text updates box starts unchecked, and text consent is saved only when that box is checked and a phone is entered. Unchecking either box does not block question 1. There is no skip control. Back on question 1 returns to this same gate.
 
 **Routing.** A "Yes" on question 3 (recent extraction) opens the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
 
 The back arrow from a result returns to the question just answered. Results stay hidden until the gate has saved a lead.
 
-**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email, an optional first name, and an optional phone. Quiz answers are not sent. List id is still unknown until it is set in `KLAVIYO_LIST_ID`.
+**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email, an optional first name, an optional phone, the email updates checkbox, and text consent. Text consent is true only when that box is checked and a phone is present. An email address alone is not text consent. Quiz answers are not sent. List id is still unknown until it is set in `KLAVIYO_LIST_ID`.
 
 ## Checkout hand-off
 
