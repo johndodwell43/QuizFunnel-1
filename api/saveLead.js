@@ -1,4 +1,4 @@
-import { isValidEmail, normalizeFirstName } from '../src/lib/email.js';
+import { isValidEmail, normalizeFirstName, normalizePhone } from '../src/lib/email.js';
 
 // Klaviyo public site ID on the Klyros Shopify store
 // (shop metafield klaviyo.company_id, onsite embed on tfvziu-ia.myshopify.com).
@@ -52,14 +52,25 @@ async function postKlaviyo(path, body) {
   if (!response.ok) throw fail(502);
 }
 
-export async function saveQuizLead(input) {
+export function normalizeQuizLead(input) {
   const email = String(input?.email || '').trim();
   const firstName = normalizeFirstName(input?.firstName);
-  if (!isValidEmail(email) || firstName === null) throw fail(400);
+  const phone = normalizePhone(input?.phone);
+  if (!isValidEmail(email) || firstName === null || phone === null) throw fail(400);
+  return { email, firstName, phone };
+}
+
+export async function saveQuizLead(input) {
+  const { email, firstName, phone } = normalizeQuizLead(input);
 
   const properties = quizProperties(input);
   const attributes = { email, properties };
   if (firstName) attributes.first_name = firstName;
+  if (phone) attributes.phone_number = phone;
+
+  const profileAttributes = { email };
+  if (firstName) profileAttributes.first_name = firstName;
+  if (phone) profileAttributes.phone_number = phone;
 
   await postKlaviyo('/client/profiles/', {
     data: { type: 'profile', attributes }
@@ -75,10 +86,7 @@ export async function saveQuizLead(input) {
           data: { type: 'metric', attributes: { name: KLAVIYO_METRIC } }
         },
         profile: {
-          data: {
-            type: 'profile',
-            attributes: firstName ? { email, first_name: firstName } : { email }
-          }
+          data: { type: 'profile', attributes: profileAttributes }
         }
       }
     }
@@ -86,6 +94,8 @@ export async function saveQuizLead(input) {
 
   const listId = String(process.env.KLAVIYO_LIST_ID || '').trim();
   if (/^[A-Za-z0-9]{4,12}$/.test(listId)) {
+    const subscriptionProfile = { email, properties };
+    if (firstName) subscriptionProfile.first_name = firstName;
     await postKlaviyo('/client/subscriptions/', {
       data: {
         type: 'subscription',
@@ -95,7 +105,7 @@ export async function saveQuizLead(input) {
             data: {
               type: 'profile',
               attributes: {
-                ...attributes,
+                ...subscriptionProfile,
                 subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } }
               }
             }
@@ -106,5 +116,5 @@ export async function saveQuizLead(input) {
     });
   }
 
-  return { email, firstName };
+  return { email, firstName, phone };
 }

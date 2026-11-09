@@ -1,4 +1,4 @@
-import { isValidEmail, normalizeFirstName } from './email.js';
+import { isValidEmail, normalizeFirstName, normalizePhone } from './email.js';
 
 function readUtm(name) {
   try {
@@ -13,12 +13,13 @@ function readUtm(name) {
   }
 }
 
-// Same-origin save. api/quiz-lead.js forwards email and optional first name only.
-// Quiz answers stay in the browser for routing and are not part of the lead.
-export async function persistQuizLead({ email, firstName }) {
+// Same-origin save. api/quiz-lead.js forwards email, optional first name,
+// and optional phone. Quiz answers stay in the browser.
+export async function persistQuizLead({ email, firstName, phone }) {
   const trimmedEmail = String(email || '').trim();
   const name = normalizeFirstName(firstName);
-  if (!isValidEmail(trimmedEmail) || name === null) {
+  const normalizedPhone = normalizePhone(phone);
+  if (!isValidEmail(trimmedEmail) || name === null || normalizedPhone === null) {
     throw new Error('invalid-lead');
   }
 
@@ -28,6 +29,7 @@ export async function persistQuizLead({ email, firstName }) {
     body: JSON.stringify({
       email: trimmedEmail,
       firstName: name,
+      phone: normalizedPhone,
       utm_source: readUtm('utm_source'),
       utm_campaign: readUtm('utm_campaign'),
       utm_content: readUtm('utm_content')
@@ -35,5 +37,5 @@ export async function persistQuizLead({ email, firstName }) {
   });
 
   if (!response.ok) throw new Error('lead-save-failed');
-  return { email: trimmedEmail, firstName: name };
+  return { email: trimmedEmail, firstName: name, phone: normalizedPhone };
 }

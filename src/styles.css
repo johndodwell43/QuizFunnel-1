@@ -23,3 +23,62 @@ button { font-family: inherit; }
   .proof-pair { flex-direction: column; }
   .proof-shot { flex-basis: auto; width: 100%; }
 }
+
+.email-gate-title {
+  font-size: clamp(30px, 5.5vw, 40px);
+  line-height: 1.15;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  text-wrap: pretty;
+}
+.email-gate-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.email-gate-label {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #111827;
+}
+.email-gate-tag {
+  font-weight: 400;
+  color: #5b6472;
+}
+.email-gate-input {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 16px;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(17, 24, 39, 0.07);
+  font-family: inherit;
+  font-size: 18px;
+  padding: 14px 16px;
+  box-sizing: border-box;
+  color: #111827;
+}
+.email-gate-error {
+  font-size: 18px;
+  line-height: 1.45;
+  color: #9b2c2c;
+  margin: 0 0 14px 0;
+}
+.email-gate-submit {
+  width: 100%;
+  min-height: 66px;
+  border: none;
+  border-radius: 16px;
+  background: #2F5BEA;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.email-gate-submit:disabled {
+  background: #8ea6ef;
+  cursor: wait;
+}

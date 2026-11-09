@@ -19,3 +19,13 @@ export function normalizeFirstName(value) {
   if (name.split(' ').length > 2) return null;
   return name;
 }
+
+// Blank is allowed. A non-empty value must be a US number so a text has a real destination.
+export function normalizePhone(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  const digits = raw.replace(/\D/g, '');
+  const national = digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits;
+  if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(national)) return null;
+  return `+1${national}`;
+}
