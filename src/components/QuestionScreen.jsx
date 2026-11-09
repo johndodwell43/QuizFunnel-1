@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function QuestionScreen({ question, sel, onPick }) {
   return (
-    <main data-screen-label={question.label}>
+    <main className="question-screen" data-screen-label={question.label}>
       <h1
         style={{
           fontSize: 'clamp(34px, 5.5vw, 44px)',
@@ -29,7 +29,7 @@ export default function QuestionScreen({ question, sel, onPick }) {
         <div style={{ height: 16 }} />
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="answer-grid" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {question.opts.map(([label, value], i) => {
           const on = sel === i;
           return (
@@ -65,6 +65,7 @@ export default function QuestionScreen({ question, sel, onPick }) {
       </div>
 
       <div
+        className="question-note-wrap"
         style={{
           marginTop: 26,
           display: 'flex',
@@ -78,7 +79,7 @@ export default function QuestionScreen({ question, sel, onPick }) {
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           <path d="M9 12l2 2 4-4" />
         </svg>
-        <p style={{ fontSize: 18, lineHeight: 1.5, margin: 0, textAlign: 'left', maxWidth: 460 }}>
+        <p className="question-note" style={{ fontSize: 18, lineHeight: 1.5, margin: 0, textAlign: 'left', maxWidth: 460 }}>
           A Licensed Dentist in our network reviews your answers and decides whether they can take
           on your case. Klyros handles the paperwork and shipping — nothing is made until a dentist
           says yes.

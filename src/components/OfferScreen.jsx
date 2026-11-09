@@ -1,265 +1,246 @@
-import React, { useEffect } from 'react';
-import ProofBlock from './ProofBlock.jsx';
-import ValueList from './ValueList.jsx';
-import HowItWorks from './HowItWorks.jsx';
+import React, { useEffect, useState } from 'react';
 import Footer from './Footer.jsx';
-import { AFFIRM_LINE, DENTIST_LINE, LINKS, PRICING, money } from '../config.js';
-import { checkoutOneArch, checkoutBothArches } from '../lib/checkout.js';
-import { trackSendKitClicked, trackOfferPageViewed, setupScrollTracking } from '../lib/track.js';
+import HowItWorks from './HowItWorks.jsx';
+import ImagePlaceholder from './ImagePlaceholder.jsx';
+import ValueList from './ValueList.jsx';
+import { AFFIRM_LINE, LINKS, money } from '../config.js';
+import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
+import { offerForAnswers } from '../lib/offerMatch.js';
+import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
-const primaryButton = {
-  marginTop: 16,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: 64,
-  width: '100%',
-  border: 'none',
-  background: '#2F5BEA',
-  color: '#ffffff',
-  borderRadius: 16,
-  fontSize: 20,
-  fontWeight: 700,
-  fontFamily: 'inherit',
-  cursor: 'pointer',
-  padding: '14px 18px'
-};
+const MATCH_LINE = 'Based on your answers, Flex Partial may be a fit.';
+const REVIEW_LINE =
+  "A partner dentist licensed in your state reviews your photos and decides whether it's a fit. Placing your order starts that review.";
 
-const sectionTitle = {
-  margin: '0 0 12px 0',
-  fontSize: 28,
-  fontWeight: 700,
-  lineHeight: 1.2,
-  color: '#111827'
-};
+const GALLERY = [
+  ['1 / 1', 'PLACEHOLDER: Flex Partial with impression kit on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial product video still on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial three-quarter product shot on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial side product shot on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial detail product shot on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: impression kit contents on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: partial case on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial back product shot on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial close product shot on plain background, 1:1, 1200px']
+];
 
-const body = {
-  margin: 0,
-  fontSize: 18,
-  lineHeight: 1.5,
-  color: '#454e5c'
-};
+const OPTION_SHOTS = [
+  ['2 / 1', 'PLACEHOLDER: both-arch partial product shot on plain background, 2:1, 1200px'],
+  ['2 / 1', 'PLACEHOLDER: upper partial product shot on plain background, 2:1, 1200px'],
+  ['2 / 1', 'PLACEHOLDER: lower partial product shot on plain background, 2:1, 1200px'],
+  ['2 / 1', 'PLACEHOLDER: Flex Partial front product shot on plain background, 2:1, 1200px'],
+  ['2 / 1', 'PLACEHOLDER: Flex Partial angled product shot on plain background, 2:1, 1200px'],
+  ['2 / 1', 'PLACEHOLDER: Precision Partial Pro angled product shot on plain background, 2:1, 1200px']
+];
 
-function PriceFigures({ oneArch, both }) {
-  const figure = { minWidth: 120 };
-  const amount = { fontSize: 36, fontWeight: 700, lineHeight: 1.1, color: '#111827' };
-  const label = { marginTop: 4, fontSize: 18, lineHeight: 1.3, color: '#454e5c' };
-  return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px 28px', marginTop: 14 }}>
-      <div style={figure}>
-        <div style={amount}>{oneArch}</div>
-        <div style={label}>one arch</div>
-      </div>
-      <div style={figure}>
-        <div style={amount}>{both}</div>
-        <div style={label}>both arches</div>
-      </div>
-    </div>
-  );
-}
+const PAYMENT_MARKS = [
+  ['4 / 1', 'PLACEHOLDER: checkout payment mark 1, 4:1, 200px'],
+  ['200 / 47', 'PLACEHOLDER: checkout payment mark 2, 200:47, 200px'],
+  ['40 / 17', 'PLACEHOLDER: checkout payment mark 3, 40:17, 200px'],
+  ['50 / 13', 'PLACEHOLDER: checkout payment mark 4, 50:13, 200px'],
+  ['50 / 13', 'PLACEHOLDER: checkout payment mark 5, 50:13, 200px'],
+  ['100 / 37', 'PLACEHOLDER: checkout payment mark 6, 100:37, 200px']
+];
+
+const KIT_SHOTS = [
+  'PLACEHOLDER: impression kit on plain background, 1:1, 800px',
+  'PLACEHOLDER: partial carrying case on plain background, 1:1, 800px',
+  'PLACEHOLDER: kit accessory on plain background, 1:1, 800px',
+  'PLACEHOLDER: second kit accessory on plain background, 1:1, 800px'
+];
+
+const STEP_SHOTS = [
+  'PLACEHOLDER: impression kit product shot on plain background, 6:7, 1200px',
+  'PLACEHOLDER: packed impression kit on plain background, 6:7, 1200px',
+  'PLACEHOLDER: finished partial on plain background, 6:7, 1200px'
+];
+
+const PRODUCT_SQUARES = [
+  'PLACEHOLDER: Flex Partial product shot on plain background, 1:1, 800px',
+  'PLACEHOLDER: Flex Partial second product shot on plain background, 1:1, 800px',
+  'PLACEHOLDER: Precision Partial Pro product shot on plain background, 1:1, 800px',
+  'PLACEHOLDER: Precision Partial Pro second product shot on plain background, 1:1, 800px'
+];
 
 export default function OfferScreen({ answers, inPersonFirst }) {
+  const offer = offerForAnswers(answers);
+  const [selected, setSelected] = useState(offer.selected);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const active = selected === 'precision' ? offer.precision : offer.flex;
+  const activeGallery = GALLERY[galleryIndex] || GALLERY[0];
+
   useEffect(() => {
     trackOfferPageViewed();
     setupScrollTracking();
   }, []);
 
-  const isBoth = answers.arch === 'both';
-  const archLabel = isBoth ? 'both arches' : 'one arch';
-
-  const flexPay = isBoth ? PRICING.flexBoth : PRICING.flexPrice;
-  const precisionPay = isBoth ? PRICING.precisionBoth : PRICING.precisionPrice;
-
-  const buy = (sku, amount) => {
-    const arch = isBoth ? 'both' : answers.arch || 'upper';
-    const tracking = trackSendKitClicked(sku, arch, amount);
-    if (isBoth) checkoutBothArches(sku, tracking);
-    else checkoutOneArch(sku, arch, tracking);
+  const buy = (event) => {
+    event.preventDefault();
+    const tracking = trackSendKitClicked(active.sku, offer.arch, active.price);
+    if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
+    else checkoutOneArch(active.sku, offer.arch, tracking);
   };
 
   return (
-    <main data-screen-label="Offer">
-      <h1
-        style={{
-          fontSize: 'clamp(30px, 5vw, 40px)',
-          lineHeight: 1.15,
-          fontWeight: 700,
-          margin: '0 0 12px 0',
-          textWrap: 'pretty',
-          color: '#111827'
-        }}
-      >
-        Partial prices, before checkout.
-      </h1>
-      <p style={{ ...body, marginBottom: 22 }}>
-        Flex Partial and Precision Partial Pro. The price depends on one arch or both. {DENTIST_LINE}
-      </p>
-
-      <section id="offer-cards" aria-label="Prices" style={{ marginBottom: 26 }}>
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 20px 18px',
-            marginBottom: 14
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, lineHeight: 1.25 }}>Flex Partial</h2>
-          <p style={{ ...body, marginTop: 8 }}>Removable partial. One arch, or both arches.</p>
-          <PriceFigures oneArch={money(PRICING.flexPrice)} both={money(PRICING.flexBoth)} />
-        </article>
-
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 20px 18px'
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, lineHeight: 1.25 }}>Precision Partial Pro</h2>
-          <p style={{ ...body, marginTop: 8 }}>Removable partial. One arch, or both arches.</p>
-          <PriceFigures oneArch={money(PRICING.precisionPrice)} both={money(PRICING.precisionBoth)} />
-        </article>
-
-        <p style={{ ...body, marginTop: 14, fontWeight: 700, color: '#111827' }}>{AFFIRM_LINE}</p>
-      </section>
-
-      <section style={{ marginBottom: 26 }}>
-        <h2 style={sectionTitle}>What these are</h2>
-        <div
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 22px'
-          }}
-        >
-          <p style={body}>
-            Flex Partial and Precision Partial Pro are removable partials, custom made from your
-            impressions in a U.S. lab. {DENTIST_LINE}
-          </p>
-          <p style={{ ...body, marginTop: 12 }}>
-            Flex Partial uses a Valplast gum base and acrylic resin teeth. Precision Partial Pro uses
-            a Duraflex gum base and PMMA teeth, finished by hand in the lab.
-          </p>
+    <main data-screen-label="Offer" data-arch={offer.arch} className="offer-screen">
+      <div className="offer-top">
+        <div className="offer-hero">
+          <ImagePlaceholder text={activeGallery[1]} ratio={activeGallery[0]} />
         </div>
-      </section>
-
-      <section style={{ marginBottom: 26 }}>
-        <h2 style={sectionTitle}>Why this path</h2>
-        <div
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 22px'
-          }}
-        >
-          <p style={body}>
-            A partial replaces missing teeth and comes out. It is made from impressions after a
-            licensed dentist reviews the case. This page is not a diagnosis.
-          </p>
-        </div>
-        {inPersonFirst && (
-          <div
-            style={{
-              background: '#fdf3d1',
-              borderRadius: 16,
-              padding: '16px 18px',
-              marginTop: 14,
-              display: 'flex',
-              gap: 12,
-              alignItems: 'flex-start'
-            }}
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#8a6d1a"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ flexShrink: 0, marginTop: 2 }}
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 8v4" />
-              <path d="M12 16h.01" />
-            </svg>
-            <p style={{ margin: 0, fontSize: 18, lineHeight: 1.5, color: '#6b5410' }}>
-              <strong style={{ color: '#55430c' }}>See a dentist in person first.</strong> Pain, swelling,
-              a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
-              dentist in your state can tell you what is going on.
-            </p>
+        <div className="offer-gallery-rest">
+          <div className="offer-thumbs">
+            {GALLERY.map(([ratio, text], index) => (
+              <button
+                key={text}
+                type="button"
+                className="offer-thumb"
+                aria-label={`Show gallery image ${index + 1}`}
+                aria-current={index === galleryIndex}
+                onClick={() => setGalleryIndex(index)}
+              >
+                <ImagePlaceholder text={text} ratio={ratio} />
+              </button>
+            ))}
           </div>
-        )}
-      </section>
+          <div className="ph-grid ph-grid-3">
+            {OPTION_SHOTS.map(([ratio, text]) => (
+              <ImagePlaceholder key={text} text={text} ratio={ratio} />
+            ))}
+          </div>
+          <ImagePlaceholder
+            text="PLACEHOLDER: Flex Partial product mark on plain background, 1:1, 240px"
+            ratio="1 / 1"
+          />
+        </div>
 
-      <ProofBlock />
+        <div className="offer-buy">
+          <h1 className="offer-title">{MATCH_LINE}</h1>
+          <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
+          <p className="offer-note">{REVIEW_LINE}</p>
+
+          <div id="offer-cards" className="offer-cards" role="group" aria-label="Partial choices">
+            <button
+              type="button"
+              className={`offer-card is-match${selected === 'flex' ? ' is-selected' : ''}`}
+              aria-pressed={selected === 'flex'}
+              onClick={() => setSelected('flex')}
+            >
+              <ImagePlaceholder
+                text="PLACEHOLDER: Flex Partial product shot on plain background, 2:1, 1200px"
+                ratio="2 / 1"
+              />
+              <span className="offer-card-copy">
+                <span className="offer-kicker">Your match.</span>
+                <span className="offer-card-name">Flex Partial</span>
+                <span className="offer-card-price" data-card-price>{money(offer.flex.price)}</span>
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={`offer-card${selected === 'precision' ? ' is-selected' : ''}`}
+              aria-pressed={selected === 'precision'}
+              onClick={() => setSelected('precision')}
+            >
+              <ImagePlaceholder
+                text="PLACEHOLDER: Precision Partial Pro product shot on plain background, 2:1, 1200px"
+                ratio="2 / 1"
+              />
+              <span className="offer-card-copy">
+                <span className="offer-card-name">Precision Partial Pro</span>
+                <span className="offer-card-price">{money(offer.precision.price)}</span>
+              </span>
+            </button>
+          </div>
+
+          <a className="offer-checkout" data-checkout href={active.url} onClick={buy}>
+            Continue to checkout
+          </a>
+          <p className="offer-affirm">{AFFIRM_LINE}</p>
+
+          {inPersonFirst && (
+            <div
+              style={{
+                background: '#fdf3d1',
+                borderRadius: 16,
+                padding: '16px 18px',
+                marginTop: 14,
+                display: 'flex',
+                gap: 12,
+                alignItems: 'flex-start'
+              }}
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#8a6d1a"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ flexShrink: 0, marginTop: 2 }}
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4" />
+                <path d="M12 16h.01" />
+              </svg>
+              <p style={{ margin: 0, fontSize: 18, lineHeight: 1.5, color: '#6b5410' }}>
+                <strong style={{ color: '#55430c' }}>See a dentist in person first.</strong> Pain, swelling,
+                a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
+                dentist in your state can tell you what is going on.
+              </p>
+            </div>
+          )}
+
+          <div className="ph-pay">
+            {PAYMENT_MARKS.map(([ratio, text]) => (
+              <ImagePlaceholder key={text} text={text} ratio={ratio} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="ph-grid ph-grid-4">
+        {KIT_SHOTS.map((text) => (
+          <ImagePlaceholder key={text} text={text} ratio="1 / 1" />
+        ))}
+      </div>
+
+      <div className="ph-grid ph-grid-3 offer-steps">
+        {STEP_SHOTS.map((text) => (
+          <ImagePlaceholder key={text} text={text} ratio="980 / 1145" />
+        ))}
+      </div>
+      <div className="offer-step-icon">
+        <ImagePlaceholder
+          text="PLACEHOLDER: impression kit icon on plain background, 1:1, 500px"
+          ratio="1 / 1"
+        />
+      </div>
       <HowItWorks />
+
+      <div className="ph-grid ph-grid-4">
+        {PRODUCT_SQUARES.map((text) => (
+          <ImagePlaceholder key={text} text={text} ratio="1 / 1" />
+        ))}
+      </div>
+      <div className="offer-badge">
+        <ImagePlaceholder
+          text="PLACEHOLDER: Flex Partial product shot on plain background, 1:1, 1040px"
+          ratio="1 / 1"
+        />
+      </div>
+
       <ValueList />
 
-      <section aria-label="Checkout" style={{ marginBottom: 8 }}>
-        <h2 style={sectionTitle}>Checkout</h2>
-        <p style={{ ...body, marginBottom: 14 }}>
-          Your answers selected {archLabel}. Each button uses that choice.
-        </p>
-
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px',
-            marginBottom: 14
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Flex Partial</h3>
-          <p style={{ ...body, marginTop: 8 }}>
-            {money(flexPay)} · {archLabel}
-          </p>
-          <button type="button" onClick={() => buy('flex', flexPay)} style={primaryButton}>
-            Continue to checkout
-          </button>
-        </article>
-
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px'
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Precision Partial Pro</h3>
-          <p style={{ ...body, marginTop: 8 }}>
-            {money(precisionPay)} · {archLabel}
-          </p>
-          <button type="button" onClick={() => buy('precision', precisionPay)} style={primaryButton}>
-            Continue to checkout
-          </button>
-        </article>
-
-        <p style={{ ...body, marginTop: 18, textAlign: 'center' }}>
-          Questions?{' '}
-          <a
-            href={`mailto:${LINKS.email}`}
-            style={{
-              color: '#2F5BEA',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              minHeight: 48
-            }}
-          >
-            {LINKS.email}
-          </a>
-        </p>
-      </section>
+      <p className="offer-contact">
+        Questions?{' '}
+        <a href={`mailto:${LINKS.email}`} className="offer-mail">
+          {LINKS.email}
+        </a>
+      </p>
 
       <Footer />
     </main>

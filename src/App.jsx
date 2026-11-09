@@ -120,8 +120,8 @@ export default function App() {
       }}
     >
       <div
-        className={onGate ? 'gate-screen' : undefined}
-        style={onGate ? { width: '100%' } : { width: '100%', maxWidth: isOffer ? '960px' : '560px' }}
+        className={onGate ? 'gate-screen' : isOffer ? 'shell shell-offer' : 'shell shell-flow'}
+        style={{ width: '100%' }}
       >
         <Header
           showBack={!onGate}
