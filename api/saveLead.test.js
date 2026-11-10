@@ -1,8 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isValidEmail, normalizePhone, resolveEmailMarketingConsent, resolveSmsConsent } from '../src/lib/email.js';
+import { readFileSync } from 'node:fs';
+import { isValidEmail, normalizeFirstName, normalizePhone, phoneForLead, resolveEmailMarketingConsent, resolveSmsConsent } from '../src/lib/email.js';
 import { EMAIL_CONSENT_DEFAULT, EMAIL_CONSENT_TEXT, SMS_CONSENT_DEFAULT, SMS_CONSENT_TEXT } from '../src/lib/consent.js';
 import { normalizeQuizLead } from './saveLead.js';
+
+test('the gate has no error copy and keeps Continue off until the email is valid', () => {
+  const source = readFileSync(new URL('../src/components/EmailGate.jsx', import.meta.url), 'utf8');
+  assert.equal(source.includes('role="alert"'), false);
+  assert.equal(source.includes('setError'), false);
+  assert.equal(source.includes('disabled={!emailReady || submitting}'), true);
+  assert.equal(source.includes("submitting ? 'Sending…' : 'Continue'"), true);
+});
 
 test('email is required before a lead can be saved', () => {
   assert.equal(isValidEmail(''), false);
@@ -27,10 +36,19 @@ test('phone is optional and a blank number is saved as empty', () => {
   assert.equal(lead.phone, '');
   assert.equal(normalizePhone(''), '');
   assert.equal(normalizePhone('(415) 555-0100'), '+14155550100');
-  assert.throws(
-    () => normalizeQuizLead({ email: 'results@example.com', phone: '123' }),
-    (error) => error.statusCode === 400
-  );
+  assert.equal(phoneForLead('123'), '');
+  assert.equal(phoneForLead('(415) 555-0100'), '+14155550100');
+
+  const invalidPhone = normalizeQuizLead({
+    email: 'results@example.com',
+    firstName: '  Ada  ',
+    phone: '123',
+    smsConsent: true
+  });
+  assert.equal(invalidPhone.phone, '');
+  assert.equal(invalidPhone.smsConsent, false);
+  assert.equal(invalidPhone.firstName, 'Ada');
+  assert.equal(normalizeFirstName('  not a checked name 123  '), 'not a checked name 123');
 });
 
 test('split consent defaults and locked copy', () => {

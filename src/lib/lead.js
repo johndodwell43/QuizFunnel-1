@@ -1,7 +1,7 @@
 import {
   isValidEmail,
   normalizeFirstName,
-  normalizePhone,
+  phoneForLead,
   resolveEmailMarketingConsent,
   resolveSmsConsent
 } from './email.js';
@@ -24,10 +24,8 @@ function readUtm(name) {
 export async function persistQuizLead({ email, firstName, phone, emailMarketingConsent, smsConsent }) {
   const trimmedEmail = String(email || '').trim();
   const name = normalizeFirstName(firstName);
-  const normalizedPhone = normalizePhone(phone);
-  if (!isValidEmail(trimmedEmail) || name === null || normalizedPhone === null) {
-    throw new Error('invalid-lead');
-  }
+  const normalizedPhone = phoneForLead(phone);
+  if (!isValidEmail(trimmedEmail)) throw new Error('invalid-lead');
   const emailConsent = resolveEmailMarketingConsent(emailMarketingConsent);
   const textConsent = resolveSmsConsent(smsConsent, normalizedPhone);
 

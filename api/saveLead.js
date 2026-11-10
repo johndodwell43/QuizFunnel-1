@@ -1,7 +1,7 @@
 import {
   isValidEmail,
   normalizeFirstName,
-  normalizePhone,
+  phoneForLead,
   resolveEmailMarketingConsent,
   resolveSmsConsent
 } from '../src/lib/email.js';
@@ -61,8 +61,8 @@ async function postKlaviyo(path, body) {
 export function normalizeQuizLead(input) {
   const email = String(input?.email || '').trim();
   const firstName = normalizeFirstName(input?.firstName);
-  const phone = normalizePhone(input?.phone);
-  if (!isValidEmail(email) || firstName === null || phone === null) throw fail(400);
+  const phone = phoneForLead(input?.phone);
+  if (!isValidEmail(email)) throw fail(400);
   return {
     email,
     firstName,

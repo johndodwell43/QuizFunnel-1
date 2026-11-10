@@ -8,7 +8,7 @@ import {
 import {
   isValidEmail,
   normalizeFirstName,
-  normalizePhone,
+  phoneForLead,
   resolveEmailMarketingConsent,
   resolveSmsConsent
 } from '../lib/email.js';
@@ -28,15 +28,14 @@ export default function EmailGate({
   const phoneId = useId();
   const emailConsentId = useId();
   const smsConsentId = useId();
-  const errorId = useId();
   const [email, setEmail] = useState(initialEmail);
   const [firstName, setFirstName] = useState(initialFirstName);
   const [phone, setPhone] = useState(initialPhone);
   const [emailChecked, setEmailChecked] = useState(initialEmailConsent === true);
   const [smsChecked, setSmsChecked] = useState(initialSmsConsent === true);
-  const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const lock = useRef(false);
+  const emailReady = isValidEmail(email);
 
   useEffect(() => {
     trackEmailGateViewed();
@@ -47,42 +46,28 @@ export default function EmailGate({
     if (lock.current) return;
 
     const nextEmail = email.trim();
+    if (!isValidEmail(nextEmail)) return;
     const nextName = normalizeFirstName(firstName);
-    const nextPhone = normalizePhone(phone);
-    if (!isValidEmail(nextEmail)) {
-      setError('Enter a valid email to continue.');
-      return;
-    }
-    if (nextName === null) {
-      setError('Use just your first name, or leave it blank.');
-      return;
-    }
-    if (nextPhone === null) {
-      setError('Enter a valid phone number, or leave it blank.');
-      return;
-    }
+    const nextPhone = phoneForLead(phone);
+    const localLead = {
+      email: nextEmail,
+      firstName: nextName,
+      phone: nextPhone,
+      emailMarketingConsent: resolveEmailMarketingConsent(emailChecked),
+      smsConsent: resolveSmsConsent(smsChecked, nextPhone)
+    };
 
     lock.current = true;
     setSubmitting(true);
-    setError('');
     try {
-      const saved = await persistQuizLead({
-        email: nextEmail,
-        firstName: nextName,
-        phone: nextPhone,
-        emailMarketingConsent: resolveEmailMarketingConsent(emailChecked),
-        smsConsent: resolveSmsConsent(smsChecked, nextPhone)
-      });
+      const saved = await persistQuizLead(localLead);
       trackLeadCaptured();
       onSuccess(saved);
-    } catch {
-      lock.current = false;
-      setError("We couldn't save your email. Check it and try again.");
-      setSubmitting(false);
+    } catch (error) {
+      console.error('Lead save failed', error);
+      onSuccess(localLead);
     }
   }
-
-  const phoneInvalid = error === 'Enter a valid phone number, or leave it blank.';
 
   return (
     <main className="email-gate" data-screen-label="Email">
@@ -106,8 +91,6 @@ export default function EmailGate({
               spellCheck={false}
               required
               value={email}
-              aria-invalid={Boolean(error)}
-              aria-describedby={error ? errorId : undefined}
               onChange={(event) => setEmail(event.target.value)}
             />
           </div>
@@ -125,7 +108,6 @@ export default function EmailGate({
               autoComplete="tel"
               maxLength={24}
               value={phone}
-              aria-invalid={phoneInvalid}
               onChange={(event) => setPhone(event.target.value)}
             />
           </div>
@@ -140,7 +122,6 @@ export default function EmailGate({
               name="given-name"
               type="text"
               autoComplete="given-name"
-              maxLength={40}
               value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
             />
@@ -173,13 +154,7 @@ export default function EmailGate({
           </label>
         </div>
 
-        {error ? (
-          <p id={errorId} className="email-gate-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-
-        <button type="submit" className="email-gate-submit" disabled={submitting}>
+        <button type="submit" className="email-gate-submit" disabled={!emailReady || submitting}>
           {submitting ? 'Sending…' : 'Continue'}
         </button>
       </form>

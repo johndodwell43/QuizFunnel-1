@@ -54,7 +54,7 @@ The email and phone gate is the first screen. Then five questions, one per scree
 6. Loose or shifting teeth?
 7. Offer, or the healing pause
 
-**Email gate.** Question 1 stays hidden until a valid email is submitted. Phone and first name are optional. The email updates box starts checked. The text updates box starts unchecked, and text consent is saved only when that box is checked and a phone is entered. Unchecking either box does not block question 1. There is no skip control. Back on question 1 returns to this same gate.
+**Email gate.** Continue stays off until the email is valid. Phone and first name are optional. First name is trimmed and not checked. A phone number that is not a valid number is left off the lead, and text consent is saved only when that box is checked and a valid phone is entered. The email updates box starts checked. The text updates box starts unchecked. Unchecking either box does not block question 1. If the save fails, question 1 still opens. There is no skip control. Back on question 1 returns to this same gate.
 
 **Routing.** A "Yes" on question 3 (recent extraction) opens the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
 
