@@ -60,7 +60,10 @@ test('first name keeps letters, spaces, hyphens, and apostrophes, and stops at 4
     firstName: 'Note 123 about teeth!!!',
     phone: ''
   });
-  assert.equal(lead.firstName, 'Note  about teeth');
+  assert.equal(lead.firstName, 'Note about');
+  assert.equal(normalizeFirstName('Ada   Marie   Claire'), 'Ada Marie');
+  assert.equal(normalizeFirstName('Mary-Jane Ann Extra'), 'Mary-Jane Ann');
+  assert.equal(normalizeFirstName("O'Brien José Third"), "O'Brien José");
 });
 
 test('split consent defaults and locked copy', () => {

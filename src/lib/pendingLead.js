@@ -16,8 +16,24 @@ export function toPendingLead(lead) {
   return record;
 }
 
-export async function retryPendingLead(lead, { send, storage, sleep, delays = LEAD_RETRY_DELAYS_MS }) {
+function writePending(storage, record) {
+  try {
+    storage.setItem(PENDING_LEAD_KEY, JSON.stringify(record));
+  } catch {
+    // Private browsing can block storage. The quiz still continues.
+  }
+}
+
+export function storePendingLead(lead, storage) {
   const record = toPendingLead(lead);
+  if (!isValidEmail(record.email)) return null;
+  writePending(storage, record);
+  return record;
+}
+
+export async function retryPendingLead(lead, { send, storage, sleep, delays = LEAD_RETRY_DELAYS_MS }) {
+  const record = storePendingLead(lead, storage);
+  if (!record) return 'cleared';
   for (const delay of delays) {
     await sleep(delay);
     try {
@@ -29,13 +45,8 @@ export async function retryPendingLead(lead, { send, storage, sleep, delays = LE
       }
       return 'sent';
     } catch {
-      // The next delay is the next retry. Storage is written only after the last one.
+      // One more attempt remains, or the stored entry stays for the next visit.
     }
-  }
-  try {
-    storage.setItem(PENDING_LEAD_KEY, JSON.stringify(record));
-  } catch {
-    // Private browsing can block storage. The quiz has already moved on.
   }
   return 'stored';
 }
@@ -87,9 +98,18 @@ function runExclusive(task) {
   return active;
 }
 
+export function rememberPendingQuizLead(lead) {
+  try {
+    storePendingLead(lead, localStorage);
+  } catch {
+    // Storage can be blocked. The save attempt still runs.
+  }
+}
+
 export function scheduleLeadRetry(lead) {
   const record = toPendingLead(lead);
   if (!isValidEmail(record.email)) return;
+  rememberPendingQuizLead(record);
   runExclusive(() =>
     retryPendingLead(record, {
       send: persistQuizLead,

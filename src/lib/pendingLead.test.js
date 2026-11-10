@@ -4,6 +4,7 @@ import {
   PENDING_LEAD_KEY,
   resendPendingLead,
   retryPendingLead,
+  storePendingLead,
   toPendingLead
 } from './pendingLead.js';
 
@@ -45,20 +46,24 @@ test('a pending lead stores contact fields and consent only', () => {
   assert.equal(JSON.stringify(record).includes('yes'), false);
 });
 
-test('a failed lead is retried twice and then stored', async () => {
+test('the queue entry is written before the first retry send', async () => {
   const storage = memoryStorage();
   let calls = 0;
+  const seenBeforeSend = [];
   const result = await retryPendingLead(
     {
       email: 'results@example.com',
-      firstName: 'Ada',
+      firstName: 'Ada Marie Claire',
       phone: '(415) 555-0100',
       emailMarketingConsent: false,
-      smsConsent: true
+      smsConsent: true,
+      arch: 'upper',
+      pain: 'yes'
     },
     {
       send: async () => {
         calls += 1;
+        seenBeforeSend.push(storage.getItem(PENDING_LEAD_KEY));
         throw new Error('lead-save-failed');
       },
       storage,
@@ -68,7 +73,8 @@ test('a failed lead is retried twice and then stored', async () => {
   );
   assert.equal(calls, 2);
   assert.equal(result, 'stored');
-  const stored = JSON.parse(storage.getItem(PENDING_LEAD_KEY));
+  assert.equal(seenBeforeSend.length, 2);
+  const stored = JSON.parse(seenBeforeSend[0]);
   assert.deepEqual(Object.keys(stored).sort(), [
     'email',
     'emailMarketingConsent',
@@ -77,8 +83,19 @@ test('a failed lead is retried twice and then stored', async () => {
     'smsConsent'
   ]);
   assert.equal(stored.phone, '+14155550100');
+  assert.equal(stored.firstName, 'Ada Marie');
   assert.equal(stored.smsConsent, true);
   assert.equal(stored.emailMarketingConsent, false);
+  assert.equal(stored.arch, undefined);
+  assert.equal(stored.pain, undefined);
+  assert.equal(storage.getItem(PENDING_LEAD_KEY), seenBeforeSend[0]);
+
+  const direct = storePendingLead(
+    { email: 'results@example.com', firstName: 'Ada', phone: 'nope', emailMarketingConsent: true, smsConsent: true, loose: 'yes' },
+    memoryStorage()
+  );
+  assert.deepEqual(Object.keys(direct).sort(), ['email', 'emailMarketingConsent', 'firstName', 'smsConsent']);
+  assert.equal(direct.smsConsent, false);
 });
 
 test('the second retry clears the pending lead', async () => {
