@@ -16,7 +16,7 @@ import { clearPendingQuizLead, rememberPendingQuizLead, scheduleLeadRetry } from
 import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
 const PLACEHOLDER_LABEL =
-  'PLACEHOLDER: Klyros product shot on plain background, no people, 3:2, 1200px';
+  'PLACEHOLDER: Flex Partial with kit on plain background, 3:2, 1800x1200px';
 
 export default function EmailGate({
   initialEmail = '',

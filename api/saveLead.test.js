@@ -13,7 +13,8 @@ test('the gate has no error copy and keeps Continue off until the email is valid
   assert.equal(source.includes("submitting ? 'Sending…' : 'Continue'"), true);
   assert.equal(source.includes('First name'), false);
   assert.equal(source.includes('<img'), false);
-  assert.equal(source.includes('PLACEHOLDER: Klyros product shot on plain background, no people, 3:2, 1200px'), true);
+  assert.equal(source.includes('PLACEHOLDER: Flex Partial with kit on plain background, 3:2, 1800x1200px'), true);
+  assert.equal(source.toLowerCase().includes('impression kit'), false);
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
   assert.equal(app.includes('stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}'), true);
   const css = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8');

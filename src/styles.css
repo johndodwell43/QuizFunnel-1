@@ -131,10 +131,11 @@ button { font-family: inherit; }
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  height: 59px;
+  aspect-ratio: 3 / 2;
+  height: auto;
   margin: 0 0 6px 0;
   padding: 6px 10px;
-  border: 1.5px dashed #2563eb;
+  border: 1.5px dashed rgba(10, 22, 40, 0.4);
   border-radius: 12px;
   background: #cfe9ff;
   color: #0a1628;
@@ -152,7 +153,6 @@ button { font-family: inherit; }
     max-width: 960px;
   }
   .email-gate-art {
-    height: 113px;
     margin-bottom: 16px;
   }
   .email-gate-title {
