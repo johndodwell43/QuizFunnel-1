@@ -9,13 +9,27 @@ export function isValidEmail(value) {
   return EMAIL_RE.test(email);
 }
 
-// Empty is allowed. A name that is too long or not a name is rejected
-// so this field cannot carry a medical note.
-export function normalizeFirstName(value) {
-  const name = String(value || '').trim().replace(/\s+/g, ' ');
-  if (!name) return '';
-  if (name.length > 40) return null;
-  if (!/^[\p{L}][\p{L} .'-]*$/u.test(name)) return null;
-  if (name.split(' ').length > 2) return null;
-  return name;
+// Blank is allowed. A non-empty value must be a US number so a text has a real destination.
+export function normalizePhone(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  const digits = raw.replace(/\D/g, '');
+  const national = digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits;
+  if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(national)) return null;
+  return `+1${national}`;
+}
+
+// An invalid number is omitted. It does not reject the rest of the lead.
+export function phoneForLead(value) {
+  const phone = normalizePhone(value);
+  return phone === null ? '' : phone;
+}
+
+export function resolveEmailMarketingConsent(checked) {
+  return checked === true;
+}
+
+// SMS consent is true only when that box is checked and a phone was entered.
+export function resolveSmsConsent(checked, phone) {
+  return checked === true && typeof phone === 'string' && phone.length > 0;
 }

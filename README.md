@@ -1,10 +1,10 @@
 # Klyros — Find Your Fit quiz funnel
 
-Mobile-first qualification quiz. An email is required before the offer. Checkout
+Mobile-first qualification quiz. An email is required before question 1. Checkout
 opens the matching Shopify cart variant. Quiz answers are not sent with the lead.
 
-React 18 + Vite. No CSS framework, no UI library — styles are inline so the
-markup and its styling travel together.
+React 18 + Vite. No CSS framework, no UI library. Question and result screens
+keep inline styles. The results gate uses `styles.css` for its desktop width.
 
 ## Run it
 
@@ -44,23 +44,23 @@ Drop these into `public/images/` using these exact filenames:
 
 ## Flow
 
-Five questions, one per screen, tap-to-advance (~170ms), then an email gate, then the result.
+The email and phone gate is the first screen. Then five questions, one per screen, tap-to-advance (~170ms), then the result.
 
-1. Where are your missing teeth?
-2. About how many teeth are you missing?
-3. Tooth removed in the last 90 days?
-4. Tooth pain or swelling?
-5. Loose or shifting teeth?
-6. Email gate — required before any result
+1. Email and phone gate — email required, phone optional, before any question
+2. Where are your missing teeth?
+3. About how many teeth are you missing?
+4. Tooth removed in the last 90 days?
+5. Tooth pain or swelling?
+6. Loose or shifting teeth?
 7. Offer, or the healing pause
 
-**Email gate.** The offer and the healing pause both stay hidden until a valid email is submitted. First name is optional. There is no skip control. Back returns to the question they just left; it does not reveal the result.
+**Email gate.** Continue stays off until the email is valid. Phone is optional. A phone number that is not a valid number is left off the lead, and text consent is saved only when that box is checked and a valid phone is entered. The email updates box starts checked. The text updates box starts unchecked. Unchecking either box does not block question 1. The contact fields are kept locally before the save is attempted and cleared when it succeeds. If it fails, the browser retries twice. Question 1 still opens. There is no skip control. Back on question 1 returns to this same gate.
 
-**Routing.** A "Yes" on question 3 (recent extraction) opens the email gate and, after submit, the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors still submit email, then see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
+**Routing.** A "Yes" on question 3 (recent extraction) opens the healing pause. A "Yes" on pain or loose teeth does not pause the quiz. Those visitors see the offer with a note to see a licensed dentist in your state in person first. The order cards stay on that screen.
 
-The back arrow from a result returns to the email gate, not past it.
+The back arrow from a result returns to the question just answered. Results stay hidden until the gate has saved a lead.
 
-**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email and an optional first name only. Quiz answers are not sent. List id is still unknown until it is set in `KLAVIYO_LIST_ID`.
+**Where the lead goes.** This repo has no waitlist route. The marketing account already in use is Klaviyo site ID `XaqymG` (Shopify metafield `klaviyo.company_id` on `tfvziu-ia.myshopify.com`). The browser posts to same-origin `POST /api/quiz-lead`, and that function writes a profile plus a `Quiz Results Requested` event to `https://a.klaviyo.com/client/profiles/` and `/client/events/`. Klaviyo’s browser preflight is not usable here, and its onsite forms are off, so no list ID is published. Set `KLAVIYO_LIST_ID` on the server to also subscribe that profile via `/client/subscriptions/`. Saved fields are email, an optional phone, the email updates checkbox, and text consent. A first name is not collected. Text consent is true only when that box is checked and a phone is present. An email address alone is not text consent. Quiz answers are not sent. List id is still unknown until it is set in `KLAVIYO_LIST_ID`.
 
 ## Checkout hand-off
 

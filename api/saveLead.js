@@ -1,4 +1,9 @@
-import { isValidEmail, normalizeFirstName } from '../src/lib/email.js';
+import {
+  isValidEmail,
+  phoneForLead,
+  resolveEmailMarketingConsent,
+  resolveSmsConsent
+} from '../src/lib/email.js';
 
 // Klaviyo public site ID on the Klyros Shopify store
 // (shop metafield klaviyo.company_id, onsite embed on tfvziu-ia.myshopify.com).
@@ -10,9 +15,10 @@ const KLAVIYO_METRIC = 'Quiz Results Requested';
 const KLAVIYO_REVISION = '2026-10-15';
 const KLAVIYO_ORIGIN = 'https://a.klaviyo.com';
 
-function fail(statusCode) {
+function fail(statusCode, reason) {
   const error = new Error('lead-save-failed');
   error.statusCode = statusCode;
+  error.reason = reason;
   return error;
 }
 
@@ -37,29 +43,49 @@ function quizProperties(utm) {
 }
 
 async function postKlaviyo(path, body) {
-  const response = await fetch(
-    `${KLAVIYO_ORIGIN}${path}?company_id=${encodeURIComponent(KLAVIYO_COMPANY_ID)}`,
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/vnd.api+json',
-        'content-type': 'application/vnd.api+json',
-        revision: KLAVIYO_REVISION
-      },
-      body: JSON.stringify(body)
-    }
-  );
-  if (!response.ok) throw fail(502);
+  let response;
+  try {
+    response = await fetch(
+      `${KLAVIYO_ORIGIN}${path}?company_id=${encodeURIComponent(KLAVIYO_COMPANY_ID)}`,
+      {
+        method: 'POST',
+        headers: {
+          accept: 'application/vnd.api+json',
+          'content-type': 'application/vnd.api+json',
+          revision: KLAVIYO_REVISION
+        },
+        body: JSON.stringify(body)
+      }
+    );
+  } catch {
+    throw fail(502, 'network');
+  }
+  if (!response.ok) throw fail(502, `upstream-${response.status}`);
+}
+
+export function normalizeQuizLead(input) {
+  const email = String(input?.email || '').trim();
+  const phone = phoneForLead(input?.phone);
+  if (!isValidEmail(email)) throw fail(400, 'invalid-email');
+  return {
+    email,
+    phone,
+    emailMarketingConsent: resolveEmailMarketingConsent(input?.emailMarketingConsent),
+    smsConsent: resolveSmsConsent(input?.smsConsent, phone)
+  };
 }
 
 export async function saveQuizLead(input) {
-  const email = String(input?.email || '').trim();
-  const firstName = normalizeFirstName(input?.firstName);
-  if (!isValidEmail(email) || firstName === null) throw fail(400);
+  const { email, phone, emailMarketingConsent, smsConsent } = normalizeQuizLead(input);
 
   const properties = quizProperties(input);
+  properties.email_marketing_consent = emailMarketingConsent;
+  properties.sms_consent = smsConsent;
   const attributes = { email, properties };
-  if (firstName) attributes.first_name = firstName;
+  if (phone) attributes.phone_number = phone;
+
+  const profileAttributes = { email };
+  if (phone) profileAttributes.phone_number = phone;
 
   await postKlaviyo('/client/profiles/', {
     data: { type: 'profile', attributes }
@@ -75,10 +101,7 @@ export async function saveQuizLead(input) {
           data: { type: 'metric', attributes: { name: KLAVIYO_METRIC } }
         },
         profile: {
-          data: {
-            type: 'profile',
-            attributes: firstName ? { email, first_name: firstName } : { email }
-          }
+          data: { type: 'profile', attributes: profileAttributes }
         }
       }
     }
@@ -86,25 +109,30 @@ export async function saveQuizLead(input) {
 
   const listId = String(process.env.KLAVIYO_LIST_ID || '').trim();
   if (/^[A-Za-z0-9]{4,12}$/.test(listId)) {
-    await postKlaviyo('/client/subscriptions/', {
-      data: {
-        type: 'subscription',
-        attributes: {
-          custom_source: 'quiz.klyrosdental.com email gate',
-          profile: {
-            data: {
-              type: 'profile',
-              attributes: {
-                ...attributes,
-                subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } }
-              }
+    const subscriptions = {};
+    if (emailMarketingConsent) {
+      subscriptions.email = { marketing: { consent: 'SUBSCRIBED' } };
+    }
+    if (smsConsent && phone) {
+      subscriptions.sms = { marketing: { consent: 'SUBSCRIBED' } };
+    }
+    if (Object.keys(subscriptions).length > 0) {
+      const subscriptionProfile = { email, properties, subscriptions };
+      if (smsConsent && phone) subscriptionProfile.phone_number = phone;
+      await postKlaviyo('/client/subscriptions/', {
+        data: {
+          type: 'subscription',
+          attributes: {
+            custom_source: 'quiz.klyrosdental.com email gate',
+            profile: {
+              data: { type: 'profile', attributes: subscriptionProfile }
             }
-          }
-        },
-        relationships: { list: { data: { type: 'list', id: listId } } }
-      }
-    });
+          },
+          relationships: { list: { data: { type: 'list', id: listId } } }
+        }
+      });
+    }
   }
 
-  return { email, firstName };
+  return { email, phone, emailMarketingConsent, smsConsent };
 }

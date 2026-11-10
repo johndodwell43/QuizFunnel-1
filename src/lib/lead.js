@@ -1,4 +1,9 @@
-import { isValidEmail, normalizeFirstName } from './email.js';
+import {
+  isValidEmail,
+  phoneForLead,
+  resolveEmailMarketingConsent,
+  resolveSmsConsent
+} from './email.js';
 
 function readUtm(name) {
   try {
@@ -13,21 +18,23 @@ function readUtm(name) {
   }
 }
 
-// Same-origin save. api/quiz-lead.js forwards email and optional first name only.
-// Quiz answers stay in the browser for routing and are not part of the lead.
-export async function persistQuizLead({ email, firstName }) {
+// Same-origin save. api/quiz-lead.js forwards email, optional phone,
+// and the consent checkbox states. Quiz answers stay in the browser.
+export async function persistQuizLead({ email, phone, emailMarketingConsent, smsConsent }) {
   const trimmedEmail = String(email || '').trim();
-  const name = normalizeFirstName(firstName);
-  if (!isValidEmail(trimmedEmail) || name === null) {
-    throw new Error('invalid-lead');
-  }
+  const normalizedPhone = phoneForLead(phone);
+  if (!isValidEmail(trimmedEmail)) throw new Error('invalid-lead');
+  const emailConsent = resolveEmailMarketingConsent(emailMarketingConsent);
+  const textConsent = resolveSmsConsent(smsConsent, normalizedPhone);
 
   const response = await fetch('/api/quiz-lead', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       email: trimmedEmail,
-      firstName: name,
+      phone: normalizedPhone,
+      emailMarketingConsent: emailConsent,
+      smsConsent: textConsent,
       utm_source: readUtm('utm_source'),
       utm_campaign: readUtm('utm_campaign'),
       utm_content: readUtm('utm_content')
@@ -35,5 +42,10 @@ export async function persistQuizLead({ email, firstName }) {
   });
 
   if (!response.ok) throw new Error('lead-save-failed');
-  return { email: trimmedEmail, firstName: name };
+  return {
+    email: trimmedEmail,
+    phone: normalizedPhone,
+    emailMarketingConsent: emailConsent,
+    smsConsent: textConsent
+  };
 }

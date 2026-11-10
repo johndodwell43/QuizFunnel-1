@@ -1,4 +1,5 @@
-// The quiz, in order. A "yes" on extraction still pauses (after the email gate).
+// The quiz, in order. Email is collected on the screen before question 1.
+// A "yes" on extraction still pauses after these questions.
 // Pain and loose do not pause: those answers continue, and the results screen
 // tells the visitor to see a dentist in person first.
 export const QUESTIONS = [
@@ -40,4 +41,4 @@ export const QUESTIONS = [
   }
 ];
 
-export const TOTAL_STEPS = QUESTIONS.length + 2; // questions + email gate + result
+export const TOTAL_STEPS = QUESTIONS.length + 2; // email gate + questions + result
