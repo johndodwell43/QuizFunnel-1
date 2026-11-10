@@ -136,7 +136,7 @@ button { font-family: inherit; }
   margin: 0 auto 4px auto;
   padding: 0;
   /* Drawn as an inset outline so the photo itself gets the full height. */
-  outline: 1.5px solid rgba(10, 22, 40, 0.62);
+  outline: 1.5px solid rgba(255, 255, 255, 0.75);
   outline-offset: -1.5px;
   border-radius: 12px;
   overflow: hidden;
