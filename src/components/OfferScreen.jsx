@@ -5,7 +5,7 @@ import ImagePlaceholder from './ImagePlaceholder.jsx';
 import ValueList from './ValueList.jsx';
 import { AFFIRM_LINE, LINKS, money } from '../config.js';
 import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
-import { offerForAnswers } from '../lib/offerMatch.js';
+import { activeChoice, offerForAnswers } from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
 const MATCH_LINE = 'Based on your answers, Flex Partial may be a fit.';
@@ -13,12 +13,12 @@ const REVIEW_LINE =
   "A partner dentist licensed in your state reviews your photos and decides whether it's a fit. Placing your order starts that review.";
 
 const GALLERY = [
-  ['1 / 1', 'PLACEHOLDER: Flex Partial with impression kit on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial with kit on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: Flex Partial product video still on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: Flex Partial three-quarter product shot on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: Flex Partial side product shot on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: Flex Partial detail product shot on plain background, 1:1, 1200px'],
-  ['1 / 1', 'PLACEHOLDER: impression kit contents on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: kit contents on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: partial case on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: Flex Partial back product shot on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: Flex Partial close product shot on plain background, 1:1, 1200px']
@@ -34,24 +34,23 @@ const OPTION_SHOTS = [
 ];
 
 const PAYMENT_MARKS = [
-  ['4 / 1', 'PLACEHOLDER: checkout payment mark 1, 4:1, 200px'],
-  ['200 / 47', 'PLACEHOLDER: checkout payment mark 2, 200:47, 200px'],
-  ['40 / 17', 'PLACEHOLDER: checkout payment mark 3, 40:17, 200px'],
-  ['50 / 13', 'PLACEHOLDER: checkout payment mark 4, 50:13, 200px'],
-  ['50 / 13', 'PLACEHOLDER: checkout payment mark 5, 50:13, 200px'],
-  ['100 / 37', 'PLACEHOLDER: checkout payment mark 6, 100:37, 200px']
+  ['4 / 1', 'PLACEHOLDER: Apple Pay, 4:1, 200px'],
+  ['200 / 47', 'PLACEHOLDER: Affirm, 200:47, 200px'],
+  ['40 / 17', 'PLACEHOLDER: Visa, 40:17, 200px'],
+  ['50 / 13', 'PLACEHOLDER: Mastercard, 50:13, 200px'],
+  ['100 / 37', 'PLACEHOLDER: Debit, 100:37, 200px']
 ];
 
 const KIT_SHOTS = [
-  'PLACEHOLDER: impression kit on plain background, 1:1, 800px',
+  'PLACEHOLDER: kit on plain background, 1:1, 800px',
   'PLACEHOLDER: partial carrying case on plain background, 1:1, 800px',
   'PLACEHOLDER: kit accessory on plain background, 1:1, 800px',
   'PLACEHOLDER: second kit accessory on plain background, 1:1, 800px'
 ];
 
 const STEP_SHOTS = [
-  'PLACEHOLDER: impression kit product shot on plain background, 6:7, 1200px',
-  'PLACEHOLDER: packed impression kit on plain background, 6:7, 1200px',
+  'PLACEHOLDER: kit product shot on plain background, 6:7, 1200px',
+  'PLACEHOLDER: packed kit on plain background, 6:7, 1200px',
   'PLACEHOLDER: finished partial on plain background, 6:7, 1200px'
 ];
 
@@ -66,7 +65,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
   const offer = offerForAnswers(answers);
   const [selected, setSelected] = useState(offer.selected);
   const [galleryIndex, setGalleryIndex] = useState(0);
-  const active = selected === 'precision' ? offer.precision : offer.flex;
+  const active = activeChoice(offer, selected);
   const activeGallery = GALLERY[galleryIndex] || GALLERY[0];
 
   useEffect(() => {
@@ -115,7 +114,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
 
         <div className="offer-buy">
           <h1 className="offer-title">{MATCH_LINE}</h1>
-          <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
+          <p className="offer-price" data-match-price>{money(active.price)}</p>
           <p className="offer-note">{REVIEW_LINE}</p>
 
           <div id="offer-cards" className="offer-cards" role="group" aria-label="Partial choices">
@@ -215,7 +214,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
       </div>
       <div className="offer-step-icon">
         <ImagePlaceholder
-          text="PLACEHOLDER: impression kit icon on plain background, 1:1, 500px"
+          text="PLACEHOLDER: kit icon on plain background, 1:1, 500px"
           ratio="1 / 1"
         />
       </div>

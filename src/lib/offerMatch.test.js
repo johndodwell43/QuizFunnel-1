@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { PRICING } from '../config.js';
+import { PRICING, money } from '../config.js';
 import { cartUrl } from './checkout.js';
-import { offerForAnswers } from './offerMatch.js';
+import { activeChoice, offerForAnswers } from './offerMatch.js';
 
 const FLEX = {
   upper: '63304031961457',
@@ -46,6 +47,27 @@ for (const arch of ['upper', 'lower', 'both']) {
     assert.equal(otherTeeth.precision.url, offer.precision.url);
   });
 }
+
+test('headline price follows the selected card and Flex stays the default', () => {
+  const screen = readFileSync(new URL('../components/OfferScreen.jsx', import.meta.url), 'utf8');
+  assert.match(screen, /data-match-price>\{money\(active\.price\)\}/);
+  assert.doesNotMatch(screen, /data-match-price>\{money\(offer\.flex\.price\)\}/);
+
+  const cases = [
+    ['upper', PRICING.flexPrice, PRICING.precisionPrice, '$489', '$789'],
+    ['lower', PRICING.flexPrice, PRICING.precisionPrice, '$489', '$789'],
+    ['both', PRICING.flexBoth, PRICING.precisionBoth, '$859', '$1,479']
+  ];
+  for (const [arch, flexPrice, precisionPrice, flexText, precisionText] of cases) {
+    const offer = offerForAnswers({ arch });
+    assert.equal(offer.selected, 'flex');
+    assert.equal(money(activeChoice(offer).price), flexText);
+    assert.equal(money(activeChoice(offer, 'flex').price), flexText);
+    assert.equal(money(activeChoice(offer, 'precision').price), precisionText);
+    assert.equal(activeChoice(offer, 'flex').price, flexPrice);
+    assert.equal(activeChoice(offer, 'precision').price, precisionPrice);
+  }
+});
 
 test('discount is appended after existing cart params and is not repeated', () => {
   const withTracking = cartUrl('63304031961457', {

@@ -26,3 +26,17 @@ export function offerForAnswers(answers = {}) {
     precision: choice('precision', arch)
   };
 }
+
+// Headline and checkout follow this card. Flex is the default selection.
+export function activeChoice(offer, selected = offer.selected) {
+  switch (selected) {
+    case 'flex':
+      return offer.flex;
+    case 'precision':
+      return offer.precision;
+    default: {
+      const unknown = selected;
+      throw new Error(`Unknown offer selection: ${String(unknown)}`);
+    }
+  }
+}
