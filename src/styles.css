@@ -126,22 +126,21 @@ button { font-family: inherit; }
   to { opacity: 1; transform: none; }
 }
 .email-gate-art {
-  /* Height is the driver so a short viewport cannot flatten the frame.
-     svh is the fallback; dvh wins where the dynamic viewport is supported. */
-  --gate-art-offset: 604px;
+  /* Room is the viewport minus the rest of the gate. svh falls back; dvh wins. */
+  --gate-art-offset: 594px;
   --gate-art-room: calc(100vh - var(--gate-art-offset));
   --gate-art-room: calc(100svh - var(--gate-art-offset));
   --gate-art-room: calc(100dvh - var(--gate-art-offset));
-  --gate-art-height: max(120px, var(--gate-art-room));
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  aspect-ratio: 3 / 2;
-  width: min(100%, calc(var(--gate-art-height) * 3 / 2));
-  height: auto;
-  min-width: 180px;
+  width: 100%;
+  max-width: 100%;
   min-height: 120px;
+  height: max(120px, var(--gate-art-room));
   margin: 0 auto 6px;
   padding: 6px 10px;
   border: 1.5px dashed rgba(10, 22, 40, 0.62);
@@ -156,13 +155,28 @@ button { font-family: inherit; }
     container-type: inline-size;
   }
   .email-gate-art {
-    --gate-art-height: clamp(120px, var(--gate-art-room), calc(100cqi * 2 / 3));
-    width: calc(var(--gate-art-height) * 3 / 2);
-    height: var(--gate-art-height);
-    max-width: 100%;
+    height: min(calc(100cqi * 2 / 3), max(120px, var(--gate-art-room)));
   }
 }
+.email-gate-art picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.email-gate-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  opacity: 0;
+}
+.email-gate-art img.is-on {
+  opacity: 1;
+}
 .email-gate-art p {
+  position: relative;
+  z-index: 1;
   margin: 0;
   max-width: 100%;
   font-size: 11px;
@@ -253,7 +267,7 @@ button { font-family: inherit; }
   }
   .email-gate-art {
     /* Non-art stack on a short phone is about 513px; the rest is spare above the fold. */
-    --gate-art-offset: 523px;
+    --gate-art-offset: 521px;
     margin-bottom: 2px;
     padding: 4px 8px;
   }
@@ -296,6 +310,18 @@ button { font-family: inherit; }
   }
   .email-gate-submit {
     min-height: 48px;
+  }
+}
+
+/* Phones: nearly edge to edge, 8px from each viewport side. Stay 3:2 until the fold says otherwise. */
+@media (max-width: 480px) {
+  .email-gate-art {
+    width: calc(100vw - 16px);
+    max-width: none;
+    min-width: 0;
+    margin-left: calc(50% - 50vw + 8px);
+    margin-right: calc(50% - 50vw + 8px);
+    height: min(calc((100vw - 16px) * 2 / 3), max(120px, var(--gate-art-room)));
   }
 }
 

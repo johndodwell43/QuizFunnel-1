@@ -17,6 +17,8 @@ import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
 const PLACEHOLDER_LABEL =
   'PLACEHOLDER: Flex Partial with kit on plain background, 3:2, 1800x1200px';
+const GATE_ART_WEBP = '/gate/gate-split-3x2.webp';
+const GATE_ART_JPG = '/gate/gate-split-3x2.jpg';
 
 export default function EmailGate({
   initialEmail = '',
@@ -34,6 +36,7 @@ export default function EmailGate({
   const [emailChecked, setEmailChecked] = useState(initialEmailConsent === true);
   const [smsChecked, setSmsChecked] = useState(initialSmsConsent === true);
   const [submitting, setSubmitting] = useState(false);
+  const [artReady, setArtReady] = useState(false);
   const lock = useRef(false);
   const emailReady = isValidEmail(email);
 
@@ -73,7 +76,17 @@ export default function EmailGate({
   return (
     <main className="email-gate" data-screen-label="Email">
       <div className="email-gate-art" aria-hidden="true">
-        <p>{PLACEHOLDER_LABEL}</p>
+        <picture>
+          <source srcSet={GATE_ART_WEBP} type="image/webp" />
+          <img
+            src={GATE_ART_JPG}
+            alt=""
+            className={artReady ? 'is-on' : undefined}
+            onLoad={() => setArtReady(true)}
+            onError={() => setArtReady(false)}
+          />
+        </picture>
+        {artReady ? null : <p>{PLACEHOLDER_LABEL}</p>}
       </div>
       <h1 className="email-gate-title">Where should we send your results?</h1>
 

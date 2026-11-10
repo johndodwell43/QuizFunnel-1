@@ -12,8 +12,10 @@ test('the gate has no error copy and keeps Continue off until the email is valid
   assert.equal(source.includes('disabled={!emailReady || submitting}'), true);
   assert.equal(source.includes("submitting ? 'Sending…' : 'Continue'"), true);
   assert.equal(source.includes('First name'), false);
-  assert.equal(source.includes('<img'), false);
   assert.equal(source.includes('PLACEHOLDER: Flex Partial with kit on plain background, 3:2, 1800x1200px'), true);
+  assert.equal(source.includes('/gate/gate-split-3x2.webp'), true);
+  assert.equal(source.includes('/gate/gate-split-3x2.jpg'), true);
+  assert.equal(source.includes('artReady ? null : <p>{PLACEHOLDER_LABEL}</p>'), true);
   assert.equal(source.toLowerCase().includes('impression kit'), false);
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
   assert.equal(app.includes('stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}'), true);
