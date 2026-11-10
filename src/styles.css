@@ -126,27 +126,49 @@ button { font-family: inherit; }
   to { opacity: 1; transform: none; }
 }
 .email-gate-art {
+  /* Height is the driver so a short viewport cannot flatten the frame.
+     svh is the fallback; dvh wins where the dynamic viewport is supported. */
+  --gate-art-offset: 604px;
+  --gate-art-room: calc(100vh - var(--gate-art-offset));
+  --gate-art-room: calc(100svh - var(--gate-art-offset));
+  --gate-art-room: calc(100dvh - var(--gate-art-offset));
+  --gate-art-height: max(120px, var(--gate-art-room));
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 100%;
   aspect-ratio: 3 / 2;
+  width: min(100%, calc(var(--gate-art-height) * 3 / 2));
   height: auto;
-  max-height: calc(100dvh - 604px);
-  margin: 0 0 6px 0;
+  min-width: 180px;
+  min-height: 120px;
+  margin: 0 auto 6px;
   padding: 6px 10px;
   border: 1.5px dashed rgba(10, 22, 40, 0.62);
   border-radius: 12px;
   background: #cfe9ff;
   color: #0a1628;
   text-align: center;
+  flex-shrink: 0;
+}
+@supports (width: 1cqi) {
+  .email-gate {
+    container-type: inline-size;
+  }
+  .email-gate-art {
+    --gate-art-height: clamp(120px, var(--gate-art-room), calc(100cqi * 2 / 3));
+    width: calc(var(--gate-art-height) * 3 / 2);
+    height: var(--gate-art-height);
+    max-width: 100%;
+  }
 }
 .email-gate-art p {
   margin: 0;
+  max-width: 100%;
   font-size: 11px;
   line-height: 1.25;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 @media (min-width: 1024px) {
@@ -154,7 +176,7 @@ button { font-family: inherit; }
     max-width: 960px;
   }
   .email-gate-art {
-    max-height: calc(100dvh - 670px);
+    --gate-art-offset: 670px;
     margin-bottom: 16px;
   }
   .email-gate-title {
@@ -217,6 +239,63 @@ button { font-family: inherit; }
     min-height: 76px;
     font-size: 24px;
     border-radius: 18px;
+  }
+}
+
+/* Short phones: pull gaps in so a 3:2 frame of at least 120px still leaves Continue on screen. */
+@media (max-height: 760px) and (max-width: 1023px) {
+  .gate-header {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+  .gate-progress {
+    margin-bottom: 4px !important;
+  }
+  .email-gate-art {
+    /* Non-art stack on a short phone is about 513px; the rest is spare above the fold. */
+    --gate-art-offset: 523px;
+    margin-bottom: 2px;
+    padding: 4px 8px;
+  }
+  .email-gate-title {
+    margin-bottom: 4px;
+  }
+  .email-gate-fields {
+    gap: 2px;
+    margin-bottom: 0;
+  }
+  .email-gate-label {
+    margin-bottom: 1px;
+    line-height: 1.15;
+  }
+  .email-gate-consents {
+    gap: 0;
+    margin-bottom: 0;
+  }
+  .email-gate-consent {
+    gap: 10px;
+    min-height: 44px;
+    padding: 0;
+  }
+  .email-gate-consent-copy {
+    line-height: 1.15;
+    padding-top: 0;
+  }
+}
+
+/* In-app browsers: one more pass so a 120px frame can still clear the fold. */
+@media (max-height: 640px) and (max-width: 1023px) {
+  .email-gate-art {
+    margin-bottom: 0;
+  }
+  .email-gate-title {
+    margin-bottom: 2px;
+  }
+  .email-gate-fields {
+    gap: 0;
+  }
+  .email-gate-submit {
+    min-height: 48px;
   }
 }
 
