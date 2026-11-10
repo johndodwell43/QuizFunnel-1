@@ -21,7 +21,7 @@ export default function Header({ showBack, onBack, stepLabel, gate = false }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 8,
-        padding: '14px 0 10px 0'
+        padding: gate ? '6px 0 4px 0' : '14px 0 10px 0'
       }}
     >
       {showBack ? (

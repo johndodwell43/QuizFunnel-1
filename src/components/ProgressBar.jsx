@@ -12,14 +12,14 @@ export default function ProgressBar({ progress, gate = false }) {
         background: gate ? '#cfe9ff' : 'rgba(255,255,255,0.7)',
         borderRadius: 3,
         overflow: 'hidden',
-        marginBottom: 28
+        marginBottom: gate ? 10 : 28
       }}
     >
       <div
         style={{
           height: '100%',
           width: `${progress}%`,
-          background: gate ? '#2563eb' : '#2F5BEA',
+          background: '#2563eb',
           borderRadius: 3,
           transition: 'width 0.25s ease'
         }}
