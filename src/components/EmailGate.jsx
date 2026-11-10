@@ -15,9 +15,6 @@ import { persistQuizLead } from '../lib/lead.js';
 import { clearPendingQuizLead, rememberPendingQuizLead, scheduleLeadRetry } from '../lib/pendingLead.js';
 import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
-const PLACEHOLDER_LABEL =
-  'PLACEHOLDER: Flex Partial with kit on plain background, 3:2, 1800x1200px';
-
 export default function EmailGate({
   initialEmail = '',
   initialPhone = '',
@@ -72,8 +69,14 @@ export default function EmailGate({
 
   return (
     <main className="email-gate" data-screen-label="Email">
-      <div className="email-gate-art" aria-hidden="true">
-        <p>{PLACEHOLDER_LABEL}</p>
+      <div className="email-gate-art">
+        <img
+          src="/gate-hero.jpg"
+          alt="Smiling adult"
+          width="1200"
+          height="800"
+          fetchpriority="high"
+        />
       </div>
       <h1 className="email-gate-title">Where should we send your results?</h1>
 
