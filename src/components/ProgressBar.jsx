@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ProgressBar({ progress }) {
+export default function ProgressBar({ progress, gate = false }) {
   return (
     <div
       role="progressbar"
@@ -9,7 +9,7 @@ export default function ProgressBar({ progress }) {
       aria-valuenow={progress}
       style={{
         height: 6,
-        background: 'rgba(255,255,255,0.7)',
+        background: gate ? '#cfe9ff' : 'rgba(255,255,255,0.7)',
         borderRadius: 3,
         overflow: 'hidden',
         marginBottom: 28
@@ -19,7 +19,7 @@ export default function ProgressBar({ progress }) {
         style={{
           height: '100%',
           width: `${progress}%`,
-          background: '#2F5BEA',
+          background: gate ? '#2563eb' : '#2F5BEA',
           borderRadius: 3,
           transition: 'width 0.25s ease'
         }}

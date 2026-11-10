@@ -73,7 +73,6 @@ export default function EmailGate({
   return (
     <main className="email-gate" data-screen-label="Email">
       <div className="email-gate-art" aria-hidden="true">
-        <img alt="" />
         <p>{PLACEHOLDER_LABEL}</p>
       </div>
       <h1 className="email-gate-title">Where should we send your results?</h1>

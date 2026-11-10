@@ -111,7 +111,8 @@ button { font-family: inherit; }
   cursor: pointer;
 }
 .email-gate-submit:disabled {
-  background: #93b4f5;
+  background: #2563eb;
+  opacity: 0.45;
   cursor: wait;
 }
 
@@ -130,7 +131,7 @@ button { font-family: inherit; }
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  height: 52px;
+  height: 92px;
   margin: 0 0 12px 0;
   padding: 6px 10px;
   border: 1.5px dashed #2563eb;
@@ -138,9 +139,6 @@ button { font-family: inherit; }
   background: #cfe9ff;
   color: #0a1628;
   text-align: center;
-}
-.email-gate-art img {
-  display: none;
 }
 .email-gate-art p {
   margin: 0;
@@ -154,7 +152,7 @@ button { font-family: inherit; }
     max-width: 960px;
   }
   .email-gate-art {
-    height: 64px;
+    height: 113px;
     margin-bottom: 16px;
   }
   .email-gate-title {

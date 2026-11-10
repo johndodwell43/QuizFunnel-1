@@ -126,9 +126,10 @@ export default function App() {
         <Header
           showBack={!onGate}
           onBack={goBack}
-          stepLabel={`Step ${stepNum} of ${TOTAL_STEPS}`}
+          gate={onGate}
+          stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}
         />
-        <ProgressBar progress={progress} />
+        <ProgressBar progress={progress} gate={onGate} />
 
         {onGate && (
           <EmailGate
