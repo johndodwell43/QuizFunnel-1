@@ -136,7 +136,7 @@ button { font-family: inherit; }
   margin: 0 auto 4px auto;
   padding: 0;
   /* Drawn as an inset outline so the photo itself gets the full height. */
-  outline: 1.5px solid rgba(10, 22, 40, 0.62);
+  outline: 1.5px solid rgba(255, 255, 255, 0.75);
   outline-offset: -1.5px;
   border-radius: 12px;
   overflow: hidden;
@@ -543,4 +543,81 @@ button { font-family: inherit; }
   .offer-price { font-size: 44px; }
   .offer-note { font-size: 14px; }
   .offer-checkout { min-height: 58px; }
+}
+
+/* Q2 tooth-count tiles: 3 across on phones, 6 across on desktop. */
+@media (min-width: 1024px) {
+  .answer-grid.answer-tiles { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+  .answer-grid.answer-tiles > button { padding: 0 !important; font-size: 32px !important; }
+  .answer-grid.answer-tiles > button:last-child { grid-column: 1 / -1; padding: 22px 28px !important; font-size: 26px !important; }
+}
+
+/* Result: recommended partial photo(s), arch choice, partial choice, details link. */
+.rec-shots { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.rec-shots.is-both { grid-template-columns: 1fr 1fr; }
+.rec-shot { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.rec-shot figcaption { font-size: 13px; font-weight: 700; color: rgba(10, 22, 40, 0.62); text-align: center; }
+.rec-photo {
+  aspect-ratio: 3 / 2;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #cfe9ff;
+  outline: 1.5px solid rgba(255, 255, 255, 0.75);
+  outline-offset: -1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rec-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rec-photo .ph { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 16px; font-size: 12px; padding: 8px; }
+.rec-shots.is-both .rec-photo .ph { font-size: 10px; }
+.opt-label { margin: 12px 0 6px 0; font-size: 14px; font-weight: 700; color: rgba(10, 22, 40, 0.62); }
+.plan-list { display: flex; flex-direction: column; gap: 8px; }
+.plan-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 16px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #0a1628;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.plan-row.is-on { border-color: #2563eb; background: #cfe9ff; }
+.plan-name { display: flex; flex-direction: column; gap: 2px; font-size: 16px; font-weight: 700; line-height: 1.2; }
+.plan-sub { font-size: 13px; font-weight: 400; color: rgba(10, 22, 40, 0.62); }
+.plan-price { font-size: 18px; font-weight: 700; white-space: nowrap; }
+.plan-split { margin: 4px 0 0 0; font-size: 13px; font-weight: 700; color: rgba(10, 22, 40, 0.62); }
+.details-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.details-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(10, 22, 40, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  color: #0a1628;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.offer-details { margin-top: 24px; scroll-margin-top: 12px; }
+.offer-details[hidden] { display: none; }
+@media (min-width: 1024px) {
+  .offer-top.rec { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .rec-shot figcaption { font-size: 15px; }
+  .plan-name { font-size: 18px; }
+  .plan-price { font-size: 20px; }
 }

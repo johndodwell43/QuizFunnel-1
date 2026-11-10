@@ -1,5 +1,6 @@
 import { PRICING, money } from '../config.js';
 import { CART_VARIANTS, archFromAnswer, cartUrl } from './checkout.js';
+export { archFromAnswer };
 
 function choice(sku, arch) {
   const price = arch === 'both'
@@ -42,4 +43,26 @@ export function activeChoice(offer, selected = offer.selected) {
       throw new Error(`Unknown offer selection: ${String(unknown)}`);
     }
   }
+}
+
+// Q2 answer → tooth count for the product photo (1–6; 6+ and "most" use 6).
+export function teethCount(answer = '') {
+  const legacy = { '2-3': 3, '4-6': 6, most: 6 };
+  if (legacy[answer]) return legacy[answer];
+  const n = parseInt(answer, 10);
+  if (!Number.isFinite(n) || n < 1) return 1;
+  return Math.min(n, 6);
+}
+
+// Photo of the recommended partial for one arch and tooth count.
+// Drop files at public/images/partials/upper-1.jpg … lower-6.jpg.
+export function partialImage(arch, teeth) {
+  return `/images/partials/${arch === 'lower' ? 'lower' : 'upper'}-${teethCount(teeth)}.jpg`;
+}
+
+// One arch answered → only that arch is offered.
+// Both answered → both arches first, with the option to start with one.
+export function archOptions(answerArch) {
+  const arch = archFromAnswer(answerArch);
+  return arch === 'both' ? ['both', 'upper', 'lower'] : [arch];
 }

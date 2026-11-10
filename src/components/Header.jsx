@@ -10,7 +10,7 @@ const chromeButton = {
   justifyContent: 'center'
 };
 
-export default function Header({ showBack, onBack, stepLabel, gate = false, offer = false }) {
+export default function Header({ showBack, onBack, stepLabel, gate = false, offer = false, showExit = true }) {
   const ink = gate || offer ? '#0a1628' : '#111827';
   const muted = offer ? '#0a1628' : gate ? 'rgba(10, 22, 40, 0.62)' : '#454e5c';
   const chip = gate ? '#cfe9ff' : 'rgba(255,255,255,0.7)';
@@ -56,12 +56,16 @@ export default function Header({ showBack, onBack, stepLabel, gate = false, offe
         </div>
       </div>
 
+      {showExit ? (
       <a aria-label="Exit quiz" href={LINKS.home} style={{ ...chromeButton, background: chip, color: ink, textDecoration: 'none' }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
           <path d="M18 6L6 18" />
           <path d="M6 6l12 12" />
         </svg>
       </a>
+      ) : (
+        <div style={{ width: 48, height: 48 }} />
+      )}
     </header>
   );
 }
