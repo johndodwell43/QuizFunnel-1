@@ -74,7 +74,7 @@ export default function EmailGate({
           src="/gate-hero.jpg"
           alt="Smiling adult"
           width="1200"
-          height="800"
+          height="460"
           fetchpriority="high"
         />
       </div>
