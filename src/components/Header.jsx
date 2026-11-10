@@ -16,6 +16,7 @@ export default function Header({ showBack, onBack, stepLabel, gate = false, offe
   const chip = gate ? '#cfe9ff' : 'rgba(255,255,255,0.7)';
   return (
     <header
+      className={gate ? 'gate-header' : undefined}
       style={{
         display: 'flex',
         alignItems: 'center',

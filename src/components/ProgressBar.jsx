@@ -3,6 +3,7 @@ import React from 'react';
 export default function ProgressBar({ progress, gate = false }) {
   return (
     <div
+      className={gate ? 'gate-progress' : undefined}
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={100}
