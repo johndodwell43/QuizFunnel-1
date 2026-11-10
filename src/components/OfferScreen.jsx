@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ImagePlaceholder from './ImagePlaceholder.jsx';
 import { LINKS, money } from '../config.js';
 import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
@@ -9,7 +9,14 @@ import {
   NEXT_STEPS,
   includedProductLine
 } from '../lib/offerCopy.js';
-import { activeChoice, offerForAnswers, purchaseLine } from '../lib/offerMatch.js';
+import {
+  activeChoice,
+  archOptions,
+  offerForAnswers,
+  partialImage,
+  purchaseLine,
+  teethCount
+} from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
 const MATCH_LINE = 'Based on your answers, Flex Partial may be a fit.';
@@ -24,11 +31,11 @@ const FILM = [
   ['1 / 1', 'PLACEHOLDER: Flex Partial detail product shot on plain background, 1:1, 1200px']
 ];
 
-const ARCHES = [
-  ['upper', INCLUDED_COPY.archUpper, 'PLACEHOLDER: upper partial product shot, 2:1, 600px'],
-  ['lower', INCLUDED_COPY.archLower, 'PLACEHOLDER: lower partial product shot, 2:1, 600px'],
-  ['both', INCLUDED_COPY.archBoth, 'PLACEHOLDER: both partials product shot, 2:1, 600px']
-];
+const ARCH_ROW = {
+  both: ['Both arches', 'Upper + lower'],
+  upper: ['Upper', 'Top arch'],
+  lower: ['Lower', 'Bottom arch']
+};
 
 const PAYMENT_MARKS = [
   ['4 / 1', 'PLACEHOLDER: Apple Pay, 4:1, 200px'],
@@ -38,17 +45,49 @@ const PAYMENT_MARKS = [
   ['100 / 37', 'PLACEHOLDER: Debit, 100:37, 200px']
 ];
 
+function PartialPhoto({ arch, teeth }) {
+  const src = partialImage(arch, teeth);
+  const [failed, setFailed] = useState(false);
+  const n = teethCount(teeth);
+  const label = `${arch === 'lower' ? 'Lower' : 'Upper'} partial · ${n === 6 ? '6+' : n} ${n === 1 ? 'tooth' : 'teeth'}`;
+  return (
+    <figure className="rec-shot">
+      <div className="rec-photo">
+        {failed ? (
+          <ImagePlaceholder text={`PLACEHOLDER: ${src.replace('/images/partials/', '')}, 3:2, 1200px`} ratio="3 / 2" />
+        ) : (
+          <img src={src} alt={label} width="1200" height="800" onError={() => setFailed(true)} />
+        )}
+      </div>
+      <figcaption>{label}</figcaption>
+    </figure>
+  );
+}
+
 export default function OfferScreen({ answers, inPersonFirst }) {
   const initial = offerForAnswers(answers);
+  const arches = archOptions(answers.arch);
   const [arch, setArch] = useState(initial.arch);
   const [selected, setSelected] = useState(initial.selected);
+  const [details, setDetails] = useState(false);
+  const detailsRef = useRef(null);
+  const howRef = useRef(null);
   const offer = offerForAnswers({ arch });
   const active = activeChoice(offer, selected);
+  const shots = arch === 'both' ? ['upper', 'lower'] : [arch];
 
   useEffect(() => {
     trackOfferPageViewed();
     setupScrollTracking();
   }, []);
+
+  const openDetails = (target) => {
+    setDetails(true);
+    requestAnimationFrame(() => {
+      const el = (target === 'how' ? howRef : detailsRef).current;
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
   const buy = (event) => {
     event.preventDefault();
@@ -59,16 +98,11 @@ export default function OfferScreen({ answers, inPersonFirst }) {
 
   return (
     <main data-screen-label="Offer" data-arch={offer.arch} className={inPersonFirst ? 'offer-screen has-visit' : 'offer-screen'}>
-      <div className="offer-top">
-        <div className="offer-gallery">
-          <div className="offer-hero">
-            <ImagePlaceholder text={HERO[1]} ratio={HERO[0]} />
-          </div>
-          <div className="offer-film">
-            {FILM.map(([ratio, text]) => (
-              <ImagePlaceholder key={text} text={text} ratio={ratio} />
-            ))}
-          </div>
+      <div className="offer-top rec">
+        <div className={shots.length > 1 ? 'rec-shots is-both' : 'rec-shots'}>
+          {shots.map((a) => (
+            <PartialPhoto key={a} arch={a} teeth={answers.teeth} />
+          ))}
         </div>
 
         <div className="offer-buy">
@@ -76,44 +110,61 @@ export default function OfferScreen({ answers, inPersonFirst }) {
           <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
           <p className="offer-note">{REVIEW_LINE}</p>
 
-          <div className="arch-row" role="group" aria-label="Arch">
-            {ARCHES.map(([value, label, shot]) => {
-              const choice = activeChoice(offerForAnswers({ arch: value }), selected);
-              const on = arch === value;
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  className={on ? 'arch-card is-on' : 'arch-card'}
-                  aria-pressed={on}
-                  onClick={() => setArch(value)}
-                >
-                  <ImagePlaceholder text={shot} ratio="2 / 1" />
-                  <span className="arch-label">{label}</span>
-                  <span className="arch-price">{money(choice.price)}</span>
-                </button>
-              );
-            })}
-          </div>
+          {arches.length > 1 && (
+            <>
+              <p className="opt-label">Your arches</p>
+              <div className="plan-list" role="group" aria-label="Arch">
+                {arches.map((value, index) => {
+                  const choice = activeChoice(offerForAnswers({ arch: value }), selected);
+                  const on = arch === value;
+                  const [name, sub] = ARCH_ROW[value];
+                  return (
+                    <React.Fragment key={value}>
+                      {index === 1 && <p className="plan-split">Or start with one arch</p>}
+                      <button
+                        type="button"
+                        className={on ? 'plan-row is-on' : 'plan-row'}
+                        aria-pressed={on}
+                        onClick={() => setArch(value)}
+                      >
+                        <span className="plan-name">
+                          {name}
+                          <span className="plan-sub">{sub}</span>
+                        </span>
+                        <span className="plan-price">{money(choice.price)}</span>
+                      </button>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            </>
+          )}
 
-          <div id="offer-cards" className="sku-row" role="group" aria-label="Partial choices">
+          <p className="opt-label">Choose your partial</p>
+          <div id="offer-cards" className="plan-list" role="group" aria-label="Partial choices">
             <button
               type="button"
-              className={selected === 'flex' ? 'sku-card is-on' : 'sku-card'}
+              className={selected === 'flex' ? 'plan-row is-on' : 'plan-row'}
               aria-pressed={selected === 'flex'}
               onClick={() => setSelected('flex')}
             >
-              <span className="sku-kicker">Your match.</span>
-              <span className="sku-name">Flex Partial</span>
+              <span className="plan-name">
+                Flex Partial
+                <span className="plan-sub">Your match</span>
+              </span>
+              <span className="plan-price">{money(offer.flex.price)}</span>
             </button>
             <button
               type="button"
-              className={selected === 'precision' ? 'sku-card is-on' : 'sku-card'}
+              className={selected === 'precision' ? 'plan-row is-on' : 'plan-row'}
               aria-pressed={selected === 'precision'}
               onClick={() => setSelected('precision')}
             >
-              <span className="sku-name">Precision Partial Pro</span>
-              <span className="sku-price">{money(offer.precision.price)}</span>
+              <span className="plan-name">
+                Precision Partial Pro
+                <span className="plan-sub">Milled upgrade</span>
+              </span>
+              <span className="plan-price">{money(offer.precision.price)}</span>
             </button>
           </div>
 
@@ -140,45 +191,69 @@ export default function OfferScreen({ answers, inPersonFirst }) {
               ))}
             </div>
           </div>
+
+          <div className="details-links">
+            <button type="button" className="details-link" onClick={() => openDetails('details')}>
+              <span>See product details</span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <button type="button" className="details-link" onClick={() => openDetails('how')}>
+              <span>How it works</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <section className="included" aria-label={INCLUDED_COPY.heading}>
-        <h2>{INCLUDED_COPY.heading}</h2>
-        <ul className="included-list">
-          <li>{INCLUDED_COPY.dentist}</li>
-          <li>{INCLUDED_COPY.kit}</li>
-          <li>{INCLUDED_COPY.shipping}</li>
-          <li data-included-product>{includedProductLine(active.name, offer.arch, money(active.price))}</li>
-        </ul>
-      </section>
+      <div className="offer-details" ref={detailsRef} hidden={!details}>
+        <div className="offer-gallery">
+          <div className="offer-hero">
+            <ImagePlaceholder text={HERO[1]} ratio={HERO[0]} />
+          </div>
+          <div className="offer-film">
+            {FILM.map(([ratio, text]) => (
+              <ImagePlaceholder key={text} text={text} ratio={ratio} />
+            ))}
+          </div>
+        </div>
 
-      <section className="faq" aria-label="Details">
-        {FAQ_COPY.map(([title, body]) => (
-          <details key={title} className="faq-row">
-            <summary>
-              <span>{title}</span>
-              <span className="faq-plus" aria-hidden="true">+</span>
-            </summary>
-            <p>{body}</p>
-          </details>
-        ))}
-      </section>
+        <section className="included" aria-label={INCLUDED_COPY.heading}>
+          <h2>{INCLUDED_COPY.heading}</h2>
+          <ul className="included-list">
+            <li>{INCLUDED_COPY.dentist}</li>
+            <li>{INCLUDED_COPY.kit}</li>
+            <li>{INCLUDED_COPY.shipping}</li>
+            <li data-included-product>{includedProductLine(active.name, offer.arch, money(active.price))}</li>
+          </ul>
+        </section>
 
-      <section className="next" aria-label={NEXT_HEADING}>
-        <h2>{NEXT_HEADING}</h2>
-        <ol className="next-list">
-          {NEXT_STEPS.map(([title, body, shot], index) => (
-            <li key={title} className={index % 2 === 1 ? 'next-step is-flip' : 'next-step'}>
-              <div className="next-copy">
-                <h3>{title}</h3>
-                <p>{body}</p>
-              </div>
-              <ImagePlaceholder text={shot} ratio="1 / 1" />
-            </li>
+        <section className="faq" aria-label="Details">
+          {FAQ_COPY.map(([title, body]) => (
+            <details key={title} className="faq-row">
+              <summary>
+                <span>{title}</span>
+                <span className="faq-plus" aria-hidden="true">+</span>
+              </summary>
+              <p>{body}</p>
+            </details>
           ))}
-        </ol>
-      </section>
+        </section>
+
+        <section className="next" aria-label={NEXT_HEADING} ref={howRef}>
+          <h2>{NEXT_HEADING}</h2>
+          <ol className="next-list">
+            {NEXT_STEPS.map(([title, body, shot], index) => (
+              <li key={title} className={index % 2 === 1 ? 'next-step is-flip' : 'next-step'}>
+                <div className="next-copy">
+                  <h3>{title}</h3>
+                  <p>{body}</p>
+                </div>
+                <ImagePlaceholder text={shot} ratio="1 / 1" />
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
 
       <p className="offer-contact">
         Questions?{' '}

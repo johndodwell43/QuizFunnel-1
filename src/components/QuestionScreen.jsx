@@ -29,15 +29,49 @@ export default function QuestionScreen({ question, sel, onPick }) {
         <div style={{ height: 16 }} />
       )}
 
-      <div className="answer-grid" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div
+        className={question.layout === 'tiles' ? 'answer-grid answer-tiles' : 'answer-grid'}
+        style={
+          question.layout === 'tiles'
+            ? { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 12 }
+            : { display: 'flex', flexDirection: 'column', gap: 12 }
+        }
+      >
         {question.opts.map(([label, value], i) => {
           const on = sel === i;
+          const tile = question.layout === 'tiles' && /^\d/.test(value);
+          if (tile) {
+            return (
+              <button
+                key={value}
+                onClick={() => onPick(question.key, value, i)}
+                aria-label={`${label} ${value === '1' ? 'tooth' : 'teeth'}`}
+                style={{
+                  minHeight: 72,
+                  border: 'none',
+                  borderRadius: 20,
+                  background: on ? '#111827' : '#ffffff',
+                  color: on ? '#ffffff' : '#111827',
+                  boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
+                  cursor: 'pointer',
+                  fontSize: 28,
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {label}
+              </button>
+            );
+          }
           return (
             <button
               key={value}
               onClick={() => onPick(question.key, value, i)}
               style={{
                 width: '100%',
+                gridColumn: question.layout === 'tiles' ? '1 / -1' : undefined,
                 minHeight: 72,
                 border: 'none',
                 borderRadius: 20,

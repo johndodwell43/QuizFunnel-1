@@ -15,7 +15,8 @@ export const QUESTIONS = [
     label: 'Q2 Teeth count',
     title: 'About how many teeth are you missing?',
     sub: 'Your best guess is fine. Skip teeth with crowns or bridges.',
-    opts: [['1 tooth', '1'], ['2 or 3 teeth', '2-3'], ['4 to 6 teeth', '4-6'], ['All or most of my teeth', 'most']]
+    layout: 'tiles',
+    opts: [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6+', '6+'], ['All or most of my teeth', 'most']]
   },
   {
     key: 'extraction',
