@@ -435,13 +435,14 @@ button { font-family: inherit; }
 .next-copy p { margin: 0; font-size: 15px; line-height: 1.4; color: #0a1628; }
 .next-step .ph { aspect-ratio: 1 / 1; max-height: 160px; font-size: 12px; }
 .offer-visit {
-  margin-top: 10px;
-  background: #fdf3d1;
-  border-radius: 14px;
-  padding: 12px 14px;
+  margin-top: 6px;
+  background: #cfe9ff;
+  border-left: 3px solid #0a1628;
+  border-radius: 10px;
+  padding: 6px 8px;
 }
-.offer-visit p { margin: 0; font-size: 15px; line-height: 1.4; color: #6b5410; }
-.offer-visit strong { color: #55430c; }
+.offer-visit p { margin: 0; font-size: 13px; line-height: 1.25; color: #0a1628; }
+.offer-visit strong { color: #0a1628; font-weight: 700; }
 .offer-contact {
   margin: 14px 0 0 0;
   font-size: 15px;
@@ -463,14 +464,23 @@ button { font-family: inherit; }
   .offer-film .ph { max-height: 36px; font-size: 8px; padding: 2px; }
   .offer-title { font-size: 20px; line-height: 1.1; }
   .offer-price { margin-top: 2px; font-size: 32px; }
-  .offer-note { margin-top: 2px; font-size: 12px; line-height: 1.25; }
+  .offer-note { margin-top: 2px; font-size: 14px; line-height: 1.3; }
   .arch-row { margin-top: 6px; gap: 6px; }
   .arch-card { padding: 4px; gap: 1px; }
-  .arch-card .ph { max-height: 22px; }
+  .arch-card .ph { min-height: 30px; max-height: none; overflow: visible; }
+  .arch-card .ph span { display: block; -webkit-line-clamp: unset; overflow: visible; }
+  .ph-pay { grid-template-columns: 1fr 1fr; }
+  .ph-pay .ph { min-height: 44px; font-size: 11px; overflow: visible; padding: 6px; }
+  .offer-visit { margin-top: 4px; padding: 4px 8px; }
+  .offer-visit p { font-size: 12px; line-height: 1.2; }
   .sku-row { margin-top: 6px; gap: 6px; }
   .sku-card { min-height: 46px; padding: 6px 8px; }
   .offer-selected { margin-top: 4px; font-size: 15px; }
   .offer-checkout { margin-top: 4px; min-height: 52px; padding: 8px 14px; }
+  .offer-screen.has-visit .offer-hero .ph { max-height: 80px; }
+  .offer-screen.has-visit .offer-film .ph { max-height: 28px; }
+  .offer-screen.has-visit .offer-selected { margin-top: 2px; }
+  .offer-screen.has-visit .offer-checkout { margin-top: 2px; }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {

@@ -58,7 +58,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
   };
 
   return (
-    <main data-screen-label="Offer" data-arch={offer.arch} className="offer-screen">
+    <main data-screen-label="Offer" data-arch={offer.arch} className={inPersonFirst ? 'offer-screen has-visit' : 'offer-screen'}>
       <div className="offer-top">
         <div className="offer-gallery">
           <div className="offer-hero">
@@ -117,6 +117,16 @@ export default function OfferScreen({ answers, inPersonFirst }) {
             </button>
           </div>
 
+          {inPersonFirst && (
+            <div className="offer-visit">
+              <p>
+                <strong>See a dentist in person first.</strong> Pain, swelling,
+                a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
+                dentist in your state can tell you what is going on.
+              </p>
+            </div>
+          )}
+
           <p className="offer-selected" data-selected-offer>{purchaseLine(active)}</p>
           <a className="offer-checkout" data-checkout href={active.url} onClick={buy}>
             <span>Continue to checkout</span>
@@ -130,16 +140,6 @@ export default function OfferScreen({ answers, inPersonFirst }) {
               ))}
             </div>
           </div>
-
-          {inPersonFirst && (
-            <div className="offer-visit">
-              <p>
-                <strong>See a dentist in person first.</strong> Pain, swelling,
-                a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
-                dentist in your state can tell you what is going on.
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
