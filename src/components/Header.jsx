@@ -10,9 +10,9 @@ const chromeButton = {
   justifyContent: 'center'
 };
 
-export default function Header({ showBack, onBack, stepLabel, gate = false }) {
-  const ink = gate ? '#0a1628' : '#111827';
-  const muted = gate ? 'rgba(10, 22, 40, 0.62)' : '#454e5c';
+export default function Header({ showBack, onBack, stepLabel, gate = false, offer = false }) {
+  const ink = gate || offer ? '#0a1628' : '#111827';
+  const muted = offer ? '#0a1628' : gate ? 'rgba(10, 22, 40, 0.62)' : '#454e5c';
   const chip = gate ? '#cfe9ff' : 'rgba(255,255,255,0.7)';
   return (
     <header

@@ -1,267 +1,189 @@
-import React, { useEffect } from 'react';
-import ProofBlock from './ProofBlock.jsx';
-import ValueList from './ValueList.jsx';
-import HowItWorks from './HowItWorks.jsx';
-import Footer from './Footer.jsx';
-import { AFFIRM_LINE, DENTIST_LINE, LINKS, PRICING, money } from '../config.js';
-import { checkoutOneArch, checkoutBothArches } from '../lib/checkout.js';
-import { trackSendKitClicked, trackOfferPageViewed, setupScrollTracking } from '../lib/track.js';
+import React, { useEffect, useState } from 'react';
+import ImagePlaceholder from './ImagePlaceholder.jsx';
+import { LINKS, money } from '../config.js';
+import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
+import {
+  FAQ_COPY,
+  INCLUDED_COPY,
+  NEXT_HEADING,
+  NEXT_STEPS,
+  includedProductLine
+} from '../lib/offerCopy.js';
+import { activeChoice, offerForAnswers, purchaseLine } from '../lib/offerMatch.js';
+import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
-const primaryButton = {
-  marginTop: 16,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: 64,
-  width: '100%',
-  border: 'none',
-  background: '#2F5BEA',
-  color: '#ffffff',
-  borderRadius: 16,
-  fontSize: 20,
-  fontWeight: 700,
-  fontFamily: 'inherit',
-  cursor: 'pointer',
-  padding: '14px 18px'
-};
+const MATCH_LINE = 'Based on your answers, Flex Partial may be a fit.';
+const REVIEW_LINE =
+  "A partner dentist licensed in your state reviews your photos and decides whether it's a fit. Placing your order starts that review.";
+const HERO = ['16 / 9', 'PLACEHOLDER: Flex Partial with kit on plain background, 1:1, 1200px'];
 
-const sectionTitle = {
-  margin: '0 0 12px 0',
-  fontSize: 28,
-  fontWeight: 700,
-  lineHeight: 1.2,
-  color: '#111827'
-};
+const FILM = [
+  ['1 / 1', 'PLACEHOLDER: Flex Partial three-quarter product shot on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: kit contents on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: partial case on plain background, 1:1, 1200px'],
+  ['1 / 1', 'PLACEHOLDER: Flex Partial detail product shot on plain background, 1:1, 1200px']
+];
 
-const body = {
-  margin: 0,
-  fontSize: 18,
-  lineHeight: 1.5,
-  color: '#454e5c'
-};
+const ARCHES = [
+  ['upper', INCLUDED_COPY.archUpper, 'PLACEHOLDER: upper partial product shot, 2:1, 600px'],
+  ['lower', INCLUDED_COPY.archLower, 'PLACEHOLDER: lower partial product shot, 2:1, 600px'],
+  ['both', INCLUDED_COPY.archBoth, 'PLACEHOLDER: both partials product shot, 2:1, 600px']
+];
 
-function PriceFigures({ oneArch, both }) {
-  const figure = { minWidth: 120 };
-  const amount = { fontSize: 36, fontWeight: 700, lineHeight: 1.1, color: '#111827' };
-  const label = { marginTop: 4, fontSize: 18, lineHeight: 1.3, color: '#454e5c' };
-  return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px 28px', marginTop: 14 }}>
-      <div style={figure}>
-        <div style={amount}>{oneArch}</div>
-        <div style={label}>one arch</div>
-      </div>
-      <div style={figure}>
-        <div style={amount}>{both}</div>
-        <div style={label}>both arches</div>
-      </div>
-    </div>
-  );
-}
+const PAYMENT_MARKS = [
+  ['4 / 1', 'PLACEHOLDER: Apple Pay, 4:1, 200px'],
+  ['200 / 47', 'PLACEHOLDER: Affirm, 200:47, 200px'],
+  ['40 / 17', 'PLACEHOLDER: Visa, 40:17, 200px'],
+  ['50 / 13', 'PLACEHOLDER: Mastercard, 50:13, 200px'],
+  ['100 / 37', 'PLACEHOLDER: Debit, 100:37, 200px']
+];
 
 export default function OfferScreen({ answers, inPersonFirst }) {
+  const initial = offerForAnswers(answers);
+  const [arch, setArch] = useState(initial.arch);
+  const [selected, setSelected] = useState(initial.selected);
+  const offer = offerForAnswers({ arch });
+  const active = activeChoice(offer, selected);
+
   useEffect(() => {
     trackOfferPageViewed();
     setupScrollTracking();
   }, []);
 
-  const isBoth = answers.arch === 'both';
-  const archLabel = isBoth ? 'both arches' : 'one arch';
-
-  const flexPay = isBoth ? PRICING.flexBoth : PRICING.flexPrice;
-  const precisionPay = isBoth ? PRICING.precisionBoth : PRICING.precisionPrice;
-
-  const buy = (sku, amount) => {
-    const arch = isBoth ? 'both' : answers.arch || 'upper';
-    const tracking = trackSendKitClicked(sku, arch, amount);
-    if (isBoth) checkoutBothArches(sku, tracking);
-    else checkoutOneArch(sku, arch, tracking);
+  const buy = (event) => {
+    event.preventDefault();
+    const tracking = trackSendKitClicked(active.sku, offer.arch, active.price);
+    if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
+    else checkoutOneArch(active.sku, offer.arch, tracking);
   };
 
   return (
-    <main data-screen-label="Offer">
-      <h1
-        style={{
-          fontSize: 'clamp(30px, 5vw, 40px)',
-          lineHeight: 1.15,
-          fontWeight: 700,
-          margin: '0 0 12px 0',
-          textWrap: 'pretty',
-          color: '#111827'
-        }}
-      >
-        Partial prices, before checkout.
-      </h1>
-      <p style={{ ...body, marginBottom: 22 }}>
-        Flex Partial and Precision Partial Pro. The price depends on one arch or both. {DENTIST_LINE}
-      </p>
-
-      <section id="offer-cards" aria-label="Prices" style={{ marginBottom: 26 }}>
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 20px 18px',
-            marginBottom: 14
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, lineHeight: 1.25 }}>Flex Partial</h2>
-          <p style={{ ...body, marginTop: 8 }}>Removable partial. One arch, or both arches.</p>
-          <PriceFigures oneArch={money(PRICING.flexPrice)} both={money(PRICING.flexBoth)} />
-        </article>
-
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 20px 18px'
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, lineHeight: 1.25 }}>Precision Partial Pro</h2>
-          <p style={{ ...body, marginTop: 8 }}>Removable partial. One arch, or both arches.</p>
-          <PriceFigures oneArch={money(PRICING.precisionPrice)} both={money(PRICING.precisionBoth)} />
-        </article>
-
-        <p style={{ ...body, marginTop: 14, fontWeight: 700, color: '#111827' }}>{AFFIRM_LINE}</p>
-      </section>
-
-      <section style={{ marginBottom: 26 }}>
-        <h2 style={sectionTitle}>What these are</h2>
-        <div
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 22px'
-          }}
-        >
-          <p style={body}>
-            Flex Partial and Precision Partial Pro are removable partials, custom made from your
-            impressions in a U.S. lab. {DENTIST_LINE}
-          </p>
-          <p style={{ ...body, marginTop: 12 }}>
-            Flex Partial uses a Valplast gum base and acrylic resin teeth. Precision Partial Pro uses
-            a Duraflex gum base and PMMA teeth, finished by hand in the lab.
-          </p>
-        </div>
-      </section>
-
-      <section style={{ marginBottom: 26 }}>
-        <h2 style={sectionTitle}>Why this path</h2>
-        <div
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px 22px'
-          }}
-        >
-          <p style={body}>
-            A partial replaces missing teeth and comes out. It is made from impressions after a
-            licensed dentist reviews the case. This page is not a diagnosis.
-          </p>
-        </div>
-        {inPersonFirst && (
-          <div
-            style={{
-              background: '#fdf3d1',
-              borderRadius: 16,
-              padding: '16px 18px',
-              marginTop: 14,
-              display: 'flex',
-              gap: 12,
-              alignItems: 'flex-start'
-            }}
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#8a6d1a"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ flexShrink: 0, marginTop: 2 }}
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 8v4" />
-              <path d="M12 16h.01" />
-            </svg>
-            <p style={{ margin: 0, fontSize: 18, lineHeight: 1.5, color: '#6b5410' }}>
-              <strong style={{ color: '#55430c' }}>See a dentist in person first.</strong> Pain, swelling,
-              a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
-              dentist in your state can tell you what is going on.
-            </p>
+    <main data-screen-label="Offer" data-arch={offer.arch} className={inPersonFirst ? 'offer-screen has-visit' : 'offer-screen'}>
+      <div className="offer-top">
+        <div className="offer-gallery">
+          <div className="offer-hero">
+            <ImagePlaceholder text={HERO[1]} ratio={HERO[0]} />
           </div>
-        )}
-      </section>
+          <div className="offer-film">
+            {FILM.map(([ratio, text]) => (
+              <ImagePlaceholder key={text} text={text} ratio={ratio} />
+            ))}
+          </div>
+        </div>
 
-      <ProofBlock />
-      <HowItWorks />
-      <ValueList />
+        <div className="offer-buy">
+          <h1 className="offer-title">{MATCH_LINE}</h1>
+          <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
+          <p className="offer-note">{REVIEW_LINE}</p>
 
-      <section aria-label="Checkout" style={{ marginBottom: 8 }}>
-        <h2 style={sectionTitle}>Checkout</h2>
-        <p style={{ ...body, marginBottom: 14 }}>
-          Your answers selected {archLabel}. Each button uses that choice.
-        </p>
+          <div className="arch-row" role="group" aria-label="Arch">
+            {ARCHES.map(([value, label, shot]) => {
+              const choice = activeChoice(offerForAnswers({ arch: value }), selected);
+              const on = arch === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  className={on ? 'arch-card is-on' : 'arch-card'}
+                  aria-pressed={on}
+                  onClick={() => setArch(value)}
+                >
+                  <ImagePlaceholder text={shot} ratio="2 / 1" />
+                  <span className="arch-label">{label}</span>
+                  <span className="arch-price">{money(choice.price)}</span>
+                </button>
+              );
+            })}
+          </div>
 
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px',
-            marginBottom: 14
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Flex Partial</h3>
-          <p style={{ ...body, marginTop: 8 }}>
-            {money(flexPay)} · {archLabel}
-          </p>
-          <button type="button" onClick={() => buy('flex', flexPay)} style={primaryButton}>
-            Continue to checkout
-          </button>
-        </article>
+          <div id="offer-cards" className="sku-row" role="group" aria-label="Partial choices">
+            <button
+              type="button"
+              className={selected === 'flex' ? 'sku-card is-on' : 'sku-card'}
+              aria-pressed={selected === 'flex'}
+              onClick={() => setSelected('flex')}
+            >
+              <span className="sku-kicker">Your match.</span>
+              <span className="sku-name">Flex Partial</span>
+            </button>
+            <button
+              type="button"
+              className={selected === 'precision' ? 'sku-card is-on' : 'sku-card'}
+              aria-pressed={selected === 'precision'}
+              onClick={() => setSelected('precision')}
+            >
+              <span className="sku-name">Precision Partial Pro</span>
+              <span className="sku-price">{money(offer.precision.price)}</span>
+            </button>
+          </div>
 
-        <article
-          style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
-            padding: '20px'
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Precision Partial Pro</h3>
-          <p style={{ ...body, marginTop: 8 }}>
-            {money(precisionPay)} · {archLabel}
-          </p>
-          <button type="button" onClick={() => buy('precision', precisionPay)} style={primaryButton}>
-            Continue to checkout
-          </button>
-        </article>
+          {inPersonFirst && (
+            <div className="offer-visit">
+              <p>
+                <strong>See a dentist in person first.</strong> Pain, swelling,
+                a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
+                dentist in your state can tell you what is going on.
+              </p>
+            </div>
+          )}
 
-        <p style={{ ...body, marginTop: 18, textAlign: 'center' }}>
-          Questions?{' '}
-          <a
-            href={`mailto:${LINKS.email}`}
-            style={{
-              color: '#2F5BEA',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              minHeight: 48
-            }}
-          >
-            {LINKS.email}
+          <p className="offer-selected" data-selected-offer>{purchaseLine(active)}</p>
+          <a className="offer-checkout" data-checkout href={active.url} onClick={buy}>
+            <span>Continue to checkout</span>
+            <span>{money(active.price)}</span>
           </a>
-        </p>
+
+          <div className="pay-panel">
+            <div className="ph-pay">
+              {PAYMENT_MARKS.map(([ratio, text]) => (
+                <ImagePlaceholder key={text} text={text} ratio={ratio} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section className="included" aria-label={INCLUDED_COPY.heading}>
+        <h2>{INCLUDED_COPY.heading}</h2>
+        <ul className="included-list">
+          <li>{INCLUDED_COPY.dentist}</li>
+          <li>{INCLUDED_COPY.kit}</li>
+          <li>{INCLUDED_COPY.shipping}</li>
+          <li data-included-product>{includedProductLine(active.name, offer.arch, money(active.price))}</li>
+        </ul>
       </section>
 
-      <Footer />
+      <section className="faq" aria-label="Details">
+        {FAQ_COPY.map(([title, body]) => (
+          <details key={title} className="faq-row">
+            <summary>
+              <span>{title}</span>
+              <span className="faq-plus" aria-hidden="true">+</span>
+            </summary>
+            <p>{body}</p>
+          </details>
+        ))}
+      </section>
+
+      <section className="next" aria-label={NEXT_HEADING}>
+        <h2>{NEXT_HEADING}</h2>
+        <ol className="next-list">
+          {NEXT_STEPS.map(([title, body, shot], index) => (
+            <li key={title} className={index % 2 === 1 ? 'next-step is-flip' : 'next-step'}>
+              <div className="next-copy">
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </div>
+              <ImagePlaceholder text={shot} ratio="1 / 1" />
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <p className="offer-contact">
+        Questions?{' '}
+        <a href={`mailto:${LINKS.email}`} className="offer-mail">{LINKS.email}</a>
+      </p>
     </main>
   );
 }

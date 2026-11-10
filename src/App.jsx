@@ -109,9 +109,9 @@ export default function App() {
     <div
       style={{
         minHeight: '100vh',
-        background: onGate ? '#d6ecff' : '#d7ecff',
+        background: onGate || isOffer ? '#d6ecff' : '#d7ecff',
         fontFamily: "'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
-        color: '#111827',
+        color: isOffer ? '#0a1628' : '#111827',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -120,13 +120,14 @@ export default function App() {
       }}
     >
       <div
-        className={onGate ? 'gate-screen' : undefined}
-        style={onGate ? { width: '100%' } : { width: '100%', maxWidth: isOffer ? '960px' : '560px' }}
+        className={onGate ? 'gate-screen' : isOffer ? 'shell shell-offer' : 'shell shell-flow'}
+        style={{ width: '100%' }}
       >
         <Header
           showBack={!onGate}
           onBack={goBack}
           gate={onGate}
+          offer={isOffer}
           stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}
         />
         <ProgressBar progress={progress} gate={onGate} />

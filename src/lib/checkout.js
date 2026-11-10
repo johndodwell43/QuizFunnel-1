@@ -1,21 +1,34 @@
 const SHOP = 'tfvziu-ia.myshopify.com';
 
-const VARIANTS = {
-  flex:      { upper: '63304031961457', lower: '63304032158065', both: '63304032354673' }, // 489/489/859
-  precision: { upper: '63304040481137', lower: '63304040677745', both: '63304040874353' }, // 789/789/1479
+export const CART_VARIANTS = {
+  flex:      { upper: '63304031961457', lower: '63304032158065', both: '63304032354673' },
+  precision: { upper: '63304040481137', lower: '63304040677745', both: '63304040874353' }
 };
 
-const archFromStep1 = (a = '') =>
-  /both/i.test(a) ? 'both' : /lower/i.test(a) ? 'lower' : 'upper';
+// Cart acceptance applies this code. It is not shown on the result screen.
+export const DISCOUNT_CODE = 'KLYROS50';
+
+export const archFromAnswer = (answer = '') =>
+  /both/i.test(answer) ? 'both' : /lower/i.test(answer) ? 'lower' : 'upper';
+
+export function cartUrl(variantId, tracking = {}) {
+  const params = new URLSearchParams();
+  Object.entries(tracking).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    params.append(key, String(value));
+  });
+  if (!params.has('discount')) params.append('discount', DISCOUNT_CODE);
+  const qs = params.toString();
+  return `https://${SHOP}/cart/${variantId}:1${qs ? `?${qs}` : ''}`;
+}
 
 function go(variantId, tracking = {}) {
-  const qs = new URLSearchParams(tracking).toString();
-  window.location.href = `https://${SHOP}/cart/${variantId}:1${qs ? '?' + qs : ''}`;
+  window.location.href = cartUrl(variantId, tracking);
 }
 
 export function checkoutOneArch(sku, step1Answer, tracking) {
-  go(VARIANTS[sku][archFromStep1(step1Answer)], tracking);
+  go(CART_VARIANTS[sku][archFromAnswer(step1Answer)], tracking);
 }
 export function checkoutBothArches(sku, tracking) {
-  go(VARIANTS[sku].both, tracking);
+  go(CART_VARIANTS[sku].both, tracking);
 }
