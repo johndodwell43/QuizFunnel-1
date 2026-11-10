@@ -26,7 +26,7 @@ export function includedProductLine(name, arch, priceText) {
 
 const DENTIST_REVIEW = "A partner dentist licensed in your state reviews your photos and decides whether it's a fit.";
 const KIT_STEP = 'A kit is sent to you to take your impressions.';
-const LAB_STEP = 'A U.S. lab makes your partial from your impressions.';
+const LAB_STEP = 'A licensed U.S. dental lab makes your partial from your impressions.';
 
 export const FAQ_COPY = [
   ['Dentist review', DENTIST_REVIEW],

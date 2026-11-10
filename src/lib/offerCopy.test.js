@@ -32,7 +32,7 @@ test('FAQ and What\'s next share the scored step answers in order', () => {
   assert.deepEqual(FAQ_COPY.map(([title, body]) => [title, body]), [
     ['Dentist review', "A partner dentist licensed in your state reviews your photos and decides whether it's a fit."],
     ['Kit', 'A kit is sent to you to take your impressions.'],
-    ['U.S. lab', 'A U.S. lab makes your partial from your impressions.'],
+    ['U.S. lab', 'A licensed U.S. dental lab makes your partial from your impressions.'],
     ['Shipping', 'Prepaid, tracked 2-day shipping.']
   ]);
   assert.deepEqual(NEXT_STEPS.map(([title, body]) => [title, body]), FAQ_COPY.slice(0, 3));
