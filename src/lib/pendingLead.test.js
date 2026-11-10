@@ -26,7 +26,6 @@ function memoryStorage(initial) {
 test('a pending lead stores contact fields and consent only', () => {
   const record = toPendingLead({
     email: 'results@example.com',
-    firstName: "  O'Brien-José 123!! ",
     phone: '12345',
     emailMarketingConsent: true,
     smsConsent: true,
@@ -38,7 +37,6 @@ test('a pending lead stores contact fields and consent only', () => {
   });
   assert.deepEqual(record, {
     email: 'results@example.com',
-    firstName: "O'Brien-José",
     emailMarketingConsent: true,
     smsConsent: false
   });
@@ -53,7 +51,6 @@ test('the queue entry is written before the first retry send', async () => {
   const result = await retryPendingLead(
     {
       email: 'results@example.com',
-      firstName: 'Ada Marie Claire',
       phone: '(415) 555-0100',
       emailMarketingConsent: false,
       smsConsent: true,
@@ -78,12 +75,11 @@ test('the queue entry is written before the first retry send', async () => {
   assert.deepEqual(Object.keys(stored).sort(), [
     'email',
     'emailMarketingConsent',
-    'firstName',
     'phone',
     'smsConsent'
   ]);
   assert.equal(stored.phone, '+14155550100');
-  assert.equal(stored.firstName, 'Ada Marie');
+  assert.equal(stored.firstName, undefined);
   assert.equal(stored.smsConsent, true);
   assert.equal(stored.emailMarketingConsent, false);
   assert.equal(stored.arch, undefined);
@@ -94,7 +90,7 @@ test('the queue entry is written before the first retry send', async () => {
     { email: 'results@example.com', firstName: 'Ada', phone: 'nope', emailMarketingConsent: true, smsConsent: true, loose: 'yes' },
     memoryStorage()
   );
-  assert.deepEqual(Object.keys(direct).sort(), ['email', 'emailMarketingConsent', 'firstName', 'smsConsent']);
+  assert.deepEqual(Object.keys(direct).sort(), ['email', 'emailMarketingConsent', 'smsConsent']);
   assert.equal(direct.smsConsent, false);
 });
 
@@ -102,7 +98,7 @@ test('the second retry clears the pending lead', async () => {
   const storage = memoryStorage();
   let calls = 0;
   const result = await retryPendingLead(
-    { email: 'results@example.com', firstName: 'Ada', emailMarketingConsent: true, smsConsent: false },
+    { email: 'results@example.com', emailMarketingConsent: true, smsConsent: false },
     {
       send: async () => {
         calls += 1;
@@ -122,7 +118,6 @@ test('a stored lead is resent on the next opportunity and cleared on success', a
   const storage = memoryStorage([
     [PENDING_LEAD_KEY, JSON.stringify({
       email: 'results@example.com',
-      firstName: 'Ada9',
       phone: '+14155550100',
       emailMarketingConsent: true,
       smsConsent: true,
@@ -137,11 +132,11 @@ test('a stored lead is resent on the next opportunity and cleared on success', a
     storage
   });
   assert.equal(ok, 'sent');
-  assert.equal(sent.firstName, 'Ada');
+  assert.equal(sent.firstName, undefined);
   assert.equal(sent.arch, undefined);
   assert.equal(storage.getItem(PENDING_LEAD_KEY), null);
 
-  storage.setItem(PENDING_LEAD_KEY, JSON.stringify({ email: 'results@example.com', firstName: 'Ada' }));
+  storage.setItem(PENDING_LEAD_KEY, JSON.stringify({ email: 'results@example.com' }));
   const kept = await resendPendingLead({
     send: async () => {
       throw new Error('lead-save-failed');

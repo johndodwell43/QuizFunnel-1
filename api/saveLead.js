@@ -1,6 +1,5 @@
 import {
   isValidEmail,
-  normalizeFirstName,
   phoneForLead,
   resolveEmailMarketingConsent,
   resolveSmsConsent
@@ -66,12 +65,10 @@ async function postKlaviyo(path, body) {
 
 export function normalizeQuizLead(input) {
   const email = String(input?.email || '').trim();
-  const firstName = normalizeFirstName(input?.firstName);
   const phone = phoneForLead(input?.phone);
   if (!isValidEmail(email)) throw fail(400, 'invalid-email');
   return {
     email,
-    firstName,
     phone,
     emailMarketingConsent: resolveEmailMarketingConsent(input?.emailMarketingConsent),
     smsConsent: resolveSmsConsent(input?.smsConsent, phone)
@@ -79,17 +76,15 @@ export function normalizeQuizLead(input) {
 }
 
 export async function saveQuizLead(input) {
-  const { email, firstName, phone, emailMarketingConsent, smsConsent } = normalizeQuizLead(input);
+  const { email, phone, emailMarketingConsent, smsConsent } = normalizeQuizLead(input);
 
   const properties = quizProperties(input);
   properties.email_marketing_consent = emailMarketingConsent;
   properties.sms_consent = smsConsent;
   const attributes = { email, properties };
-  if (firstName) attributes.first_name = firstName;
   if (phone) attributes.phone_number = phone;
 
   const profileAttributes = { email };
-  if (firstName) profileAttributes.first_name = firstName;
   if (phone) profileAttributes.phone_number = phone;
 
   await postKlaviyo('/client/profiles/', {
@@ -123,7 +118,6 @@ export async function saveQuizLead(input) {
     }
     if (Object.keys(subscriptions).length > 0) {
       const subscriptionProfile = { email, properties, subscriptions };
-      if (firstName) subscriptionProfile.first_name = firstName;
       if (smsConsent && phone) subscriptionProfile.phone_number = phone;
       await postKlaviyo('/client/subscriptions/', {
         data: {
@@ -140,5 +134,5 @@ export async function saveQuizLead(input) {
     }
   }
 
-  return { email, firstName, phone, emailMarketingConsent, smsConsent };
+  return { email, phone, emailMarketingConsent, smsConsent };
 }

@@ -9,18 +9,6 @@ export function isValidEmail(value) {
   return EMAIL_RE.test(email);
 }
 
-// Keep letters, spaces, hyphens, and apostrophes. Cap at 40 characters,
-// collapse repeated spaces, then keep the first two words. Nothing is shown.
-export function normalizeFirstName(value) {
-  const filtered = String(value || '')
-    .replace(/[^\p{L} '\u2019\u02BC-]+/gu, '')
-    .trim()
-    .slice(0, 40)
-    .trim()
-    .replace(/ {2,}/g, ' ');
-  return filtered.split(' ').filter(Boolean).slice(0, 2).join(' ');
-}
-
 // Blank is allowed. A non-empty value must be a US number so a text has a real destination.
 export function normalizePhone(value) {
   const raw = String(value || '').trim();

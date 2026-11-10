@@ -7,7 +7,6 @@ import {
 } from '../lib/consent.js';
 import {
   isValidEmail,
-  normalizeFirstName,
   phoneForLead,
   resolveEmailMarketingConsent,
   resolveSmsConsent
@@ -16,21 +15,21 @@ import { persistQuizLead } from '../lib/lead.js';
 import { clearPendingQuizLead, rememberPendingQuizLead, scheduleLeadRetry } from '../lib/pendingLead.js';
 import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
+const PLACEHOLDER_LABEL =
+  'PLACEHOLDER: Klyros product shot on plain background, no people, 3:2, 1200px';
+
 export default function EmailGate({
   initialEmail = '',
-  initialFirstName = '',
   initialPhone = '',
   initialEmailConsent = EMAIL_CONSENT_DEFAULT,
   initialSmsConsent = SMS_CONSENT_DEFAULT,
   onSuccess
 }) {
   const emailId = useId();
-  const nameId = useId();
   const phoneId = useId();
   const emailConsentId = useId();
   const smsConsentId = useId();
   const [email, setEmail] = useState(initialEmail);
-  const [firstName, setFirstName] = useState(initialFirstName);
   const [phone, setPhone] = useState(initialPhone);
   const [emailChecked, setEmailChecked] = useState(initialEmailConsent === true);
   const [smsChecked, setSmsChecked] = useState(initialSmsConsent === true);
@@ -48,11 +47,9 @@ export default function EmailGate({
 
     const nextEmail = email.trim();
     if (!isValidEmail(nextEmail)) return;
-    const nextName = normalizeFirstName(firstName);
     const nextPhone = phoneForLead(phone);
     const localLead = {
       email: nextEmail,
-      firstName: nextName,
       phone: nextPhone,
       emailMarketingConsent: resolveEmailMarketingConsent(emailChecked),
       smsConsent: resolveSmsConsent(smsChecked, nextPhone)
@@ -75,6 +72,10 @@ export default function EmailGate({
 
   return (
     <main className="email-gate" data-screen-label="Email">
+      <div className="email-gate-art" aria-hidden="true">
+        <img alt="" />
+        <p>{PLACEHOLDER_LABEL}</p>
+      </div>
       <h1 className="email-gate-title">Where should we send your results?</h1>
 
       <form onSubmit={onSubmit} noValidate>
@@ -116,20 +117,6 @@ export default function EmailGate({
             />
           </div>
 
-          <div className="email-gate-field email-gate-field-wide">
-            <label htmlFor={nameId} className="email-gate-label">
-              First name <span className="email-gate-tag">Optional</span>
-            </label>
-            <input
-              id={nameId}
-              className="email-gate-input"
-              name="given-name"
-              type="text"
-              autoComplete="given-name"
-              value={firstName}
-              onChange={(event) => setFirstName(event.target.value)}
-            />
-          </div>
         </div>
 
         <div className="email-gate-consents">

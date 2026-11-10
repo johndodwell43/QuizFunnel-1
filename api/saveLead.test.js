@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { isValidEmail, normalizeFirstName, normalizePhone, phoneForLead, resolveEmailMarketingConsent, resolveSmsConsent } from '../src/lib/email.js';
+import { isValidEmail, normalizePhone, phoneForLead, resolveEmailMarketingConsent, resolveSmsConsent } from '../src/lib/email.js';
 import { EMAIL_CONSENT_DEFAULT, EMAIL_CONSENT_TEXT, SMS_CONSENT_DEFAULT, SMS_CONSENT_TEXT } from '../src/lib/consent.js';
 import { normalizeQuizLead } from './saveLead.js';
 
@@ -11,6 +11,8 @@ test('the gate has no error copy and keeps Continue off until the email is valid
   assert.equal(source.includes('setError'), false);
   assert.equal(source.includes('disabled={!emailReady || submitting}'), true);
   assert.equal(source.includes("submitting ? 'Sending…' : 'Continue'"), true);
+  assert.equal(source.includes('First name'), false);
+  assert.equal(source.includes('PLACEHOLDER: Klyros product shot on plain background, no people, 3:2, 1200px'), true);
 });
 
 test('email is required before a lead can be saved', () => {
@@ -41,29 +43,23 @@ test('phone is optional and a blank number is saved as empty', () => {
 
   const invalidPhone = normalizeQuizLead({
     email: 'results@example.com',
-    firstName: '  Ada  ',
+    firstName: 'Ada',
     phone: '123',
     smsConsent: true
   });
   assert.equal(invalidPhone.phone, '');
   assert.equal(invalidPhone.smsConsent, false);
-  assert.equal(invalidPhone.firstName, 'Ada');
+  assert.equal(invalidPhone.firstName, undefined);
 });
 
-test('first name keeps letters, spaces, hyphens, and apostrophes, and stops at 40 characters', () => {
-  assert.equal(normalizeFirstName('  Ada  '), 'Ada');
-  assert.equal(normalizeFirstName("  O'Brien-José 123!! "), "O'Brien-José");
-  assert.equal(normalizeFirstName('Marie\u2019Claire'), 'Marie\u2019Claire');
-  assert.equal(normalizeFirstName('A'.repeat(50)), 'A'.repeat(40));
+test('a first name on the request is ignored', () => {
   const lead = normalizeQuizLead({
     email: 'results@example.com',
-    firstName: 'Note 123 about teeth!!!',
+    firstName: 'Ada Marie',
     phone: ''
   });
-  assert.equal(lead.firstName, 'Note about');
-  assert.equal(normalizeFirstName('Ada   Marie   Claire'), 'Ada Marie');
-  assert.equal(normalizeFirstName('Mary-Jane Ann Extra'), 'Mary-Jane Ann');
-  assert.equal(normalizeFirstName("O'Brien José Third"), "O'Brien José");
+  assert.equal('firstName' in lead, false);
+  assert.equal(JSON.stringify(lead).includes('Ada'), false);
 });
 
 test('split consent defaults and locked copy', () => {

@@ -1,4 +1,4 @@
-import { isValidEmail, normalizeFirstName, phoneForLead, resolveSmsConsent } from './email.js';
+import { isValidEmail, phoneForLead, resolveSmsConsent } from './email.js';
 import { persistQuizLead } from './lead.js';
 
 export const PENDING_LEAD_KEY = 'klyros_pending_quiz_lead';
@@ -8,7 +8,6 @@ export function toPendingLead(lead) {
   const phone = phoneForLead(lead?.phone);
   const record = {
     email: String(lead?.email || '').trim(),
-    firstName: normalizeFirstName(lead?.firstName),
     emailMarketingConsent: lead?.emailMarketingConsent === true,
     smsConsent: resolveSmsConsent(lead?.smsConsent, phone)
   };

@@ -109,7 +109,7 @@ export default function App() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#d7ecff',
+        background: onGate ? '#d6ecff' : '#d7ecff',
         fontFamily: "'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
         color: '#111827',
         display: 'flex',
@@ -133,7 +133,6 @@ export default function App() {
         {onGate && (
           <EmailGate
             initialEmail={lead?.email || ''}
-            initialFirstName={lead?.firstName || ''}
             initialPhone={lead?.phone || ''}
             initialEmailConsent={lead ? lead.emailMarketingConsent === true : true}
             initialSmsConsent={lead?.smsConsent === true}
