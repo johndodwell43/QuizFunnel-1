@@ -13,6 +13,7 @@ import {
   resolveSmsConsent
 } from '../lib/email.js';
 import { persistQuizLead } from '../lib/lead.js';
+import { clearPendingQuizLead, scheduleLeadRetry } from '../lib/pendingLead.js';
 import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
 export default function EmailGate({
@@ -61,11 +62,13 @@ export default function EmailGate({
     setSubmitting(true);
     try {
       const saved = await persistQuizLead(localLead);
+      clearPendingQuizLead();
       trackLeadCaptured();
       onSuccess(saved);
     } catch (error) {
       console.error('Lead save failed', error);
       onSuccess(localLead);
+      scheduleLeadRetry(localLead);
     }
   }
 

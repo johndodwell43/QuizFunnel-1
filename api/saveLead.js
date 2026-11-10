@@ -16,9 +16,10 @@ const KLAVIYO_METRIC = 'Quiz Results Requested';
 const KLAVIYO_REVISION = '2026-10-15';
 const KLAVIYO_ORIGIN = 'https://a.klaviyo.com';
 
-function fail(statusCode) {
+function fail(statusCode, reason) {
   const error = new Error('lead-save-failed');
   error.statusCode = statusCode;
+  error.reason = reason;
   return error;
 }
 
@@ -43,26 +44,31 @@ function quizProperties(utm) {
 }
 
 async function postKlaviyo(path, body) {
-  const response = await fetch(
-    `${KLAVIYO_ORIGIN}${path}?company_id=${encodeURIComponent(KLAVIYO_COMPANY_ID)}`,
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/vnd.api+json',
-        'content-type': 'application/vnd.api+json',
-        revision: KLAVIYO_REVISION
-      },
-      body: JSON.stringify(body)
-    }
-  );
-  if (!response.ok) throw fail(502);
+  let response;
+  try {
+    response = await fetch(
+      `${KLAVIYO_ORIGIN}${path}?company_id=${encodeURIComponent(KLAVIYO_COMPANY_ID)}`,
+      {
+        method: 'POST',
+        headers: {
+          accept: 'application/vnd.api+json',
+          'content-type': 'application/vnd.api+json',
+          revision: KLAVIYO_REVISION
+        },
+        body: JSON.stringify(body)
+      }
+    );
+  } catch {
+    throw fail(502, 'network');
+  }
+  if (!response.ok) throw fail(502, `upstream-${response.status}`);
 }
 
 export function normalizeQuizLead(input) {
   const email = String(input?.email || '').trim();
   const firstName = normalizeFirstName(input?.firstName);
   const phone = phoneForLead(input?.phone);
-  if (!isValidEmail(email)) throw fail(400);
+  if (!isValidEmail(email)) throw fail(400, 'invalid-email');
   return {
     email,
     firstName,

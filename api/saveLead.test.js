@@ -48,7 +48,19 @@ test('phone is optional and a blank number is saved as empty', () => {
   assert.equal(invalidPhone.phone, '');
   assert.equal(invalidPhone.smsConsent, false);
   assert.equal(invalidPhone.firstName, 'Ada');
-  assert.equal(normalizeFirstName('  not a checked name 123  '), 'not a checked name 123');
+});
+
+test('first name keeps letters, spaces, hyphens, and apostrophes, and stops at 40 characters', () => {
+  assert.equal(normalizeFirstName('  Ada  '), 'Ada');
+  assert.equal(normalizeFirstName("  O'Brien-José 123!! "), "O'Brien-José");
+  assert.equal(normalizeFirstName('Marie\u2019Claire'), 'Marie\u2019Claire');
+  assert.equal(normalizeFirstName('A'.repeat(50)), 'A'.repeat(40));
+  const lead = normalizeQuizLead({
+    email: 'results@example.com',
+    firstName: 'Note 123 about teeth!!!',
+    phone: ''
+  });
+  assert.equal(lead.firstName, 'Note  about teeth');
 });
 
 test('split consent defaults and locked copy', () => {

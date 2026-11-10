@@ -6,6 +6,7 @@ import QuestionScreen from './components/QuestionScreen.jsx';
 import EmailGate from './components/EmailGate.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
+import { resumePendingQuizLead } from './lib/pendingLead.js';
 import { trackQuizStarted, trackStep } from './lib/track.js';
 
 const SELECT_DELAY_MS = 170;
@@ -29,6 +30,11 @@ export default function App() {
   useEffect(() => {
     trackQuizStarted();
   }, []);
+
+  // A lead that failed to save is retried on the next visit and on each step.
+  useEffect(() => {
+    resumePendingQuizLead();
+  }, [step, screen]);
 
   const inPersonFirst = answers.pain === 'yes' || answers.loose === 'yes';
 

@@ -9,9 +9,14 @@ export function isValidEmail(value) {
   return EMAIL_RE.test(email);
 }
 
-// The gate does not validate this field. Leading and trailing spaces are removed.
+// Keep letters, spaces, hyphens, and apostrophes. Everything else is removed.
+// The result is capped at 40 characters. Nothing is shown to the visitor.
 export function normalizeFirstName(value) {
-  return String(value || '').trim();
+  return String(value || '')
+    .replace(/[^\p{L} '\u2019\u02BC-]+/gu, '')
+    .trim()
+    .slice(0, 40)
+    .trim();
 }
 
 // Blank is allowed. A non-empty value must be a US number so a text has a real destination.
