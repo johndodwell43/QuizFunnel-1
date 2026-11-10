@@ -66,3 +66,11 @@ export function archOptions(answerArch) {
   const arch = archFromAnswer(answerArch);
   return arch === 'both' ? ['both', 'upper', 'lower'] : [arch];
 }
+
+// Tooth counts ride along to the Shopify order as cart attributes (shown in the order's Notes).
+export function toothAttributes(arch, teeth = {}) {
+  const out = {};
+  if (arch !== 'lower') out['attributes[Top teeth to replace]'] = teeth.upper || '1';
+  if (arch !== 'upper') out['attributes[Bottom teeth to replace]'] = teeth.lower || '1';
+  return out;
+}

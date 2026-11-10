@@ -15,7 +15,8 @@ import {
   offerForAnswers,
   partialImage,
   purchaseLine,
-  teethCount
+  teethCount,
+  toothAttributes
 } from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
@@ -69,7 +70,7 @@ function PartialPhoto({ arch, teeth }) {
 function Thumb({ slide, teeth }) {
   const [failed, setFailed] = useState(false);
   if (slide.kind === 'partial') {
-    const src = partialImage(slide.arch, teeth);
+    const src = partialImage(slide.arch, teeth[slide.arch]);
     return failed ? (
       <span className="thumb-ph">{slide.arch === 'lower' ? 'Lower' : 'Upper'}</span>
     ) : (
@@ -85,13 +86,13 @@ function ProductGallery({ arch, teeth }) {
     ...FILM.map(([ratio, text], i) => ({ kind: 'ph', text, ratio, short: ['Angle', 'Kit', 'Case', 'Detail'][i], key: `f-${i}` }))
   ];
   const [index, setIndex] = useState(0);
-  useEffect(() => setIndex(0), [arch, teeth]);
+  useEffect(() => setIndex(0), [arch, teeth.upper, teeth.lower]);
   const current = slides[Math.min(index, slides.length - 1)];
   return (
     <div className="pg">
       <div className="pg-main">
         {current.kind === 'partial' ? (
-          <PartialPhoto key={`${current.arch}-${teeth}`} arch={current.arch} teeth={teeth} />
+          <PartialPhoto key={`${current.arch}-${teeth[current.arch]}`} arch={current.arch} teeth={teeth[current.arch]} />
         ) : (
           <div className="rec-photo">
             <ImagePlaceholder text={current.text} ratio="3 / 2" />
@@ -101,7 +102,7 @@ function ProductGallery({ arch, teeth }) {
       <div className="pg-thumbs" role="tablist" aria-label="Product photos">
         {slides.map((slide, i) => (
           <button
-            key={slide.key + teeth}
+            key={slide.key + teeth.upper + teeth.lower}
             type="button"
             role="tab"
             aria-selected={i === index}
@@ -129,7 +130,8 @@ const SCREEN_LINES = [
 export default function OfferScreen({ answers = {}, inPersonFirst = false, direct = false }) {
   const initial = offerForAnswers(answers);
   const arches = direct ? DIRECT_ARCHES : archOptions(answers.arch);
-  const [teeth, setTeeth] = useState(answers.teeth || '1');
+  // Separate counts so 'Both' can be e.g. 2 on top and 3 on the bottom.
+  const [teeth, setTeeth] = useState({ upper: answers.teeth || '1', lower: answers.teeth || '1' });
   const [arch, setArch] = useState(initial.arch);
   const [selected, setSelected] = useState(initial.selected);
   const [details, setDetails] = useState(false);
@@ -154,7 +156,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   const buy = (event) => {
     event.preventDefault();
-    const tracking = trackSendKitClicked(active.sku, offer.arch, active.price);
+    const tracking = { ...trackSendKitClicked(active.sku, offer.arch, active.price), ...toothAttributes(offer.arch, teeth) };
     if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
     else checkoutOneArch(active.sku, offer.arch, tracking);
   };
@@ -167,7 +169,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         ) : (
           <div className={shots.length > 1 ? 'rec-shots is-both' : 'rec-shots'}>
             {shots.map((a) => (
-              <PartialPhoto key={a} arch={a} teeth={teeth} />
+              <PartialPhoto key={a} arch={a} teeth={teeth[a]} />
             ))}
           </div>
         )}
@@ -230,25 +232,35 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          {direct && (
-            <>
-              <p className="pick-label">How many teeth to replace{arch === 'both' ? ' on each arch' : ''}?</p>
-              <div className="teeth-row" role="group" aria-label="Teeth">
-                {TEETH.map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    className={teeth === n ? 'teeth-tile is-on' : 'teeth-tile'}
-                    aria-pressed={teeth === n}
-                    aria-label={`${n} ${n === '1' ? 'tooth' : 'teeth'}`}
-                    onClick={() => setTeeth(n)}
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
+          {direct &&
+            (arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => (
+              <React.Fragment key={a}>
+                <p className="pick-label">
+                  How many teeth to replace
+                  {arch === 'both' && (
+                    <>
+                      {' on the '}
+                      <strong className="pick-arch">{a === 'upper' ? 'top' : 'bottom'}</strong>
+                    </>
+                  )}
+                  ?
+                </p>
+                <div className="teeth-row" role="group" aria-label={a === 'upper' ? 'Top teeth' : 'Bottom teeth'}>
+                  {TEETH.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      className={teeth[a] === n ? 'teeth-tile is-on' : 'teeth-tile'}
+                      aria-pressed={teeth[a] === n}
+                      aria-label={`${n} ${n === '1' ? 'tooth' : 'teeth'} on the ${a === 'upper' ? 'top' : 'bottom'}`}
+                      onClick={() => setTeeth((prev) => ({ ...prev, [a]: n }))}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </React.Fragment>
+            ))}
 
           <p className={direct ? 'pick-label' : 'opt-label'}>Choose your partial</p>
           <div id="offer-cards" className="plan-list" role="group" aria-label="Partial choices">

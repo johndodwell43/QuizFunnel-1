@@ -122,3 +122,16 @@ test('result photo follows arch and tooth count (1-6, 6+ and most use 6)', async
   assert.deepEqual(archOptions('lower'), ['lower']);
   assert.deepEqual(archOptions('both'), ['both', 'upper', 'lower']);
 });
+
+test('tooth counts go to the cart as order attributes', async () => {
+  const { toothAttributes } = await import('./offerMatch.js');
+  assert.deepEqual(toothAttributes('upper', { upper: '2', lower: '5' }), { 'attributes[Top teeth to replace]': '2' });
+  assert.deepEqual(toothAttributes('lower', { upper: '2', lower: '5' }), { 'attributes[Bottom teeth to replace]': '5' });
+  assert.deepEqual(toothAttributes('both', { upper: '2', lower: '3' }), {
+    'attributes[Top teeth to replace]': '2',
+    'attributes[Bottom teeth to replace]': '3'
+  });
+  const url = cartUrl('63304032354673', toothAttributes('both', { upper: '2', lower: '3' }));
+  assert.match(url, /attributes%5BTop\+teeth\+to\+replace%5D=2/);
+  assert.match(url, /discount=KLYROS50$/);
+});
