@@ -113,6 +113,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
               onClick={() => setSelected('precision')}
             >
               <span className="sku-name">Precision Partial Pro</span>
+              <span className="sku-price">{money(offer.precision.price)}</span>
             </button>
           </div>
 

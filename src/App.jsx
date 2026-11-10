@@ -127,6 +127,7 @@ export default function App() {
           showBack={!onGate}
           onBack={goBack}
           gate={onGate}
+          offer={isOffer}
           stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}
         />
         <ProgressBar progress={progress} gate={onGate} />

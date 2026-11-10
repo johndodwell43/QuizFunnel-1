@@ -231,7 +231,7 @@ button { font-family: inherit; }
   min-width: 0;
   box-sizing: border-box;
   background: #cfe9ff;
-  border: 1.5px dashed #2563eb;
+  border: 1.5px dashed rgba(10, 22, 40, 0.45);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -261,6 +261,15 @@ button { font-family: inherit; }
   font-size: 9px;
   padding: 4px;
   border-radius: 8px;
+  overflow: hidden;
+}
+.offer-film .ph span,
+.arch-card .ph span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  max-width: 100%;
 }
 .offer-buy { display: flex; flex-direction: column; min-width: 0; }
 .offer-title {
@@ -304,9 +313,9 @@ button { font-family: inherit; }
   cursor: pointer;
 }
 .arch-card.is-on { border-color: #2563eb; background: #cfe9ff; }
-.arch-card .ph { max-height: 36px; aspect-ratio: 2 / 1; font-size: 8px; padding: 3px; border-radius: 8px; }
+.arch-card .ph { max-height: 36px; aspect-ratio: 2 / 1; font-size: 8px; padding: 3px; border-radius: 8px; overflow: hidden; }
 .arch-label { font-size: 14px; font-weight: 700; line-height: 1.2; }
-.arch-price { font-size: 13px; font-weight: 700; line-height: 1.1; color: #2563eb; }
+.arch-price { font-size: 13px; font-weight: 700; line-height: 1.1; color: #0a1628; }
 .sku-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .sku-card {
   display: flex;
@@ -321,8 +330,9 @@ button { font-family: inherit; }
   text-align: left;
   cursor: pointer;
 }
-.sku-card.is-on { border-color: #2563eb; background: #cfe9ff; }
-.sku-kicker { font-size: 12px; font-weight: 700; color: #2563eb; line-height: 1.2; }
+.sku-card.is-on { border-color: #0a1628; background: #cfe9ff; }
+.sku-kicker { font-size: 12px; font-weight: 700; color: rgba(10, 22, 40, 0.62); line-height: 1.2; }
+.sku-price { font-size: 14px; font-weight: 700; line-height: 1.1; color: #0a1628; }
 .sku-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
 .offer-selected {
   margin: 8px 0 0 0;
@@ -349,7 +359,7 @@ button { font-family: inherit; }
   padding: 12px 16px;
   box-sizing: border-box;
 }
-.offer-checkout:hover { color: #ffffff; background: #1d4ed8; }
+.offer-checkout:hover { color: #ffffff; background: #2563eb; }
 .pay-panel {
   margin-top: 10px;
   background: #cfe9ff;
@@ -399,7 +409,7 @@ button { font-family: inherit; }
   list-style: none;
 }
 .faq-row summary::-webkit-details-marker { display: none; }
-.faq-plus { color: #2563eb; font-size: 22px; line-height: 1; }
+.faq-plus { color: #0a1628; font-size: 22px; line-height: 1; }
 .faq-row p { margin: 0 0 14px 0; font-size: 16px; line-height: 1.45; color: #0a1628; }
 .next { margin-top: 28px; }
 .next-list { list-style: none; margin: 0; padding: 0; }
@@ -418,7 +428,7 @@ button { font-family: inherit; }
   left: 50%;
   bottom: -30px;
   height: 24px;
-  border-left: 2px dashed #2563eb;
+  border-left: 2px dashed rgba(10, 22, 40, 0.45);
 }
 .next-step.is-flip .next-copy { order: 2; }
 .next-copy h3 { margin: 0 0 6px 0; font-size: 18px; line-height: 1.2; color: #0a1628; }
@@ -439,7 +449,29 @@ button { font-family: inherit; }
   text-align: center;
   color: #0a1628;
 }
-.offer-mail { color: #2563eb; font-weight: 700; }
+.offer-mail { color: #0a1628; font-weight: 700; }
+
+@media (max-width: 767px) {
+  .offer-top { gap: 6px; }
+  .offer-gallery { gap: 4px; }
+  .offer-hero .ph {
+    max-height: 112px;
+    aspect-ratio: 5 / 2;
+    padding: 8px;
+    font-size: 13px;
+  }
+  .offer-film .ph { max-height: 36px; font-size: 8px; padding: 2px; }
+  .offer-title { font-size: 20px; line-height: 1.1; }
+  .offer-price { margin-top: 2px; font-size: 32px; }
+  .offer-note { margin-top: 2px; font-size: 12px; line-height: 1.25; }
+  .arch-row { margin-top: 6px; gap: 6px; }
+  .arch-card { padding: 4px; gap: 1px; }
+  .arch-card .ph { max-height: 22px; }
+  .sku-row { margin-top: 6px; gap: 6px; }
+  .sku-card { min-height: 46px; padding: 6px 8px; }
+  .offer-selected { margin-top: 4px; font-size: 15px; }
+  .offer-checkout { margin-top: 4px; min-height: 52px; padding: 8px 14px; }
+}
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .shell-flow { max-width: 720px; }
