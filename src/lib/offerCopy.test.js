@@ -42,7 +42,7 @@ test('included product line uses the selected name, arch, and Shopify price', ()
   const cases = [
     ['upper', 'flex', 'Flex Partial · Upper · $489'],
     ['lower', 'flex', 'Flex Partial · Lower · $489'],
-    ['both', 'flex', 'Flex Partial · Both · $859'],
+    ['both', 'flex', 'Flex Partial · Both · $879'],
     ['upper', 'precision', 'Precision Partial Pro · Upper · $789'],
     ['lower', 'precision', 'Precision Partial Pro · Lower · $789'],
     ['both', 'precision', 'Precision Partial Pro · Both · $1,479']

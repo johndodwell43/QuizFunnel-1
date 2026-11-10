@@ -2,7 +2,7 @@
 // Both-arch amounts are the Shopify variant prices, not a derived discount.
 export const PRICING = {
   flexPrice: 489,
-  flexBoth: 859,
+  flexBoth: 879,
   precisionPrice: 789,
   precisionBoth: 1479
 };
