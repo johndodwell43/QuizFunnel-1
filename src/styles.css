@@ -621,3 +621,58 @@ button { font-family: inherit; }
   .plan-name { font-size: 18px; }
   .plan-price { font-size: 20px; }
 }
+
+/* /shop direct page: big, plain pickers. Filled blue = picked. */
+.pick-label { margin: 18px 0 10px 0; font-size: 22px; font-weight: 700; line-height: 1.2; color: #0a1628; }
+.pick-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.pick-btn {
+  min-height: 56px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #0a1628;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pick-btn.is-on { background: #2563eb; color: #ffffff; }
+.teeth-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.teeth-tile {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 72px;
+  justify-self: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0a1628;
+  font: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.teeth-tile.is-on { background: #2563eb; color: #ffffff; }
+.screen-check { margin-top: 12px; padding: 10px 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.6); }
+.screen-check-title { margin: 0 0 4px 0; font-size: 14px; font-weight: 700; }
+.screen-check ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.45; }
+.screen-check-note { margin: 4px 0 0 0; font-size: 13px; color: rgba(10, 22, 40, 0.62); }
+.pg { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pg-thumbs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.pg-thumbs::-webkit-scrollbar { display: none; }
+.pg-thumb {
+  flex: 0 0 64px;
+  height: 48px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: #cfe9ff;
+  overflow: hidden;
+  cursor: pointer;
+}
+.pg-thumb.is-on { border-color: #2563eb; }
+.pg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.thumb-ph { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 11px; font-weight: 700; color: rgba(10, 22, 40, 0.62); }
+@media (min-width: 1024px) { .pg-thumb { flex-basis: 84px; height: 60px; } }

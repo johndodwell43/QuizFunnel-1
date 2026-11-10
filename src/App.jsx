@@ -11,7 +11,38 @@ import { trackQuizStarted, trackStep } from './lib/track.js';
 
 const SELECT_DELAY_MS = 170;
 
+// quiz.klyrosdental.com/shop: straight to the product page, for website visitors who skip the quiz.
+const DIRECT = typeof window !== 'undefined' && /^\/shop\/?$/.test(window.location.pathname);
+
 export default function App() {
+  if (DIRECT) return <DirectShop />;
+  return <Quiz />;
+}
+
+function DirectShop() {
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#d6ecff',
+        fontFamily: "'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
+        color: '#0a1628',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '0 16px 48px 16px',
+        boxSizing: 'border-box'
+      }}
+    >
+      <div className="shell shell-offer" style={{ width: '100%' }}>
+        <Header showBack={false} offer />
+        <OfferScreen direct />
+      </div>
+    </div>
+  );
+}
+
+function Quiz() {
   const [step, setStep] = useState(0);
   const [screen, setScreen] = useState('email'); // email | quiz | pause | offer
   const [answers, setAnswers] = useState({});
