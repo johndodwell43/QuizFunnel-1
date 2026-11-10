@@ -1,4 +1,4 @@
-import { PRICING } from '../config.js';
+import { PRICING, money } from '../config.js';
 import { CART_VARIANTS, archFromAnswer, cartUrl } from './checkout.js';
 
 function choice(sku, arch) {
@@ -27,7 +27,10 @@ export function offerForAnswers(answers = {}) {
   };
 }
 
-// Headline and checkout follow this card. Flex is the default selection.
+export function purchaseLine(choice) {
+  return `${choice.name} · ${money(choice.price)}`;
+}
+
 export function activeChoice(offer, selected = offer.selected) {
   switch (selected) {
     case 'flex':

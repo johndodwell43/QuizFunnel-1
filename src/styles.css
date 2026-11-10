@@ -329,8 +329,16 @@ button { font-family: inherit; }
   color: #111827;
 }
 .offer-card.is-match .offer-card-price { font-size: 44px; }
+.offer-selected {
+  margin: 14px 0 0 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111827;
+  text-align: center;
+}
 .offer-checkout {
-  margin-top: 16px;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -463,7 +471,8 @@ button { font-family: inherit; }
   .offer-card.is-match .offer-card-name { font-size: 26px; }
   .offer-card-price { font-size: 32px; }
   .offer-card.is-match .offer-card-price { font-size: 40px; }
-  .offer-checkout { min-height: 64px; margin-top: 14px; }
+  .offer-selected { font-size: 22px; margin-top: 10px; }
+  .offer-checkout { min-height: 64px; margin-top: 8px; }
   .ph-grid-3, .offer-steps { grid-template-columns: 1fr 1fr 1fr; }
   .ph-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
   .ph-pay { grid-template-columns: repeat(3, minmax(0, 1fr)); }

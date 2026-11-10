@@ -5,7 +5,7 @@ import ImagePlaceholder from './ImagePlaceholder.jsx';
 import ValueList from './ValueList.jsx';
 import { AFFIRM_LINE, LINKS, money } from '../config.js';
 import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
-import { activeChoice, offerForAnswers } from '../lib/offerMatch.js';
+import { activeChoice, offerForAnswers, purchaseLine } from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
 const MATCH_LINE = 'Based on your answers, Flex Partial may be a fit.';
@@ -66,7 +66,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
   const [selected, setSelected] = useState(offer.selected);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const active = activeChoice(offer, selected);
-  const activeGallery = GALLERY[galleryIndex] || GALLERY[0];
+  const flexGallery = GALLERY[0];
 
   useEffect(() => {
     trackOfferPageViewed();
@@ -84,7 +84,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
     <main data-screen-label="Offer" data-arch={offer.arch} className="offer-screen">
       <div className="offer-top">
         <div className="offer-hero">
-          <ImagePlaceholder text={activeGallery[1]} ratio={activeGallery[0]} />
+          <ImagePlaceholder text={flexGallery[1]} ratio={flexGallery[0]} />
         </div>
         <div className="offer-gallery-rest">
           <div className="offer-thumbs">
@@ -114,7 +114,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
 
         <div className="offer-buy">
           <h1 className="offer-title">{MATCH_LINE}</h1>
-          <p className="offer-price" data-match-price>{money(active.price)}</p>
+          <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
           <p className="offer-note">{REVIEW_LINE}</p>
 
           <div id="offer-cards" className="offer-cards" role="group" aria-label="Partial choices">
@@ -152,6 +152,7 @@ export default function OfferScreen({ answers, inPersonFirst }) {
             </button>
           </div>
 
+          <p className="offer-selected" data-selected-offer>{purchaseLine(active)}</p>
           <a className="offer-checkout" data-checkout href={active.url} onClick={buy}>
             Continue to checkout
           </a>

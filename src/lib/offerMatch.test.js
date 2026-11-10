@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { PRICING, money } from '../config.js';
 import { cartUrl } from './checkout.js';
-import { activeChoice, offerForAnswers } from './offerMatch.js';
+import { activeChoice, offerForAnswers, purchaseLine } from './offerMatch.js';
 
 const FLEX = {
   upper: '63304031961457',
@@ -48,24 +48,47 @@ for (const arch of ['upper', 'lower', 'both']) {
   });
 }
 
-test('headline price follows the selected card and Flex stays the default', () => {
+test('headline price stays the Flex match when Precision is selected', () => {
   const screen = readFileSync(new URL('../components/OfferScreen.jsx', import.meta.url), 'utf8');
-  assert.match(screen, /data-match-price>\{money\(active\.price\)\}/);
-  assert.doesNotMatch(screen, /data-match-price>\{money\(offer\.flex\.price\)\}/);
+  assert.match(screen, /data-match-price>\{money\(offer\.flex\.price\)\}/);
+  assert.doesNotMatch(screen, /data-match-price>\{money\(active\.price\)\}/);
+  assert.match(screen, /PLACEHOLDER: Flex Partial with kit on plain background/);
 
   const cases = [
-    ['upper', PRICING.flexPrice, PRICING.precisionPrice, '$489', '$789'],
-    ['lower', PRICING.flexPrice, PRICING.precisionPrice, '$489', '$789'],
-    ['both', PRICING.flexBoth, PRICING.precisionBoth, '$859', '$1,479']
+    ['upper', PRICING.flexPrice, '$489'],
+    ['lower', PRICING.flexPrice, '$489'],
+    ['both', PRICING.flexBoth, '$859']
   ];
-  for (const [arch, flexPrice, precisionPrice, flexText, precisionText] of cases) {
+  for (const [arch, flexPrice, flexText] of cases) {
     const offer = offerForAnswers({ arch });
+    const precision = activeChoice(offer, 'precision');
     assert.equal(offer.selected, 'flex');
-    assert.equal(money(activeChoice(offer).price), flexText);
+    assert.equal(money(offer.flex.price), flexText);
     assert.equal(money(activeChoice(offer, 'flex').price), flexText);
-    assert.equal(money(activeChoice(offer, 'precision').price), precisionText);
-    assert.equal(activeChoice(offer, 'flex').price, flexPrice);
-    assert.equal(activeChoice(offer, 'precision').price, precisionPrice);
+    assert.equal(offer.flex.price, flexPrice);
+    assert.notEqual(money(offer.flex.price), money(precision.price));
+  }
+});
+
+test('checkout line matches the selected variant price and cart URL', () => {
+  const screen = readFileSync(new URL('../components/OfferScreen.jsx', import.meta.url), 'utf8');
+  assert.match(screen, /data-selected-offer>\{purchaseLine\(active\)\}/);
+  assert.match(screen, /data-checkout href=\{active\.url\}/);
+
+  const cases = [
+    ['upper', 'flex', 'Flex Partial · $489', FLEX.upper],
+    ['upper', 'precision', 'Precision Partial Pro · $789', PRECISION.upper],
+    ['lower', 'flex', 'Flex Partial · $489', FLEX.lower],
+    ['lower', 'precision', 'Precision Partial Pro · $789', PRECISION.lower],
+    ['both', 'flex', 'Flex Partial · $859', FLEX.both],
+    ['both', 'precision', 'Precision Partial Pro · $1,479', PRECISION.both]
+  ];
+  for (const [arch, selected, line, variantId] of cases) {
+    const choice = activeChoice(offerForAnswers({ arch }), selected);
+    assert.equal(purchaseLine(choice), line);
+    assert.equal(choice.price, Number(line.replace(/[^0-9]/g, '')));
+    assert.equal(choice.url, cart(variantId));
+    assert.match(choice.url, new RegExp(`/cart/${choice.variantId}:1\\?discount=KLYROS50`));
   }
 });
 
