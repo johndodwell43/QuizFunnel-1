@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { money } from '../config.js';
-import { INCLUDED_COPY, includedProductLine } from './offerCopy.js';
+import { FAQ_COPY, INCLUDED_COPY, NEXT_STEPS, includedProductLine } from './offerCopy.js';
 import { activeChoice, offerForAnswers } from './offerMatch.js';
 
 const BANNED = /guarantee|remake|\bfit\b|free|today|limited|candidate|qualify|approved|recommended|other brands/i;
@@ -26,6 +26,16 @@ test('included card strings stay inside the approved facts', () => {
     'Both'
   ]);
   for (const line of strings) assert.doesNotMatch(line, BANNED);
+});
+
+test('FAQ and What\'s next share the scored step answers in order', () => {
+  assert.deepEqual(FAQ_COPY.map(([title, body]) => [title, body]), [
+    ['Dentist review', "A partner dentist licensed in your state reviews your photos and decides whether it's a fit."],
+    ['Kit', 'A kit is sent to you to take your impressions.'],
+    ['U.S. lab', 'A U.S. lab makes your partial from your impressions.'],
+    ['Shipping', 'Prepaid, tracked 2-day shipping.']
+  ]);
+  assert.deepEqual(NEXT_STEPS.map(([title, body]) => [title, body]), FAQ_COPY.slice(0, 3));
 });
 
 test('included product line uses the selected name, arch, and Shopify price', () => {

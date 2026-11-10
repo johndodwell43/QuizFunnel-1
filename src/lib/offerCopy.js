@@ -1,5 +1,3 @@
-import { DENTIST_LINE } from '../config.js';
-
 // One block for the What's included cards. Product name, arch, and price
 // are filled from the selected Shopify variant.
 export const INCLUDED_COPY = {
@@ -26,19 +24,21 @@ export function includedProductLine(name, arch, priceText) {
   return `${name} · ${includedArchLabel(arch)} · ${priceText}`;
 }
 
-// How it works titles and bodies. The kit step uses "kit" in place of
-// "impression kit". Shipping uses the allowed shipping sentence.
+const DENTIST_REVIEW = "A partner dentist licensed in your state reviews your photos and decides whether it's a fit.";
+const KIT_STEP = 'A kit is sent to you to take your impressions.';
+const LAB_STEP = 'A U.S. lab makes your partial from your impressions.';
+
 export const FAQ_COPY = [
-  ['Kit', 'A kit is sent to you. Take as many mold tries as you need.'],
-  ['Dentist review', DENTIST_LINE],
-  ['U.S. lab', 'A U.S. lab makes the partial from the impressions the dentist reviewed.'],
+  ['Dentist review', DENTIST_REVIEW],
+  ['Kit', KIT_STEP],
+  ['U.S. lab', LAB_STEP],
   ['Shipping', INCLUDED_COPY.shipping]
 ];
 
 export const NEXT_HEADING = "What's next";
 
 export const NEXT_STEPS = [
-  ['Kit', 'A kit is sent to you. Take as many mold tries as you need.', 'PLACEHOLDER: kit on plain background, 1:1, 800px'],
-  ['Dentist review', DENTIST_LINE, 'PLACEHOLDER: partial product shot on plain background, 1:1, 800px'],
-  ['U.S. lab', 'A U.S. lab makes the partial from the impressions the dentist reviewed.', 'PLACEHOLDER: finished partial on plain background, 1:1, 800px']
+  ['Dentist review', DENTIST_REVIEW, 'PLACEHOLDER: partial product shot on plain background, 1:1, 800px'],
+  ['Kit', KIT_STEP, 'PLACEHOLDER: kit on plain background, 1:1, 800px'],
+  ['U.S. lab', LAB_STEP, 'PLACEHOLDER: finished partial on plain background, 1:1, 800px']
 ];
