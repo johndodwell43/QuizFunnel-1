@@ -109,9 +109,9 @@ export default function App() {
     <div
       style={{
         minHeight: '100vh',
-        background: onGate ? '#d6ecff' : '#d7ecff',
+        background: onGate || isOffer ? '#d6ecff' : '#d7ecff',
         fontFamily: "'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
-        color: '#111827',
+        color: isOffer ? '#0a1628' : '#111827',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

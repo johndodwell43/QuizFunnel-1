@@ -1,36 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import Footer from './Footer.jsx';
-import HowItWorks from './HowItWorks.jsx';
 import ImagePlaceholder from './ImagePlaceholder.jsx';
-import ValueList from './ValueList.jsx';
-import { AFFIRM_LINE, LINKS, money } from '../config.js';
+import { LINKS, money } from '../config.js';
 import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
+import {
+  FAQ_COPY,
+  INCLUDED_COPY,
+  NEXT_HEADING,
+  NEXT_STEPS,
+  includedProductLine
+} from '../lib/offerCopy.js';
 import { activeChoice, offerForAnswers, purchaseLine } from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
 const MATCH_LINE = 'Based on your answers, Flex Partial may be a fit.';
 const REVIEW_LINE =
   "A partner dentist licensed in your state reviews your photos and decides whether it's a fit. Placing your order starts that review.";
+const HERO = ['16 / 9', 'PLACEHOLDER: Flex Partial with kit on plain background, 1:1, 1200px'];
 
-const GALLERY = [
-  ['1 / 1', 'PLACEHOLDER: Flex Partial with kit on plain background, 1:1, 1200px'],
-  ['1 / 1', 'PLACEHOLDER: Flex Partial product video still on plain background, 1:1, 1200px'],
+const FILM = [
   ['1 / 1', 'PLACEHOLDER: Flex Partial three-quarter product shot on plain background, 1:1, 1200px'],
-  ['1 / 1', 'PLACEHOLDER: Flex Partial side product shot on plain background, 1:1, 1200px'],
-  ['1 / 1', 'PLACEHOLDER: Flex Partial detail product shot on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: kit contents on plain background, 1:1, 1200px'],
   ['1 / 1', 'PLACEHOLDER: partial case on plain background, 1:1, 1200px'],
-  ['1 / 1', 'PLACEHOLDER: Flex Partial back product shot on plain background, 1:1, 1200px'],
-  ['1 / 1', 'PLACEHOLDER: Flex Partial close product shot on plain background, 1:1, 1200px']
+  ['1 / 1', 'PLACEHOLDER: Flex Partial detail product shot on plain background, 1:1, 1200px']
 ];
 
-const OPTION_SHOTS = [
-  ['2 / 1', 'PLACEHOLDER: both-arch partial product shot on plain background, 2:1, 1200px'],
-  ['2 / 1', 'PLACEHOLDER: upper partial product shot on plain background, 2:1, 1200px'],
-  ['2 / 1', 'PLACEHOLDER: lower partial product shot on plain background, 2:1, 1200px'],
-  ['2 / 1', 'PLACEHOLDER: Flex Partial front product shot on plain background, 2:1, 1200px'],
-  ['2 / 1', 'PLACEHOLDER: Flex Partial angled product shot on plain background, 2:1, 1200px'],
-  ['2 / 1', 'PLACEHOLDER: Precision Partial Pro angled product shot on plain background, 2:1, 1200px']
+const ARCHES = [
+  ['upper', INCLUDED_COPY.archUpper, 'PLACEHOLDER: upper partial product shot, 2:1, 600px'],
+  ['lower', INCLUDED_COPY.archLower, 'PLACEHOLDER: lower partial product shot, 2:1, 600px'],
+  ['both', INCLUDED_COPY.archBoth, 'PLACEHOLDER: both partials product shot, 2:1, 600px']
 ];
 
 const PAYMENT_MARKS = [
@@ -41,32 +38,12 @@ const PAYMENT_MARKS = [
   ['100 / 37', 'PLACEHOLDER: Debit, 100:37, 200px']
 ];
 
-const KIT_SHOTS = [
-  'PLACEHOLDER: kit on plain background, 1:1, 800px',
-  'PLACEHOLDER: partial carrying case on plain background, 1:1, 800px',
-  'PLACEHOLDER: kit accessory on plain background, 1:1, 800px',
-  'PLACEHOLDER: second kit accessory on plain background, 1:1, 800px'
-];
-
-const STEP_SHOTS = [
-  'PLACEHOLDER: kit product shot on plain background, 6:7, 1200px',
-  'PLACEHOLDER: packed kit on plain background, 6:7, 1200px',
-  'PLACEHOLDER: finished partial on plain background, 6:7, 1200px'
-];
-
-const PRODUCT_SQUARES = [
-  'PLACEHOLDER: Flex Partial product shot on plain background, 1:1, 800px',
-  'PLACEHOLDER: Flex Partial second product shot on plain background, 1:1, 800px',
-  'PLACEHOLDER: Precision Partial Pro product shot on plain background, 1:1, 800px',
-  'PLACEHOLDER: Precision Partial Pro second product shot on plain background, 1:1, 800px'
-];
-
 export default function OfferScreen({ answers, inPersonFirst }) {
-  const offer = offerForAnswers(answers);
-  const [selected, setSelected] = useState(offer.selected);
-  const [galleryIndex, setGalleryIndex] = useState(0);
+  const initial = offerForAnswers(answers);
+  const [arch, setArch] = useState(initial.arch);
+  const [selected, setSelected] = useState(initial.selected);
+  const offer = offerForAnswers({ arch });
   const active = activeChoice(offer, selected);
-  const flexGallery = GALLERY[0];
 
   useEffect(() => {
     trackOfferPageViewed();
@@ -83,33 +60,15 @@ export default function OfferScreen({ answers, inPersonFirst }) {
   return (
     <main data-screen-label="Offer" data-arch={offer.arch} className="offer-screen">
       <div className="offer-top">
-        <div className="offer-hero">
-          <ImagePlaceholder text={flexGallery[1]} ratio={flexGallery[0]} />
-        </div>
-        <div className="offer-gallery-rest">
-          <div className="offer-thumbs">
-            {GALLERY.map(([ratio, text], index) => (
-              <button
-                key={text}
-                type="button"
-                className="offer-thumb"
-                aria-label={`Show gallery image ${index + 1}`}
-                aria-current={index === galleryIndex}
-                onClick={() => setGalleryIndex(index)}
-              >
-                <ImagePlaceholder text={text} ratio={ratio} />
-              </button>
-            ))}
+        <div className="offer-gallery">
+          <div className="offer-hero">
+            <ImagePlaceholder text={HERO[1]} ratio={HERO[0]} />
           </div>
-          <div className="ph-grid ph-grid-3">
-            {OPTION_SHOTS.map(([ratio, text]) => (
+          <div className="offer-film">
+            {FILM.map(([ratio, text]) => (
               <ImagePlaceholder key={text} text={text} ratio={ratio} />
             ))}
           </div>
-          <ImagePlaceholder
-            text="PLACEHOLDER: Flex Partial product mark on plain background, 1:1, 240px"
-            ratio="1 / 1"
-          />
         </div>
 
         <div className="offer-buy">
@@ -117,132 +76,113 @@ export default function OfferScreen({ answers, inPersonFirst }) {
           <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
           <p className="offer-note">{REVIEW_LINE}</p>
 
-          <div id="offer-cards" className="offer-cards" role="group" aria-label="Partial choices">
+          <div className="arch-row" role="group" aria-label="Arch">
+            {ARCHES.map(([value, label, shot]) => {
+              const choice = activeChoice(offerForAnswers({ arch: value }), selected);
+              const on = arch === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  className={on ? 'arch-card is-on' : 'arch-card'}
+                  aria-pressed={on}
+                  onClick={() => setArch(value)}
+                >
+                  <ImagePlaceholder text={shot} ratio="2 / 1" />
+                  <span className="arch-label">{label}</span>
+                  <span className="arch-price">{money(choice.price)}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div id="offer-cards" className="sku-row" role="group" aria-label="Partial choices">
             <button
               type="button"
-              className={`offer-card is-match${selected === 'flex' ? ' is-selected' : ''}`}
+              className={selected === 'flex' ? 'sku-card is-on' : 'sku-card'}
               aria-pressed={selected === 'flex'}
               onClick={() => setSelected('flex')}
             >
-              <ImagePlaceholder
-                text="PLACEHOLDER: Flex Partial product shot on plain background, 2:1, 1200px"
-                ratio="2 / 1"
-              />
-              <span className="offer-card-copy">
-                <span className="offer-kicker">Your match.</span>
-                <span className="offer-card-name">Flex Partial</span>
-                <span className="offer-card-price" data-card-price>{money(offer.flex.price)}</span>
-              </span>
+              <span className="sku-kicker">Your match.</span>
+              <span className="sku-name">Flex Partial</span>
             </button>
-
             <button
               type="button"
-              className={`offer-card${selected === 'precision' ? ' is-selected' : ''}`}
+              className={selected === 'precision' ? 'sku-card is-on' : 'sku-card'}
               aria-pressed={selected === 'precision'}
               onClick={() => setSelected('precision')}
             >
-              <ImagePlaceholder
-                text="PLACEHOLDER: Precision Partial Pro product shot on plain background, 2:1, 1200px"
-                ratio="2 / 1"
-              />
-              <span className="offer-card-copy">
-                <span className="offer-card-name">Precision Partial Pro</span>
-                <span className="offer-card-price">{money(offer.precision.price)}</span>
-              </span>
+              <span className="sku-name">Precision Partial Pro</span>
             </button>
           </div>
 
           <p className="offer-selected" data-selected-offer>{purchaseLine(active)}</p>
           <a className="offer-checkout" data-checkout href={active.url} onClick={buy}>
-            Continue to checkout
+            <span>Continue to checkout</span>
+            <span>{money(active.price)}</span>
           </a>
-          <p className="offer-affirm">{AFFIRM_LINE}</p>
+
+          <div className="pay-panel">
+            <div className="ph-pay">
+              {PAYMENT_MARKS.map(([ratio, text]) => (
+                <ImagePlaceholder key={text} text={text} ratio={ratio} />
+              ))}
+            </div>
+          </div>
 
           {inPersonFirst && (
-            <div
-              style={{
-                background: '#fdf3d1',
-                borderRadius: 16,
-                padding: '16px 18px',
-                marginTop: 14,
-                display: 'flex',
-                gap: 12,
-                alignItems: 'flex-start'
-              }}
-            >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#8a6d1a"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ flexShrink: 0, marginTop: 2 }}
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8v4" />
-                <path d="M12 16h.01" />
-              </svg>
-              <p style={{ margin: 0, fontSize: 18, lineHeight: 1.5, color: '#6b5410' }}>
-                <strong style={{ color: '#55430c' }}>See a dentist in person first.</strong> Pain, swelling,
+            <div className="offer-visit">
+              <p>
+                <strong>See a dentist in person first.</strong> Pain, swelling,
                 a loose tooth, or bleeding needs an in-person visit before a partial is planned. A licensed
                 dentist in your state can tell you what is going on.
               </p>
             </div>
           )}
-
-          <div className="ph-pay">
-            {PAYMENT_MARKS.map(([ratio, text]) => (
-              <ImagePlaceholder key={text} text={text} ratio={ratio} />
-            ))}
-          </div>
         </div>
       </div>
 
-      <div className="ph-grid ph-grid-4">
-        {KIT_SHOTS.map((text) => (
-          <ImagePlaceholder key={text} text={text} ratio="1 / 1" />
-        ))}
-      </div>
+      <section className="included" aria-label={INCLUDED_COPY.heading}>
+        <h2>{INCLUDED_COPY.heading}</h2>
+        <ul className="included-list">
+          <li>{INCLUDED_COPY.dentist}</li>
+          <li>{INCLUDED_COPY.kit}</li>
+          <li>{INCLUDED_COPY.shipping}</li>
+          <li data-included-product>{includedProductLine(active.name, offer.arch, money(active.price))}</li>
+        </ul>
+      </section>
 
-      <div className="ph-grid ph-grid-3 offer-steps">
-        {STEP_SHOTS.map((text) => (
-          <ImagePlaceholder key={text} text={text} ratio="980 / 1145" />
+      <section className="faq" aria-label="Details">
+        {FAQ_COPY.map(([title, body]) => (
+          <details key={title} className="faq-row">
+            <summary>
+              <span>{title}</span>
+              <span className="faq-plus" aria-hidden="true">+</span>
+            </summary>
+            <p>{body}</p>
+          </details>
         ))}
-      </div>
-      <div className="offer-step-icon">
-        <ImagePlaceholder
-          text="PLACEHOLDER: kit icon on plain background, 1:1, 500px"
-          ratio="1 / 1"
-        />
-      </div>
-      <HowItWorks />
+      </section>
 
-      <div className="ph-grid ph-grid-4">
-        {PRODUCT_SQUARES.map((text) => (
-          <ImagePlaceholder key={text} text={text} ratio="1 / 1" />
-        ))}
-      </div>
-      <div className="offer-badge">
-        <ImagePlaceholder
-          text="PLACEHOLDER: Flex Partial product shot on plain background, 1:1, 1040px"
-          ratio="1 / 1"
-        />
-      </div>
-
-      <ValueList />
+      <section className="next" aria-label={NEXT_HEADING}>
+        <h2>{NEXT_HEADING}</h2>
+        <ol className="next-list">
+          {NEXT_STEPS.map(([title, body, shot], index) => (
+            <li key={title} className={index % 2 === 1 ? 'next-step is-flip' : 'next-step'}>
+              <div className="next-copy">
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </div>
+              <ImagePlaceholder text={shot} ratio="1 / 1" />
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <p className="offer-contact">
         Questions?{' '}
-        <a href={`mailto:${LINKS.email}`} className="offer-mail">
-          {LINKS.email}
-        </a>
+        <a href={`mailto:${LINKS.email}`} className="offer-mail">{LINKS.email}</a>
       </p>
-
-      <Footer />
     </main>
   );
 }

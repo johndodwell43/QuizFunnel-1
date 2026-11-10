@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test api/saveLead.test.js api/quiz-lead.test.js src/lib/pendingLead.test.js src/lib/offerMatch.test.js"
+    "test": "node --test api/saveLead.test.js api/quiz-lead.test.js src/lib/pendingLead.test.js src/lib/offerMatch.test.js src/lib/offerCopy.test.js"
   },
   "dependencies": {
     "posthog-js": "^1.414.0",
