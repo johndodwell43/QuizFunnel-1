@@ -60,3 +60,10 @@ export function trackSendKitClicked(product, arch, price) {
   fb('InitiateCheckout', { value: price, currency: 'USD', content_ids: [`${product}-${arch}`] }, id);
   return { did: sessionStorage.getItem('klyros_did'), ...getUTMs() };
 }
+export function trackSmsScreenViewed(rewardOffered) {
+  posthog.capture('sms_screen_viewed', { reward_offered: rewardOffered });
+}
+export function trackSmsOptIn(rewardOffered) {
+  // No phone number goes to PostHog or Meta.
+  posthog.capture('sms_opt_in', { reward_offered: rewardOffered });
+}

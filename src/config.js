@@ -26,3 +26,12 @@ export const LINKS = {
 };
 
 export const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+// Text-signup reward. Only visitors who arrive from links WE tag (utm_source below) and add their
+// phone get it. Ads, Google, direct visits: no discount (they can still opt in for order updates).
+// A visit with an ad click id (fbclid/gclid/ttclid) or utm_medium paid/cpc never counts as tagged.
+export const SMS_REWARD = {
+  amount: 50,
+  code: 'KLYROS50',
+  taggedSources: ['ig_bio', 'tt_bio', 'yt_bio', 'fb_bio', 'linktree', 'klaviyo', 'email', 'sms', 'organic']
+};
