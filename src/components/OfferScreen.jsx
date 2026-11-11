@@ -45,7 +45,7 @@ function PartialPhoto({ arch, teeth }) {
   const src = partialImage(arch, teeth);
   const [failed, setFailed] = useState(false);
   const n = teethCount(teeth);
-  const label = `${arch === 'lower' ? 'Lower' : 'Upper'} partial · ${n === 6 ? '6+' : n} ${n === 1 ? 'tooth' : 'teeth'}`;
+  const label = `${arch === 'lower' ? 'Lower' : 'Upper'} partial` + (teeth ? ` · ${n === 6 ? '6+' : n} ${n === 1 ? 'tooth' : 'teeth'}` : '');
   return (
     <figure className="rec-shot">
       <div className="rec-photo">
@@ -77,7 +77,7 @@ function Thumb({ slide, teeth }) {
 
 function ProductGallery({ arch, teeth }) {
   const slides = [
-    ...(arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => ({ kind: 'partial', arch: a, key: `p-${a}` })),
+    ...(arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : []).map((a) => ({ kind: 'partial', arch: a, key: `p-${a}` })),
     ...FILM.map(([ratio, text], i) => ({ kind: 'ph', text, ratio, short: ['Angle', 'Kit', 'Case', 'Detail'][i], key: `f-${i}` }))
   ];
   const [index, setIndex] = useState(0);
@@ -158,14 +158,17 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const initial = offerForAnswers(answers);
   const arches = direct ? DIRECT_ARCHES : archOptions(answers.arch);
   // Separate counts so 'Both' can be e.g. 2 on top and 3 on the bottom.
-  const [teeth, setTeeth] = useState({ upper: answers.teeth || '1', lower: answers.teeth || '1' });
+  // /shop starts with nothing picked (no quiz answers); the quiz result starts from the answers.
+  const [teeth, setTeeth] = useState(direct ? { upper: null, lower: null } : { upper: answers.teeth || '1', lower: answers.teeth || '1' });
   // Quiz takers who said "both" start on one arch; the second arch comes back at the both-arch total.
-  const [arch, setArch] = useState(!direct && initial.arch === 'both' ? 'upper' : initial.arch);
+  const [arch, setArch] = useState(direct ? null : initial.arch === 'both' ? 'upper' : initial.arch);
   const [selected, setSelected] = useState(initial.selected);
   const [details, setDetails] = useState(false);
   const detailsRef = useRef(null);
   const howRef = useRef(null);
-  const offer = offerForAnswers({ arch });
+  const offer = offerForAnswers({ arch: arch || 'upper' });
+  const needArches = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
+  const ready = !direct || (needArches.length > 0 && needArches.every((a) => teeth[a]));
   const active = activeChoice(offer, selected);
   const oneArchPrice = activeChoice(offerForAnswers({ arch: 'upper' }), selected).price;
   const bothPrice = activeChoice(offerForAnswers({ arch: 'both' }), selected).price;
@@ -188,6 +191,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   const buy = (event) => {
     event.preventDefault();
+    if (!ready) return;
     const tracking = { ...trackSendKitClicked(active.sku, offer.arch, active.price), ...toothAttributes(offer.arch, teeth) };
     if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
     else checkoutOneArch(active.sku, offer.arch, tracking);
@@ -209,7 +213,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         <div className="offer-buy">
           <h1 className="offer-title">{direct ? active.name : MATCH_LINE}</h1>
           {direct ? (
-            <p className="offer-price" data-shop-price>{money(active.price)}</p>
+            <p className="offer-price" data-shop-price>{arch ? money(active.price) : `From ${money(oneArchPrice)}`}</p>
           ) : (
             <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
           )}
@@ -293,7 +297,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          {direct && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
+          {direct && arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
 
           <p className={direct ? 'pick-label' : 'opt-label'}>Choose your partial</p>
           <div id="offer-cards" className="plan-list" role="group" aria-label="Partial choices">
@@ -345,10 +349,18 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </div>
           )}
 
-          <p className="offer-selected" data-selected-offer>{purchaseLine(active)}</p>
-          <a className="offer-checkout" data-checkout href={active.url} onClick={buy}>
-            <span>Continue to checkout</span>
-            <span>{money(active.price)}</span>
+          <p className="offer-selected" data-selected-offer>
+            {ready ? purchaseLine(active) : !arch ? 'Pick your arch to see your price' : 'Pick how many teeth to replace'}
+          </p>
+          <a
+            className={ready ? 'offer-checkout' : 'offer-checkout is-locked'}
+            data-checkout
+            href={ready ? active.url : undefined}
+            aria-disabled={!ready}
+            onClick={buy}
+          >
+            <span>{ready ? 'Continue to checkout' : 'Choose your options above'}</span>
+            <span>{ready ? money(active.price) : ''}</span>
           </a>
 
           <div className="pay-panel">

@@ -72,8 +72,8 @@ test('headline price stays the Flex match when Precision is selected', () => {
 
 test('checkout line matches the selected variant price and cart URL', () => {
   const screen = readFileSync(new URL('../components/OfferScreen.jsx', import.meta.url), 'utf8');
-  assert.match(screen, /data-selected-offer>\{purchaseLine\(active\)\}/);
-  assert.match(screen, /data-checkout href=\{active\.url\}/);
+  assert.match(screen, /ready \? purchaseLine\(active\)/);
+  assert.match(screen, /href=\{ready \? active\.url : undefined\}/);
 
   const cases = [
     ['upper', 'flex', 'Flex Partial · $489', FLEX.upper],
