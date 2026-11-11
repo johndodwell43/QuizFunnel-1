@@ -15,7 +15,8 @@ import {
   offerForAnswers,
   partialImage,
   purchaseLine,
-  teethCount
+  teethCount,
+  toothAttributes
 } from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
@@ -31,11 +32,6 @@ const FILM = [
   ['1 / 1', 'PLACEHOLDER: Flex Partial detail product shot on plain background, 1:1, 1200px']
 ];
 
-const ARCH_ROW = {
-  both: ['Both arches', 'Upper + lower'],
-  upper: ['Upper', 'Top arch'],
-  lower: ['Lower', 'Bottom arch']
-};
 
 const PAYMENT_MARKS = [
   ['4 / 1', 'PLACEHOLDER: Apple Pay, 4:1, 200px'],
@@ -69,7 +65,7 @@ function PartialPhoto({ arch, teeth }) {
 function Thumb({ slide, teeth }) {
   const [failed, setFailed] = useState(false);
   if (slide.kind === 'partial') {
-    const src = partialImage(slide.arch, teeth);
+    const src = partialImage(slide.arch, teeth[slide.arch]);
     return failed ? (
       <span className="thumb-ph">{slide.arch === 'lower' ? 'Lower' : 'Upper'}</span>
     ) : (
@@ -85,13 +81,13 @@ function ProductGallery({ arch, teeth }) {
     ...FILM.map(([ratio, text], i) => ({ kind: 'ph', text, ratio, short: ['Angle', 'Kit', 'Case', 'Detail'][i], key: `f-${i}` }))
   ];
   const [index, setIndex] = useState(0);
-  useEffect(() => setIndex(0), [arch, teeth]);
+  useEffect(() => setIndex(0), [arch, teeth.upper, teeth.lower]);
   const current = slides[Math.min(index, slides.length - 1)];
   return (
     <div className="pg">
       <div className="pg-main">
         {current.kind === 'partial' ? (
-          <PartialPhoto key={`${current.arch}-${teeth}`} arch={current.arch} teeth={teeth} />
+          <PartialPhoto key={`${current.arch}-${teeth[current.arch]}`} arch={current.arch} teeth={teeth[current.arch]} />
         ) : (
           <div className="rec-photo">
             <ImagePlaceholder text={current.text} ratio="3 / 2" />
@@ -101,7 +97,7 @@ function ProductGallery({ arch, teeth }) {
       <div className="pg-thumbs" role="tablist" aria-label="Product photos">
         {slides.map((slide, i) => (
           <button
-            key={slide.key + teeth}
+            key={slide.key + teeth.upper + teeth.lower}
             type="button"
             role="tab"
             aria-selected={i === index}
@@ -118,6 +114,38 @@ function ProductGallery({ arch, teeth }) {
 }
 
 const TEETH = ['1', '2', '3', '4', '5', '6+'];
+// "How many teeth to replace?" — one picker per arch; Both shows top and bottom separately.
+function TeethPickers({ arch, teeth, setTeeth }) {
+  return (arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => (
+    <React.Fragment key={a}>
+      <p className="pick-label">
+        How many teeth to replace
+        {arch === 'both' && (
+          <>
+            {' on the '}
+            <strong className="pick-arch">{a === 'upper' ? 'top' : 'bottom'}</strong>
+          </>
+        )}
+        ?
+      </p>
+      <div className="teeth-row" role="group" aria-label={a === 'upper' ? 'Top teeth' : 'Bottom teeth'}>
+        {TEETH.map((n) => (
+          <button
+            key={n}
+            type="button"
+            className={teeth[a] === n ? 'teeth-tile is-on' : 'teeth-tile'}
+            aria-pressed={teeth[a] === n}
+            aria-label={`${n} ${n === '1' ? 'tooth' : 'teeth'} on the ${a === 'upper' ? 'top' : 'bottom'}`}
+            onClick={() => setTeeth((prev) => ({ ...prev, [a]: n }))}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+    </React.Fragment>
+  ));
+}
+
 const DIRECT_ARCHES = ['upper', 'lower', 'both'];
 const SCREEN_LINES = [
   'No tooth removed in the last 90 days',
@@ -129,14 +157,20 @@ const SCREEN_LINES = [
 export default function OfferScreen({ answers = {}, inPersonFirst = false, direct = false }) {
   const initial = offerForAnswers(answers);
   const arches = direct ? DIRECT_ARCHES : archOptions(answers.arch);
-  const [teeth, setTeeth] = useState(answers.teeth || '1');
-  const [arch, setArch] = useState(initial.arch);
+  // Separate counts so 'Both' can be e.g. 2 on top and 3 on the bottom.
+  const [teeth, setTeeth] = useState({ upper: answers.teeth || '1', lower: answers.teeth || '1' });
+  // Quiz takers who said "both" start on one arch; the second arch comes back at the both-arch total.
+  const [arch, setArch] = useState(!direct && initial.arch === 'both' ? 'upper' : initial.arch);
   const [selected, setSelected] = useState(initial.selected);
   const [details, setDetails] = useState(false);
   const detailsRef = useRef(null);
   const howRef = useRef(null);
   const offer = offerForAnswers({ arch });
   const active = activeChoice(offer, selected);
+  const oneArchPrice = activeChoice(offerForAnswers({ arch: 'upper' }), selected).price;
+  const bothPrice = activeChoice(offerForAnswers({ arch: 'both' }), selected).price;
+  const secondArchPrice = bothPrice - oneArchPrice;
+  const secondArchOff = oneArchPrice - secondArchPrice;
   const shots = arch === 'both' ? ['upper', 'lower'] : [arch];
 
   useEffect(() => {
@@ -154,7 +188,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   const buy = (event) => {
     event.preventDefault();
-    const tracking = trackSendKitClicked(active.sku, offer.arch, active.price);
+    const tracking = { ...trackSendKitClicked(active.sku, offer.arch, active.price), ...toothAttributes(offer.arch, teeth) };
     if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
     else checkoutOneArch(active.sku, offer.arch, tracking);
   };
@@ -167,7 +201,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         ) : (
           <div className={shots.length > 1 ? 'rec-shots is-both' : 'rec-shots'}>
             {shots.map((a) => (
-              <PartialPhoto key={a} arch={a} teeth={teeth} />
+              <PartialPhoto key={a} arch={a} teeth={teeth[a]} />
             ))}
           </div>
         )}
@@ -204,51 +238,62 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             <>
               <p className="opt-label">Your arches</p>
               <div className="plan-list" role="group" aria-label="Arch">
-                {arches.map((value, index) => {
-                  const choice = activeChoice(offerForAnswers({ arch: value }), selected);
-                  const on = arch === value;
-                  const [name, sub] = ARCH_ROW[value];
-                  return (
-                    <React.Fragment key={value}>
-                      {index === 1 && <p className="plan-split">Or start with one arch</p>}
+                <button
+                  type="button"
+                  className={arch !== 'both' ? 'plan-row plan-row-stack is-on' : 'plan-row plan-row-stack'}
+                  aria-pressed={arch !== 'both'}
+                  onClick={() => setArch(arch === 'both' ? 'upper' : arch)}
+                >
+                  <span className="plan-top">
+                    <span className="plan-title">Just one arch for now</span>
+                    <span className="plan-price">{money(oneArchPrice)}</span>
+                  </span>
+                  <span className="plan-detail" data-second-arch>
+                    If you're satisfied, we'll take {money(secondArchOff)} off your second arch:
+                    <span className="second-price">
+                      <s>{money(oneArchPrice)}</s> <strong>{money(secondArchPrice)}</strong>
+                    </span>
+                    <span className="second-when">
+                      Order within 60 days after your first case is finished.
+                    </span>
+                  </span>
+                </button>
+                {arch !== 'both' && (
+                  <div className="pick-row pick-row-2" role="group" aria-label="Which arch first">
+                    {[['upper', 'Top'], ['lower', 'Bottom']].map(([value, label]) => (
                       <button
+                        key={value}
                         type="button"
-                        className={on ? 'plan-row is-on' : 'plan-row'}
-                        aria-pressed={on}
+                        className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
+                        aria-pressed={arch === value}
                         onClick={() => setArch(value)}
                       >
-                        <span className="plan-name">
-                          {name}
-                          <span className="plan-sub">{sub}</span>
-                        </span>
-                        <span className="plan-price">{money(choice.price)}</span>
+                        {label}
                       </button>
-                    </React.Fragment>
-                  );
-                })}
+                    ))}
+                  </div>
+                )}
+                <div className="or-divider" aria-hidden="true">
+                  <span>OR</span>
+                </div>
+                <button
+                  type="button"
+                  className={arch === 'both' ? 'plan-row is-on' : 'plan-row'}
+                  aria-pressed={arch === 'both'}
+                  onClick={() => setArch('both')}
+                >
+                  <span className="plan-name">
+                    Get both now
+                    <span className="plan-sub">Top + bottom</span>
+                  </span>
+                  <span className="plan-price">{money(bothPrice)}</span>
+                </button>
               </div>
+              {arch === 'both' && <TeethPickers arch="both" teeth={teeth} setTeeth={setTeeth} />}
             </>
           )}
 
-          {direct && (
-            <>
-              <p className="pick-label">How many teeth to replace{arch === 'both' ? ' on each arch' : ''}?</p>
-              <div className="teeth-row" role="group" aria-label="Teeth">
-                {TEETH.map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    className={teeth === n ? 'teeth-tile is-on' : 'teeth-tile'}
-                    aria-pressed={teeth === n}
-                    aria-label={`${n} ${n === '1' ? 'tooth' : 'teeth'}`}
-                    onClick={() => setTeeth(n)}
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
+          {direct && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
 
           <p className={direct ? 'pick-label' : 'opt-label'}>Choose your partial</p>
           <div id="offer-cards" className="plan-list" role="group" aria-label="Partial choices">

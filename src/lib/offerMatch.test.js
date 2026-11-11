@@ -57,7 +57,7 @@ test('headline price stays the Flex match when Precision is selected', () => {
   const cases = [
     ['upper', PRICING.flexPrice, '$489'],
     ['lower', PRICING.flexPrice, '$489'],
-    ['both', PRICING.flexBoth, '$859']
+    ['both', PRICING.flexBoth, '$879']
   ];
   for (const [arch, flexPrice, flexText] of cases) {
     const offer = offerForAnswers({ arch });
@@ -80,7 +80,7 @@ test('checkout line matches the selected variant price and cart URL', () => {
     ['upper', 'precision', 'Precision Partial Pro · $789', PRECISION.upper],
     ['lower', 'flex', 'Flex Partial · $489', FLEX.lower],
     ['lower', 'precision', 'Precision Partial Pro · $789', PRECISION.lower],
-    ['both', 'flex', 'Flex Partial · $859', FLEX.both],
+    ['both', 'flex', 'Flex Partial · $879', FLEX.both],
     ['both', 'precision', 'Precision Partial Pro · $1,479', PRECISION.both]
   ];
   for (const [arch, selected, line, variantId] of cases) {
@@ -121,4 +121,28 @@ test('result photo follows arch and tooth count (1-6, 6+ and most use 6)', async
   assert.deepEqual(archOptions('upper'), ['upper']);
   assert.deepEqual(archOptions('lower'), ['lower']);
   assert.deepEqual(archOptions('both'), ['both', 'upper', 'lower']);
+});
+
+test('tooth counts go to the cart as order attributes', async () => {
+  const { toothAttributes } = await import('./offerMatch.js');
+  assert.deepEqual(toothAttributes('upper', { upper: '2', lower: '5' }), { 'attributes[Top teeth to replace]': '2' });
+  assert.deepEqual(toothAttributes('lower', { upper: '2', lower: '5' }), { 'attributes[Bottom teeth to replace]': '5' });
+  assert.deepEqual(toothAttributes('both', { upper: '2', lower: '3' }), {
+    'attributes[Top teeth to replace]': '2',
+    'attributes[Bottom teeth to replace]': '3'
+  });
+  const url = cartUrl('63304032354673', toothAttributes('both', { upper: '2', lower: '3' }));
+  assert.match(url, /attributes%5BTop\+teeth\+to\+replace%5D=2/);
+  assert.match(url, /discount=KLYROS50$/);
+});
+
+test('second arch later costs the both-arch total minus one arch', () => {
+  const one = offerForAnswers({ arch: 'upper' });
+  const both = offerForAnswers({ arch: 'both' });
+  assert.equal(both.flex.price - one.flex.price, 390);
+  assert.equal(both.precision.price - one.precision.price, 690);
+  const screen = readFileSync(new URL('../components/OfferScreen.jsx', import.meta.url), 'utf8');
+  assert.match(screen, /we'll take \{money\(secondArchOff\)\} off your second arch/);
+  assert.equal(2 * one.flex.price - both.flex.price, 99);
+  assert.equal(2 * one.precision.price - both.precision.price, 99);
 });
