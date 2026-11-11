@@ -188,6 +188,7 @@ function Quiz() {
         {isSms && (
           <SmsScreen
             lead={lead}
+            inPersonFirst={inPersonFirst}
             onDone={(next) => {
               if (next) setLead(next);
               setScreen('offer');
