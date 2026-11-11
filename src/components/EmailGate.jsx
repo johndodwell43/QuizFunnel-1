@@ -61,32 +61,38 @@ export default function EmailGate({
           fetchpriority="high"
         />
       </div>
-      <h1 className="email-gate-title">Where should we send your results?</h1>
+      <section className="gate-card">
+        <h1 className="email-gate-title">
+          <span className="step-tag">Step 1</span>{' '}
+          to your new smile.
+        </h1>
+        <p className="email-gate-sub">
+          Tell us where to send your case results, then answer the 5 questions a dentist needs before
+          reviewing your case.
+        </p>
 
-      <form onSubmit={onSubmit} noValidate>
-        <div className="email-gate-fields">
-          <div className="email-gate-field">
-            <label htmlFor={emailId} className="email-gate-label">
-              Email <span className="email-gate-tag">Required</span>
-            </label>
-            <input
-              id={emailId}
-              className="email-gate-input"
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="email-gate-consents">
+        <form onSubmit={onSubmit} noValidate>
+          <label htmlFor={emailId} className="sr-only">
+            Email
+          </label>
+          <input
+            id={emailId}
+            className="email-gate-input"
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            required
+            placeholder="you@email.com"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+          <button type="submit" className="email-gate-submit" disabled={!emailReady || submitting}>
+            {submitting ? 'Sending…' : 'Continue'}
+          </button>
           <label htmlFor={emailConsentId} className="email-gate-consent">
             <input
               id={emailConsentId}
@@ -98,12 +104,9 @@ export default function EmailGate({
             />
             <span className="email-gate-consent-copy">{EMAIL_CONSENT_TEXT}</span>
           </label>
-        </div>
-
-        <button type="submit" className="email-gate-submit" disabled={!emailReady || submitting}>
-          {submitting ? 'Sending…' : 'Continue'}
-        </button>
-      </form>
+        </form>
+      </section>
+      <p className="gate-foot">A dentist licensed in your state reviews every case before anything is made.</p>
     </main>
   );
 }

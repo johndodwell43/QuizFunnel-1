@@ -17,7 +17,7 @@ const UPDATES = [
   'When your partial leaves the lab'
 ];
 
-export default function SmsScreen({ lead, onDone }) {
+export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
   const phoneId = useId();
   const [phone, setPhone] = useState('');
   const [sending, setSending] = useState(false);
@@ -47,7 +47,9 @@ export default function SmsScreen({ lead, onDone }) {
   return (
     <main className="sms-screen" data-screen-label="SMS">
       <div className="sms-card">
-        <p className="sms-eyebrow">Your match is ready</p>
+        <p className="sms-eyebrow">
+          {inPersonFirst ? 'Your answers are in.' : 'Great news! You can move to the dentist review.'}
+        </p>
         <h1 className="sms-title">
           {reward ? (
             <>
@@ -59,7 +61,7 @@ export default function SmsScreen({ lead, onDone }) {
         </h1>
         <p className="sms-sub">
           {reward
-            ? `Add your number and we'll take ${off} off at checkout. Then we text you at the three moments that matter:`
+            ? `Add your number and ${off} comes off at checkout. We'll text you at the three moments that matter:`
             : "Add your number and we'll text you at the three moments that matter:"}
         </p>
         <ul className="sms-list">
@@ -92,13 +94,13 @@ export default function SmsScreen({ lead, onDone }) {
             />
           </div>
           <button type="submit" className="email-gate-submit sms-submit" disabled={!ready || sending}>
-            {sending ? 'Sending…' : reward ? `Text me my ${off} off` : 'Text me my updates'}
+            {sending ? 'Saving…' : reward ? `Apply my ${off} off` : 'Yes, text me updates'}
           </button>
           <p className="sms-terms">{SMS_TERMS}</p>
         </form>
       </div>
       <button type="button" className="sms-skip" onClick={() => onDone(null)}>
-        No thanks, show my match
+        No thanks, show my case results
       </button>
     </main>
   );

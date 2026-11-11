@@ -27,17 +27,23 @@ button { font-family: inherit; }
 
 .email-gate-title {
   font-size: clamp(30px, 5.5vw, 40px);
-  line-height: 1.05;
+  line-height: 1.08;
   font-weight: 700;
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
   text-wrap: pretty;
   color: #0a1628;
+}
+.email-gate-accent { color: #2563eb; }
+.email-gate-sub { margin: 0 0 12px 0; font-size: 17px; line-height: 1.4; color: #454e5c; text-wrap: pretty; max-width: 40ch; }
+.email-gate-sub strong { color: #0a1628; font-weight: 700; }
+@media (min-width: 768px) {
+  .email-gate-sub { font-size: 20px; margin-bottom: 18px; max-width: 46ch; }
 }
 .email-gate-fields {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 4px;
+  margin-bottom: 12px;
 }
 .email-gate-label {
   display: block;
@@ -67,30 +73,30 @@ button { font-family: inherit; }
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 4px;
+  margin-bottom: 14px;
 }
 .email-gate-consent {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  min-height: 48px;
+  gap: 10px;
+  min-height: 44px;            /* still a comfortable tap target, but visually small print */
   margin: 0;
-  padding: 0;
+  padding: 2px 4px;
   cursor: pointer;
 }
 .email-gate-check {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  margin: 0;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  margin: 1px 0 0 0;
   flex-shrink: 0;
   accent-color: #2563eb;
 }
 .email-gate-consent-copy {
-  font-size: 18px;
-  line-height: 1.15;
-  color: #0a1628;
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgba(10, 22, 40, 0.68);
   padding-top: 0;
 }
 .email-gate-error {
@@ -133,7 +139,7 @@ button { font-family: inherit; }
   height: min(clamp(120px, calc(100dvh - 560px), 260px), calc((100vw - 32px) * 460 / 1200));
   aspect-ratio: 1200 / 460;
   width: auto;
-  margin: 0 auto 4px auto;
+  margin: 0 auto 14px auto;
   padding: 0;
   /* Drawn as an inset outline so the photo itself gets the full height. */
   outline: 1.5px solid rgba(255, 255, 255, 0.75);
@@ -157,9 +163,10 @@ button { font-family: inherit; }
     margin-bottom: 12px;
   }
   .email-gate-title {
-    font-size: 48px;
-    line-height: 1.08;
-    margin-bottom: 20px;
+    font-size: 56px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
   }
   .email-gate-fields {
     display: grid;
@@ -190,23 +197,20 @@ button { font-family: inherit; }
     margin-bottom: 14px;
   }
   .email-gate-consent {
-    gap: 18px;
-    min-height: 72px;
-    padding: 14px 24px;
-    background: #ffffff;
-    border-radius: 18px;
-    box-shadow: 0 2px 10px rgba(17, 24, 39, 0.07);
+    gap: 10px;
+    min-height: 44px;
+    padding: 2px 4px;
   }
   .email-gate-check {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
   }
   .email-gate-consent-copy {
-    font-size: 22px;
-    line-height: 1.35;
-    padding-top: 8px;
+    font-size: 15px;
+    line-height: 1.4;
+    padding-top: 0;
   }
   .email-gate-error {
     font-size: 22px;
@@ -697,7 +701,7 @@ button { font-family: inherit; }
 /* Text-signup screen (after the last question, before the result) */
 .sms-screen { display: flex; flex-direction: column; align-items: stretch; gap: 14px; max-width: 560px; margin: 4px auto 0; color: #0a1628; }
 .sms-card { background: #ffffff; border-radius: 22px; padding: 22px 18px 18px; box-shadow: 0 6px 24px rgba(10, 22, 40, 0.08); }
-.sms-eyebrow { margin: 0 0 6px 0; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #2563eb; }
+.sms-eyebrow { margin: 0 0 8px 0; font-size: 15px; line-height: 1.3; font-weight: 700; color: #166534; }
 .sms-title { margin: 0; font-size: clamp(30px, 6vw, 40px); line-height: 1.1; font-weight: 800; text-wrap: pretty; }
 .sms-off { color: #2563eb; }
 .sms-sub { margin: 10px 0 0 0; font-size: 18px; line-height: 1.45; color: #454e5c; }
@@ -717,3 +721,56 @@ button { font-family: inherit; }
 .reward-line { margin: 6px 0 0 0; align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: #e5f4e4;
   color: #166534; font-size: 14px; font-weight: 700; }
 @media (min-width: 1024px) { .sms-card { padding: 32px 32px 24px; } .sms-title { font-size: 44px; } }
+
+/* ---- Email gate, opt-in card layout (overrides the older gate rules above) ---- */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.gate-screen .email-gate-art { margin: 0 auto 14px auto; }
+.gate-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 22px 18px 16px;
+  box-shadow: 0 10px 40px rgba(10, 22, 40, 0.10);
+}
+.gate-card .email-gate-title {
+  font-size: clamp(30px, 7.4vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 0 0 8px 0;
+}
+.gate-card .email-gate-sub {
+  margin: 0 0 16px 0;
+  font-size: 17px;
+  line-height: 1.45;
+  color: #454e5c;
+  max-width: 52ch;
+}
+.gate-card form { display: flex; flex-direction: column; gap: 10px; }
+.gate-card .email-gate-input {
+  min-height: 58px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(10, 22, 40, 0.16);
+  background: #f6f9fe;
+  box-shadow: none;
+  font-size: 18px;
+  padding: 14px 16px;
+}
+.gate-card .email-gate-input::placeholder { color: rgba(10, 22, 40, 0.42); }
+.gate-card .email-gate-input:focus { outline: none; border-color: #2563eb; background: #ffffff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14); }
+.gate-card .email-gate-submit { min-height: 58px; border-radius: 14px; font-size: 19px; margin: 0; }
+.gate-card .email-gate-submit:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
+.gate-card .email-gate-consent { gap: 9px; min-height: 40px; margin: 2px 0 0 0; padding: 0 2px; }
+.gate-card .email-gate-check { width: 18px; height: 18px; min-width: 18px; min-height: 18px; margin-top: 2px; }
+.gate-card .email-gate-consent-copy { font-size: 13px; line-height: 1.4; color: rgba(10, 22, 40, 0.62); }
+.gate-foot { margin: 12px 4px 0; font-size: 14px; line-height: 1.4; color: rgba(10, 22, 40, 0.62); text-align: center; }
+@media (min-width: 768px) {
+  .gate-screen { max-width: 520px; }
+  .gate-screen .email-gate-art { height: 200px; }
+  .gate-card { padding: 30px 30px 22px; }
+  .gate-card .email-gate-title { font-size: 40px; margin-bottom: 10px; }
+  .gate-card .email-gate-sub { font-size: 18px; margin-bottom: 20px; }
+  .gate-card .email-gate-consent-copy { font-size: 14px; }
+  .gate-foot { font-size: 15px; margin-top: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .gate-screen { animation: none; } }
+/* "Step 1" as a step marker inside the gate headline */
+.step-tag { display: inline-block; vertical-align: 0.06em; padding: 1px 14px 3px; border-radius: 999px; background: #2563eb; color: #ffffff; font-size: 0.72em; font-weight: 800; letter-spacing: -0.01em; line-height: 1.5; }
