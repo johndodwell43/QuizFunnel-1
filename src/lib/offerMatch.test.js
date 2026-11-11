@@ -18,7 +18,7 @@ const PRECISION = {
 };
 
 function cart(variantId) {
-  return `https://tfvziu-ia.myshopify.com/cart/${variantId}:1?discount=KLYROS50`;
+  return `https://tfvziu-ia.myshopify.com/cart/${variantId}:1`;
 }
 
 for (const arch of ['upper', 'lower', 'both']) {
@@ -39,8 +39,8 @@ for (const arch of ['upper', 'lower', 'both']) {
     assert.equal(offer.precision.url, cart(PRECISION[arch]));
     assert.equal(offer.flex.price, price);
     assert.equal(offer.precision.price, precisionPrice);
-    assert.match(offer.flex.url, /discount=KLYROS50/);
-    assert.match(offer.precision.url, /discount=KLYROS50/);
+    assert.doesNotMatch(offer.flex.url, /discount=/);
+    assert.doesNotMatch(offer.precision.url, /discount=/);
 
     const otherTeeth = offerForAnswers({ arch, teeth: '1' });
     assert.equal(otherTeeth.flex.url, offer.flex.url);
@@ -88,27 +88,15 @@ test('checkout line matches the selected variant price and cart URL', () => {
     assert.equal(purchaseLine(choice), line);
     assert.equal(choice.price, Number(line.replace(/[^0-9]/g, '')));
     assert.equal(choice.url, cart(variantId));
-    assert.match(choice.url, new RegExp(`/cart/${choice.variantId}:1\\?discount=KLYROS50`));
+    assert.match(choice.url, new RegExp(`/cart/${choice.variantId}:1$`));
   }
 });
 
-test('discount is appended after existing cart params and is not repeated', () => {
-  const withTracking = cartUrl('63304031961457', {
-    did: 'kly_1',
-    utm_source: '',
-    utm_campaign: 'spring',
-    utm_content: ''
-  });
-  assert.equal(
-    withTracking,
-    'https://tfvziu-ia.myshopify.com/cart/63304031961457:1?did=kly_1&utm_source=&utm_campaign=spring&utm_content=&discount=KLYROS50'
-  );
-
-  const already = cartUrl('63304032158065', { did: 'kly_2', discount: 'KLYROS50' });
-  assert.equal(
-    already,
-    'https://tfvziu-ia.myshopify.com/cart/63304032158065:1?did=kly_2&discount=KLYROS50'
-  );
+test('a discount code is only added when one is passed (the text-signup reward)', () => {
+  const plain = cartUrl('63304031961457', { did: 'kly_1', utm_source: '', utm_campaign: 'spring', utm_content: '' });
+  assert.equal(plain, 'https://tfvziu-ia.myshopify.com/cart/63304031961457:1?did=kly_1&utm_source=&utm_campaign=spring&utm_content=');
+  const rewarded = cartUrl('63304032158065', { did: 'kly_2', discount: 'KLYROS50' });
+  assert.equal(rewarded, 'https://tfvziu-ia.myshopify.com/cart/63304032158065:1?did=kly_2&discount=KLYROS50');
 });
 
 test('result photo follows arch and tooth count (1-6, 6+ and most use 6)', async () => {
@@ -133,7 +121,7 @@ test('tooth counts go to the cart as order attributes', async () => {
   });
   const url = cartUrl('63304032354673', toothAttributes('both', { upper: '2', lower: '3' }));
   assert.match(url, /attributes%5BTop\+teeth\+to\+replace%5D=2/);
-  assert.match(url, /discount=KLYROS50$/);
+  assert.doesNotMatch(url, /discount=/);
 });
 
 test('second arch later costs the both-arch total minus one arch', () => {

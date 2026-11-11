@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ImagePlaceholder from './ImagePlaceholder.jsx';
-import { LINKS, money } from '../config.js';
+import { LINKS, SMS_REWARD, money } from '../config.js';
+import { rewardEarned, rewardParams } from '../lib/reward.js';
 import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
 import {
   FAQ_COPY,
@@ -192,7 +193,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const buy = (event) => {
     event.preventDefault();
     if (!ready) return;
-    const tracking = { ...trackSendKitClicked(active.sku, offer.arch, active.price), ...toothAttributes(offer.arch, teeth) };
+    const tracking = { ...trackSendKitClicked(active.sku, offer.arch, active.price), ...toothAttributes(offer.arch, teeth), ...rewardParams() };
     if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
     else checkoutOneArch(active.sku, offer.arch, tracking);
   };
@@ -216,6 +217,11 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             <p className="offer-price" data-shop-price>{arch ? money(active.price) : `From ${money(oneArchPrice)}`}</p>
           ) : (
             <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
+          )}
+          {rewardEarned() && (
+            <p className="reward-line" data-reward>
+              Your {money(SMS_REWARD.amount)} off is applied at checkout
+            </p>
           )}
           <p className="offer-note">{REVIEW_LINE}</p>
 

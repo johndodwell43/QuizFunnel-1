@@ -1,35 +1,19 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
-import {
-  EMAIL_CONSENT_DEFAULT,
-  EMAIL_CONSENT_TEXT,
-  SMS_CONSENT_DEFAULT,
-  SMS_CONSENT_TEXT
-} from '../lib/consent.js';
-import {
-  isValidEmail,
-  phoneForLead,
-  resolveEmailMarketingConsent,
-  resolveSmsConsent
-} from '../lib/email.js';
+import { EMAIL_CONSENT_DEFAULT, EMAIL_CONSENT_TEXT } from '../lib/consent.js';
+import { isValidEmail, resolveEmailMarketingConsent } from '../lib/email.js';
 import { persistQuizLead } from '../lib/lead.js';
 import { clearPendingQuizLead, rememberPendingQuizLead, scheduleLeadRetry } from '../lib/pendingLead.js';
 import { trackEmailGateViewed, trackLeadCaptured } from '../lib/track.js';
 
 export default function EmailGate({
   initialEmail = '',
-  initialPhone = '',
   initialEmailConsent = EMAIL_CONSENT_DEFAULT,
-  initialSmsConsent = SMS_CONSENT_DEFAULT,
   onSuccess
 }) {
   const emailId = useId();
-  const phoneId = useId();
   const emailConsentId = useId();
-  const smsConsentId = useId();
   const [email, setEmail] = useState(initialEmail);
-  const [phone, setPhone] = useState(initialPhone);
   const [emailChecked, setEmailChecked] = useState(initialEmailConsent === true);
-  const [smsChecked, setSmsChecked] = useState(initialSmsConsent === true);
   const [submitting, setSubmitting] = useState(false);
   const lock = useRef(false);
   const emailReady = isValidEmail(email);
@@ -44,12 +28,11 @@ export default function EmailGate({
 
     const nextEmail = email.trim();
     if (!isValidEmail(nextEmail)) return;
-    const nextPhone = phoneForLead(phone);
     const localLead = {
       email: nextEmail,
-      phone: nextPhone,
+      phone: '',
       emailMarketingConsent: resolveEmailMarketingConsent(emailChecked),
-      smsConsent: resolveSmsConsent(smsChecked, nextPhone)
+      smsConsent: false
     };
 
     lock.current = true;
@@ -78,50 +61,38 @@ export default function EmailGate({
           fetchpriority="high"
         />
       </div>
-      <h1 className="email-gate-title">Where should we send your results?</h1>
+      <section className="gate-card">
+        <h1 className="email-gate-title">
+          <span className="step-tag">Step 1</span>{' '}
+          to your new smile.
+        </h1>
+        <p className="email-gate-sub">
+          Tell us where to send your case results, then answer the 5 questions a dentist needs before
+          reviewing your case.
+        </p>
 
-      <form onSubmit={onSubmit} noValidate>
-        <div className="email-gate-fields">
-          <div className="email-gate-field">
-            <label htmlFor={emailId} className="email-gate-label">
-              Email <span className="email-gate-tag">Required</span>
-            </label>
-            <input
-              id={emailId}
-              className="email-gate-input"
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </div>
-
-          <div className="email-gate-field">
-            <label htmlFor={phoneId} className="email-gate-label">
-              Phone <span className="email-gate-tag">Optional</span>
-            </label>
-            <input
-              id={phoneId}
-              className="email-gate-input"
-              name="phone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              maxLength={24}
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
-            />
-          </div>
-
-        </div>
-
-        <div className="email-gate-consents">
+        <form onSubmit={onSubmit} noValidate>
+          <label htmlFor={emailId} className="sr-only">
+            Email
+          </label>
+          <input
+            id={emailId}
+            className="email-gate-input"
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            required
+            placeholder="you@email.com"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+          <button type="submit" className="email-gate-submit" disabled={!emailReady || submitting}>
+            {submitting ? 'Sending…' : 'Continue'}
+          </button>
           <label htmlFor={emailConsentId} className="email-gate-consent">
             <input
               id={emailConsentId}
@@ -133,24 +104,9 @@ export default function EmailGate({
             />
             <span className="email-gate-consent-copy">{EMAIL_CONSENT_TEXT}</span>
           </label>
-
-          <label htmlFor={smsConsentId} className="email-gate-consent">
-            <input
-              id={smsConsentId}
-              className="email-gate-check"
-              name="sms-consent"
-              type="checkbox"
-              checked={smsChecked}
-              onChange={(event) => setSmsChecked(event.target.checked)}
-            />
-            <span className="email-gate-consent-copy">{SMS_CONSENT_TEXT}</span>
-          </label>
-        </div>
-
-        <button type="submit" className="email-gate-submit" disabled={!emailReady || submitting}>
-          {submitting ? 'Sending…' : 'Continue'}
-        </button>
-      </form>
+        </form>
+      </section>
+      <p className="gate-foot">A dentist licensed in your state reviews every case before anything is made.</p>
     </main>
   );
 }
