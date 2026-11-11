@@ -5,8 +5,6 @@ export const CART_VARIANTS = {
   precision: { upper: '63304040481137', lower: '63304040677745', both: '63304040874353' }
 };
 
-// Cart acceptance applies this code. It is not shown on the result screen.
-export const DISCOUNT_CODE = 'KLYROS50';
 
 export const archFromAnswer = (answer = '') =>
   /both/i.test(answer) ? 'both' : /lower/i.test(answer) ? 'lower' : 'upper';
@@ -17,7 +15,6 @@ export function cartUrl(variantId, tracking = {}) {
     if (value === undefined || value === null) return;
     params.append(key, String(value));
   });
-  if (!params.has('discount')) params.append('discount', DISCOUNT_CODE);
   const qs = params.toString();
   return `https://${SHOP}/cart/${variantId}:1${qs ? `?${qs}` : ''}`;
 }

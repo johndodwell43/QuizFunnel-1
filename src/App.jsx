@@ -6,6 +6,8 @@ import QuestionScreen from './components/QuestionScreen.jsx';
 import EmailGate from './components/EmailGate.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
+import SmsScreen from './components/SmsScreen.jsx';
+import { captureAttribution } from './lib/reward.js';
 import { resumePendingQuizLead } from './lib/pendingLead.js';
 import { trackQuizStarted, trackStep } from './lib/track.js';
 
@@ -56,9 +58,11 @@ function Quiz() {
   const isQuiz = screen === 'quiz' && lead !== null;
   const isPause = screen === 'pause' && lead !== null;
   const isOffer = screen === 'offer' && lead !== null;
+  const isSms = screen === 'sms' && lead !== null;
 
   // Fire once when the funnel first mounts. The gate is the first screen.
   useEffect(() => {
+    captureAttribution();          // first touch: our tagged link, an ad click, or unknown
     trackQuizStarted();
   }, []);
 
@@ -79,7 +83,7 @@ function Quiz() {
       return;
     }
     if (stepIndex >= QUESTIONS.length - 1) {
-      setScreen(saved ? 'offer' : 'email');
+      setScreen(saved ? 'sms' : 'email');
       setSel(null);
       return;
     }
@@ -101,7 +105,11 @@ function Quiz() {
   );
 
   const goBack = useCallback(() => {
-    if (screen === 'offer' || screen === 'pause') {
+    if (screen === 'offer') {
+      setScreen('sms');
+      return;
+    }
+    if (screen === 'sms' || screen === 'pause') {
       setScreen('quiz');
       setStep(screen === 'pause' ? pause.step : QUESTIONS.length - 1);
       setSel(null);
@@ -159,7 +167,7 @@ function Quiz() {
           onBack={goBack}
           gate={onGate}
           offer={isOffer}
-          showExit={!isQuiz}
+          showExit={!isQuiz && !isSms}
           stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}
         />
         <ProgressBar progress={progress} gate={onGate} />
@@ -177,6 +185,15 @@ function Quiz() {
           <QuestionScreen question={QUESTIONS[step]} sel={sel} onPick={pick} />
         )}
         {isPause && <PauseScreen kind={pause.kind} onRestart={restart} />}
+        {isSms && (
+          <SmsScreen
+            lead={lead}
+            onDone={(next) => {
+              if (next) setLead(next);
+              setScreen('offer');
+            }}
+          />
+        )}
         {isOffer && <OfferScreen answers={answers} inPersonFirst={inPersonFirst} />}
       </div>
     </div>
