@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ImagePlaceholder from './ImagePlaceholder.jsx';
-import { LINKS, SMS_REWARD, money } from '../config.js';
+import { AFFIRM_LINE, DENTIST_LINE, LINKS, SMS_REWARD, money } from '../config.js';
 import { rewardEarned, rewardParams } from '../lib/reward.js';
 import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
 import {
@@ -8,6 +8,8 @@ import {
   INCLUDED_COPY,
   NEXT_HEADING,
   NEXT_STEPS,
+  ORDER_STEPS,
+  QUIZ_FAQ,
   includedProductLine
 } from '../lib/offerCopy.js';
 import {
@@ -21,7 +23,6 @@ import {
 } from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
 
-const MATCH_LINE = 'Based on your answers, Flex Partial may be a fit.';
 const REVIEW_LINE =
   "A partner dentist licensed in your state reviews your photos and decides whether it's a fit. Placing your order starts that review.";
 const HERO = ['16 / 9', 'PLACEHOLDER: Flex Partial with kit on plain background, 1:1, 1200px'];
@@ -34,13 +35,36 @@ const FILM = [
 ];
 
 
-const PAYMENT_MARKS = [
-  ['4 / 1', 'PLACEHOLDER: Apple Pay, 4:1, 200px'],
-  ['200 / 47', 'PLACEHOLDER: Affirm, 200:47, 200px'],
-  ['40 / 17', 'PLACEHOLDER: Visa, 40:17, 200px'],
-  ['50 / 13', 'PLACEHOLDER: Mastercard, 50:13, 200px'],
-  ['100 / 37', 'PLACEHOLDER: Debit, 100:37, 200px']
-];
+const PAY_NAMES = ['Apple Pay', 'Affirm', 'Visa', 'Mastercard'];
+
+function PayRow() {
+  return (
+    <ul className="pay-names" aria-label="Ways to pay">
+      {PAY_NAMES.map((name) => (
+        <li key={name}>{name}</li>
+      ))}
+    </ul>
+  );
+}
+
+const LockIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="4" y="11" width="16" height="10" rx="2.5" />
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M5 12.5l4.5 4.5L19 7.5" />
+  </svg>
+);
+
+const ARCH_WORD = { upper: 'Top', lower: 'Bottom' };
+const toothWord = (t) => {
+  const n = teethCount(t);
+  return `${n === 6 ? '6+' : n} ${n === 1 ? 'tooth' : 'teeth'}`;
+};
 
 function PartialPhoto({ arch, teeth }) {
   const src = partialImage(arch, teeth);
@@ -147,6 +171,68 @@ function TeethPickers({ arch, teeth, setTeeth }) {
   ));
 }
 
+
+// Quiz result hero: big blue card, the partial(s) for their answers, short callouts on top.
+function HeroShot({ arch, teeth }) {
+  const [failed, setFailed] = useState(false);
+  const src = partialImage(arch, teeth);
+  return failed ? (
+    <div className="hero-fallback" aria-hidden="true">
+      <span>{arch === 'lower' ? 'Bottom' : 'Top'} partial</span>
+    </div>
+  ) : (
+    <img src={src} alt={`${arch === 'lower' ? 'Bottom' : 'Top'} partial, ${toothWord(teeth)}`} width="1200" height="800" onError={() => setFailed(true)} />
+  );
+}
+
+function HeroCard({ shots, teeth }) {
+  return (
+    <figure className={shots.length > 1 ? 'hero-card is-both' : 'hero-card'}>
+      <span className="hero-tag">Kit included</span>
+      <div className="hero-shots">
+        {shots.map((a) => (
+          <HeroShot key={`${a}-${teeth[a]}`} arch={a} teeth={teeth[a]} />
+        ))}
+      </div>
+      <span className="hero-chip">Made in a U.S. lab</span>
+    </figure>
+  );
+}
+
+// Image tile for picking the partial (photo, name, price, optional ribbon).
+function PartialTile({ on, onClick, ribbon, name, sub, price, img }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <button type="button" className={on ? 'ptile is-on' : 'ptile'} aria-pressed={on} onClick={onClick}>
+      {ribbon && <span className={ribbon === 'Recommended' ? 'ptile-ribbon' : 'ptile-ribbon is-alt'}>{ribbon}</span>}
+      <span className="ptile-name">{name}</span>
+      <span className="ptile-img">
+        {failed ? <span className="ptile-ph" aria-hidden="true" /> : <img src={img} alt="" onError={() => setFailed(true)} />}
+      </span>
+      <span className="ptile-sub">{sub}</span>
+      <span className="ptile-price">{price}</span>
+    </button>
+  );
+}
+
+// Image band further down the page: headline + callouts over a photo.
+function Band({ src, title, points }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <figure className={failed ? 'band no-img' : 'band'}>
+      {!failed && <img src={src} alt="" onError={() => setFailed(true)} />}
+      <figcaption>
+        <span className="band-title">{title}</span>
+        <span className="band-points">
+          {points.map((pt) => (
+            <span key={pt}>{pt}</span>
+          ))}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+
 const DIRECT_ARCHES = ['upper', 'lower', 'both'];
 const SCREEN_LINES = [
   'No tooth removed in the last 90 days',
@@ -167,6 +253,8 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const [details, setDetails] = useState(false);
   const detailsRef = useRef(null);
   const howRef = useRef(null);
+  const checkoutRef = useRef(null);
+  const [sticky, setSticky] = useState(false);
   const offer = offerForAnswers({ arch: arch || 'upper' });
   const needArches = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
   const ready = !direct || (needArches.length > 0 && needArches.every((a) => teeth[a]));
@@ -181,6 +269,22 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
     trackOfferPageViewed();
     setupScrollTracking();
   }, []);
+
+  // Checkout bar pinned to the bottom whenever the main checkout button is off screen.
+  useEffect(() => {
+    const el = checkoutRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([entry]) => {
+      setSticky(!entry.isIntersecting);
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const reward = rewardEarned();
+  const total = Math.max(0, active.price - (reward ? SMS_REWARD.amount : 0));
+  const orderArches = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
+  const orderSpec = orderArches.map((a) => `${ARCH_WORD[a]}: ${toothWord(teeth[a])}`).join(' · ');
 
   const openDetails = (target) => {
     setDetails(true);
@@ -200,30 +304,46 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   return (
     <main data-screen-label="Offer" data-arch={offer.arch} className={inPersonFirst ? 'offer-screen has-visit' : 'offer-screen'}>
+      {!direct && (
+        <header className="cr-head">
+          <p className="cr-eyebrow">Your case results</p>
+          <h1 className="cr-title">
+            <span className="cr-brand">Flex Partial</span> may be a fit for you.
+          </h1>
+          <ul className="cr-tags" aria-label="Your answers">
+            {(arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => (
+              <li key={a}>
+                {ARCH_WORD[a]} · {toothWord(teeth[a])}
+              </li>
+            ))}
+          </ul>
+        </header>
+      )}
       <div className="offer-top rec">
         {direct ? (
           <ProductGallery arch={arch} teeth={teeth} />
         ) : (
-          <div className={shots.length > 1 ? 'rec-shots is-both' : 'rec-shots'}>
-            {shots.map((a) => (
-              <PartialPhoto key={a} arch={a} teeth={teeth[a]} />
-            ))}
-          </div>
+          <HeroCard shots={shots} teeth={teeth} />
         )}
 
         <div className="offer-buy">
-          <h1 className="offer-title">{direct ? active.name : MATCH_LINE}</h1>
           {direct ? (
-            <p className="offer-price" data-shop-price>{arch ? money(active.price) : `From ${money(oneArchPrice)}`}</p>
+            <>
+              <h1 className="offer-title">{active.name}</h1>
+              <p className="offer-price" data-shop-price>{arch ? money(active.price) : `From ${money(oneArchPrice)}`}</p>
+              {reward && (
+                <p className="reward-line" data-reward>
+                  Your {money(SMS_REWARD.amount)} off is applied at checkout
+                </p>
+              )}
+              <p className="offer-note">{REVIEW_LINE}</p>
+            </>
           ) : (
-            <p className="offer-price" data-match-price>{money(offer.flex.price)}</p>
-          )}
-          {rewardEarned() && (
-            <p className="reward-line" data-reward>
-              Your {money(SMS_REWARD.amount)} off is applied at checkout
+            <p className="cr-lead">
+              From <strong data-match-price>{money(offer.flex.price)}</strong>. Custom-made from your own impressions. A dentist
+              licensed in your state reviews your case before anything is made.
             </p>
           )}
-          <p className="offer-note">{REVIEW_LINE}</p>
 
           {direct && (
             <>
@@ -246,7 +366,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
           {!direct && arches.length > 1 && (
             <>
-              <p className="opt-label">Your arches</p>
+              <p className="opt-label">Your plan</p>
               <div className="plan-list" role="group" aria-label="Arch">
                 <button
                   type="button"
@@ -305,7 +425,33 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
           {direct && arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
 
-          <p className={direct ? 'pick-label' : 'opt-label'}>Choose your partial</p>
+          {!direct && (
+            <>
+              <p className="opt-label">Choose your partial</p>
+              <div className="ptiles" role="group" aria-label="Partial choices">
+                <PartialTile
+                  on={selected === 'flex'}
+                  onClick={() => setSelected('flex')}
+                  ribbon="Recommended"
+                  name="Flex Partial"
+                  sub="Flexible, lightweight"
+                  price={money(offer.flex.price)}
+                  img="/images/offer/flex-tile.jpg"
+                />
+                <PartialTile
+                  on={selected === 'precision'}
+                  onClick={() => setSelected('precision')}
+                  ribbon="Upgrade"
+                  name="Precision Pro"
+                  sub="Milled, firmer feel"
+                  price={money(offer.precision.price)}
+                  img="/images/offer/precision-tile.jpg"
+                />
+              </div>
+            </>
+          )}
+          {direct && (<>
+          <p className="pick-label">Choose your partial</p>
           <div id="offer-cards" className="plan-list" role="group" aria-label="Partial choices">
             <button
               type="button"
@@ -314,8 +460,11 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               onClick={() => setSelected('flex')}
             >
               <span className="plan-name">
-                Flex Partial
-                <span className="plan-sub">{direct ? 'Standard' : 'Your match'}</span>
+                <span className="plan-name-row">
+                  Flex Partial
+                  {!direct && <span className="rec-badge">Recommended</span>}
+                </span>
+                <span className="plan-sub">Flexible, lightweight, gum-colored</span>
               </span>
               <span className="plan-price">{money(offer.flex.price)}</span>
             </button>
@@ -327,11 +476,12 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             >
               <span className="plan-name">
                 Precision Partial Pro
-                <span className="plan-sub">Milled upgrade</span>
+                <span className="plan-sub">Milled upgrade, firmer feel</span>
               </span>
               <span className="plan-price">{money(offer.precision.price)}</span>
             </button>
           </div>
+          </>)}
 
           {direct && (
             <div className="screen-check">
@@ -355,28 +505,106 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </div>
           )}
 
-          <p className="offer-selected" data-selected-offer>
+          <p className={direct ? "offer-selected" : "offer-selected sr-only"} data-selected-offer>
             {ready ? purchaseLine(active) : !arch ? 'Pick your arch to see your price' : 'Pick how many teeth to replace'}
           </p>
           <a
-            className={ready ? 'offer-checkout' : 'offer-checkout is-locked'}
+            ref={checkoutRef}
+            className={ready ? (direct ? 'offer-checkout' : 'offer-checkout atc') : 'offer-checkout is-locked'}
             data-checkout
             href={ready ? active.url : undefined}
             aria-disabled={!ready}
             onClick={buy}
           >
-            <span>{ready ? 'Continue to checkout' : 'Choose your options above'}</span>
-            <span>{ready ? money(active.price) : ''}</span>
+            <span>{ready ? (direct ? 'Continue to checkout' : 'Secure checkout') : 'Choose your options above'}</span>
+            <span>{ready ? money(direct ? active.price : total) : ''}</span>
           </a>
 
-          <div className="pay-panel">
-            <div className="ph-pay">
-              {PAYMENT_MARKS.map(([ratio, text]) => (
-                <ImagePlaceholder key={text} text={text} ratio={ratio} />
-              ))}
+          {direct ? (
+            <div className="cr-assure">
+              <p className="cr-secure">
+                <LockIcon />
+                <span>Secure checkout. Pay in full, or choose {AFFIRM_LINE}.</span>
+              </p>
+              <PayRow />
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="atc-panel">
+                {reward && (
+                  <p className="atc-reward" data-reward>
+                    Your {money(SMS_REWARD.amount)} text signup savings is applied <CheckIcon />
+                  </p>
+                )}
+                <PayRow />
+              </div>
 
+              <div className="or-divider atc-or" aria-hidden="true">
+                <span>OR</span>
+              </div>
+
+              <a className="affirm-btn" href={active.url} onClick={buy} data-affirm>
+                Pay over time with Affirm
+              </a>
+              <div className="affirm-panel">
+                <p>Choose Affirm at checkout. Monthly payments, subject to eligibility.</p>
+              </div>
+            </>
+          )}
+
+          {!direct && (
+            <>
+              <div className="cr-promise">
+                <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
+                <p>{DENTIST_LINE}</p>
+                <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+                  Read our refund policy
+                </a>
+              </div>
+
+              <Band
+                src="/images/offer/kit-band.jpg"
+                title="Everything comes in one kit"
+                points={['Impression trays', 'Step-by-step guide', 'Prepaid return']}
+              />
+
+              <section className="cr-steps" aria-label="What happens after you order">
+                <h2>What happens after you order</h2>
+                <ol>
+                  {ORDER_STEPS.map(([title, body]) => (
+                    <li key={title}>
+                      <span className="cr-step-title">{title}</span>
+                      <span className="cr-step-body">{body}</span>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+
+              <section className="faq cr-faq" aria-label="Questions">
+                {QUIZ_FAQ.map(([title, body], i) => (
+                  <details key={title} className="faq-row">
+                    <summary>
+                      <span>{title}</span>
+                      <span className="faq-plus" aria-hidden="true">+</span>
+                    </summary>
+                    <p>
+                      {body}
+                      {i === QUIZ_FAQ.length - 1 && (
+                        <>
+                          {' '}
+                          <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+                            Refund policy
+                          </a>
+                        </>
+                      )}
+                    </p>
+                  </details>
+                ))}
+              </section>
+            </>
+          )}
+
+          {direct && (
           <div className="details-links">
             <button type="button" className="details-link" onClick={() => openDetails('details')}>
               <span>See product details</span>
@@ -387,6 +615,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               <span aria-hidden="true">→</span>
             </button>
           </div>
+          )}
         </div>
       </div>
 
@@ -439,6 +668,18 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           </ol>
         </section>
       </div>
+
+      {ready && (
+        <div className={sticky ? 'cr-sticky is-on' : 'cr-sticky'} aria-hidden={!sticky}>
+          <span className="cr-sticky-name">
+            {active.name}
+            <strong>{money(direct ? active.price : total)}</strong>
+          </span>
+          <a href={active.url} onClick={buy} tabIndex={sticky ? 0 : -1}>
+            Checkout
+          </a>
+        </div>
+      )}
 
       <p className="offer-contact">
         Questions?{' '}
