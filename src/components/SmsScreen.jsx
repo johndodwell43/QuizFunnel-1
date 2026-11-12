@@ -14,8 +14,8 @@ export const SMS_TERMS =
 
 const UPDATES = [
   'When your impression kit ships',
-  'When a dentist licensed in your state has reviewed your photos',
-  'When your partial leaves the lab'
+  'When a dentist in our network has reviewed your photos',
+  'When your finished partial leaves the lab'
 ];
 
 export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
@@ -57,7 +57,7 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
             'Your answers are in.'
           ) : (
             <>
-              <span className="sms-great">Great news!</span> You're eligible for an official Klyros case review.
+              <span className="sms-great">Great news!</span> You're eligible for an official <span className="sms-brand">Klyros</span> case review.
             </>
           )}
         </h1>
@@ -72,8 +72,8 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
         </p>
         <p className="sms-sub">
           {reward
-            ? `Add your number and ${off} comes off at checkout. We'll text you at the three moments that matter:`
-            : "Add your number and we'll text you at the three moments that matter:"}
+            ? `Add your number and ${off} comes off at checkout. We'll text you:`
+            : "Add your number and we'll text you:"}
         </p>
         <ul className="sms-list">
           {UPDATES.map((line) => (
@@ -85,7 +85,7 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
         </ul>
 
         <form onSubmit={submit} noValidate>
-          <label htmlFor={phoneId} className="sms-label">
+          <label htmlFor={phoneId} className="sr-only">
             Phone
           </label>
           <div className="sms-phone">
@@ -107,12 +107,12 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
           <button type="submit" className="email-gate-submit sms-submit" disabled={!ready || sending}>
             {sending ? 'Saving…' : reward ? `Apply my ${off} off` : 'Yes, text me updates'}
           </button>
+          <button type="button" className="sms-skip" onClick={() => onDone(null)}>
+            No thanks, show my case results
+          </button>
           <p className="sms-terms">{SMS_TERMS}</p>
         </form>
       </div>
-      <button type="button" className="sms-skip" onClick={() => onDone(null)}>
-        No thanks, show my case results
-      </button>
     </main>
   );
 }
