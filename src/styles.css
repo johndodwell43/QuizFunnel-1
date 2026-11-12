@@ -1260,3 +1260,42 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .atc-panel .atc-value { grid-template-columns: 0.8fr 1.25fr 1.05fr; } .atc-panel .atc-value li { white-space: nowrap; }
 @media (max-width: 370px) { .atc-panel .atc-value li { font-size: 12px; } }
 .atc-panel .atc-value { grid-template-columns: 0.8fr 1.05fr 1.25fr; }
+.affirm-chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px; background: #ffffff; }
+.affirm-logo { height: 22px; margin: 0; }
+/* Recommended card v2: sits on the hero, tighter price stack */
+.offer-screen .your-partial { margin: -26px 10px 0; padding: 24px 18px 16px; border: none; border-radius: 20px; background: #ffffff;
+  box-shadow: 0 14px 40px rgba(10, 22, 40, 0.16), 0 0 0 1px rgba(10, 22, 40, 0.06); row-gap: 8px; }
+.offer-screen .yp-badge { left: 18px; padding: 5px 12px; font-size: 12px; }
+.offer-screen .your-partial-name { font-size: 30px; line-height: 1.05; gap: 6px; }
+.offer-screen .yp-spec { display: inline-block; align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: #e6f1ff; color: #1d4ed8; font-size: 14px; }
+.offer-screen .yp-ref-label { font-size: 12px; }
+.offer-screen .yp-ref { font-size: 19px; }
+.offer-screen .your-partial-price { font-size: 46px; letter-spacing: -0.02em; }
+.yp-flat { font-size: 12px; font-weight: 700; color: rgba(10, 22, 40, 0.6); white-space: nowrap; }
+.offer-screen .yp-feel { color: #0a1628; font-weight: 700; font-size: 16px; padding-top: 10px; }
+.offer-screen .cr-lead { margin: 12px 10px 0; font-size: 15.5px; color: rgba(10, 22, 40, 0.72); }
+.offer-screen .hero-card { border-radius: 20px 20px 24px 24px; }
+.offer-screen .yp-badge { position: static; align-self: flex-start; grid-column: 1 / -1; margin: -4px 0 2px; }
+.offer-screen .your-partial { padding-top: 16px; }
+.offer-screen .your-partial-name { font-size: 27px; white-space: nowrap; }
+.offer-screen .hero-chip { bottom: 42px; }
+.offer-screen .hero-clip { bottom: 42px; }
+.offer-screen .yp-badge { align-self: flex-start; width: auto; justify-self: start; }
+/* Hero v3: clip fills the card (background), partial photo bottom-left, kit top-left */
+.offer-screen .hero-card { display: block; }
+.offer-screen .hero-clip { position: absolute; inset: 0; width: 100%; height: 100%; left: 0; bottom: 0; border: none; border-radius: 0; box-shadow: none; z-index: 0; }
+.offer-screen .hero-clip.is-empty { display: flex; align-items: center; justify-content: center; border: none; background: none; font-size: 15px; }
+.offer-screen .hero-tag { position: absolute; top: 0; left: 0; right: 0; z-index: 2; }
+.offer-screen .hero-shots { position: absolute; left: 14px; bottom: 42px; z-index: 2; width: 42%; height: auto; display: flex; flex-direction: column; gap: 6px; }
+.offer-screen .hero-shots img { padding: 0; border-radius: 14px; background: rgba(255, 255, 255, 0.92); box-shadow: 0 8px 20px rgba(10, 22, 40, 0.25); aspect-ratio: 3 / 2; object-fit: contain; }
+.offer-screen .hero-fallback { width: 100%; height: auto; }
+.offer-screen .hero-fallback span { font-size: 13px; padding: 24px 12px; display: block; text-align: center; border-radius: 14px; }
+.offer-screen .hero-chip { z-index: 2; }
+/* Answers stack in the card */
+.yp-answers { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.yp-row { display: flex; flex-direction: column; line-height: 1.15; }
+.yp-k { font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(10, 22, 40, 0.55); }
+.yp-v { font-size: 18px; font-weight: 800; color: #1d4ed8; }
+.offer-screen .your-partial { margin-top: -18px; }
+.offer-screen .yp-feel { font-weight: 500; color: rgba(10, 22, 40, 0.78); font-size: 15px; line-height: 1.4; } .offer-screen .yp-feel strong { display: block; font-weight: 800; color: #0a1628; font-size: 16.5px; margin-bottom: 2px; }
+.offer-screen .yp-feel { font-weight: 500; color: #2b3445; } .offer-screen .yp-feel strong { display: block; font-weight: 800; color: #0a1628; margin-bottom: 2px; }
