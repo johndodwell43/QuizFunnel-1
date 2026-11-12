@@ -81,7 +81,7 @@ export default function EmailGate({
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
-          <p className="email-gate-why">Your case results and next steps go here.</p>
+          <p className="email-gate-why">After the questions, you'll see your partial denture options, pricing and what's included.</p>
           <button type="submit" className="email-gate-submit" disabled={!emailReady || submitting}>
             {submitting ? 'Sending…' : 'Continue'}
           </button>
@@ -110,7 +110,6 @@ export default function EmailGate({
           </div>
         </div>
       </figure>
-      <p className="gate-foot">After the questions, you'll see your partial denture options, pricing and what's included.</p>
       <nav className="gate-links" aria-label="More">
         <a className="gate-row" href={`${LINKS.home}/how-it-works`} target="_blank" rel="noopener">
           <span>How it works</span>
