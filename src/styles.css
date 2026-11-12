@@ -992,3 +992,20 @@ button { font-family: inherit; }
 .band-points span { padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.18); font-size: 13.5px; font-weight: 700; }
 .ptile-ribbon.is-alt { background: #0a1628; }
 .offer-checkout.atc span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+
+/* "Both" dropdown under Just one arch for now */
+.both-drop { margin-top: 4px; border-radius: 16px; background: #ffffff; border: 2px solid #8ec2f7; overflow: hidden; }
+.both-drop.is-open { border-color: #2563eb; }
+.both-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; padding: 12px 16px;
+  border: none; background: none; font: inherit; font-size: 17px; font-weight: 800; color: #0a1628; text-align: left; cursor: pointer; }
+.both-toggle svg { flex: 0 0 auto; color: #2563eb; transition: transform 0.2s ease; }
+.both-drop.is-open .both-toggle svg { transform: rotate(180deg); }
+.both-body { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid rgba(10, 22, 40, 0.08); padding-top: 12px; }
+.both-line { margin: 0; font-size: 17px; font-weight: 700; color: #0a1628; }
+.both-line .second-price s { color: rgba(10, 22, 40, 0.5); font-weight: 600; }
+.both-line .second-price strong { color: #16a34a; font-size: 22px; }
+.both-note { margin: 0; font-size: 14px; color: rgba(10, 22, 40, 0.7); }
+.both-pick { margin-top: 4px; min-height: 50px; border-radius: 12px; border: 2px solid #2563eb; background: #ffffff; color: #1d4ed8;
+  font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; }
+.both-pick.is-on { background: #2563eb; color: #ffffff; }
+@media (prefers-reduced-motion: reduce) { .both-toggle svg { transition: none; } }
