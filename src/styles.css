@@ -807,7 +807,7 @@ button { font-family: inherit; }
 @media (min-width: 768px) { .email-gate-why { font-size: 15px; } }
 
 /* Two tappable rows under the gate card (store-app style) */
-.gate-links { display: flex; flex-direction: column; margin: 0 0 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.72); overflow: hidden; }
+.gate-links { display: flex; flex-direction: column; margin: 12px 0 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.72); overflow: hidden; }
 .gate-row {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   min-height: 54px; padding: 0 16px 0 18px;
