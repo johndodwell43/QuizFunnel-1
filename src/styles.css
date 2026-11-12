@@ -797,3 +797,12 @@ button { font-family: inherit; }
   .gate-card .email-gate-sub { font-size: 19px; }
   .gate-card .email-gate-input, .gate-card .email-gate-submit { min-height: 60px; }
 }
+/* Photo sits under the card now */
+.gate-screen .gate-card { margin-top: 6px; }
+.gate-screen .gate-foot { margin: 12px 4px 16px; }
+.gate-screen .email-gate-art { margin: 0 auto 8px auto; }
+@media (max-width: 767px) { .gate-screen .email-gate-art { height: clamp(150px, calc(100dvh - 520px), 210px); } }
+@media (min-width: 768px) { .gate-screen .gate-foot { margin: 14px 4px 18px; } .gate-screen .email-gate-art { height: 240px; margin-top: 0; } }
+.gate-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; margin: 4px 0 16px; font-size: 15px; font-weight: 700; color: rgba(10, 22, 40, 0.5); }
+.gate-links a { color: #1d4ed8; text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 768px) { .gate-links { font-size: 16px; } }
