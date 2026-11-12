@@ -761,7 +761,7 @@ button { font-family: inherit; }
 .gate-card .email-gate-consent { gap: 9px; min-height: 40px; margin: 2px 0 0 0; padding: 0 2px; }
 .gate-card .email-gate-check { width: 18px; height: 18px; min-width: 18px; min-height: 18px; margin-top: 2px; }
 .gate-card .email-gate-consent-copy { font-size: 13px; line-height: 1.4; color: rgba(10, 22, 40, 0.62); }
-.gate-foot { margin: 12px 4px 0; font-size: 14px; line-height: 1.4; color: rgba(10, 22, 40, 0.62); text-align: center; }
+.gate-foot { margin: 12px 4px 0; font-size: 16px; line-height: 1.4; font-weight: 600; color: #0a1628; text-align: center; }
 @media (min-width: 768px) {
   .gate-screen { max-width: 640px; }
   .gate-screen .email-gate-art { height: 240px; margin-bottom: 18px; }
@@ -773,7 +773,7 @@ button { font-family: inherit; }
   .gate-card .email-gate-submit { min-height: 64px; font-size: 21px; }
   .gate-card .email-gate-consent-copy { font-size: 15px; }
   .gate-card .email-gate-check { width: 20px; height: 20px; min-width: 20px; min-height: 20px; }
-  .gate-foot { font-size: 16px; margin-top: 16px; }
+  .gate-foot { font-size: 17px; margin-top: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { .gate-screen { animation: none; } }
 /* "Step 1" as a step marker inside the gate headline */
@@ -803,8 +803,42 @@ button { font-family: inherit; }
 .gate-screen .email-gate-art { margin: 0 auto 8px auto; }
 @media (max-width: 767px) { .gate-screen .email-gate-art { height: clamp(150px, calc(100dvh - 520px), 210px); } }
 @media (min-width: 768px) { .gate-screen .gate-foot { margin: 14px 4px 18px; } .gate-screen .email-gate-art { height: 240px; margin-top: 0; } }
-.gate-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; margin: 4px 0 16px; font-size: 15px; font-weight: 700; color: rgba(10, 22, 40, 0.5); }
-.gate-links a { color: #1d4ed8; text-decoration: underline; text-underline-offset: 3px; }
-@media (min-width: 768px) { .gate-links { font-size: 16px; } }
 .email-gate-why { margin: -2px 2px 2px; font-size: 14px; line-height: 1.35; color: rgba(10, 22, 40, 0.62); text-align: left; }
 @media (min-width: 768px) { .email-gate-why { font-size: 15px; } }
+
+/* Two tappable rows under the gate card (store-app style) */
+.gate-links { display: flex; flex-direction: column; margin: 0 0 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.72); overflow: hidden; }
+.gate-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 54px; padding: 0 16px 0 18px;
+  color: #0a1628; font-size: 17px; font-weight: 700; text-decoration: none;
+}
+.gate-row + .gate-row { border-top: 1px solid rgba(10, 22, 40, 0.1); }
+.gate-row svg { color: #2563eb; flex: 0 0 auto; }
+.gate-row:hover { background: #ffffff; }
+.gate-row:focus-visible { outline: 3px solid #1d4ed8; outline-offset: -3px; }
+@media (min-width: 768px) { .gate-row { min-height: 58px; font-size: 18px; padding: 0 20px 0 22px; } }
+
+/* Order under the card: photo (above the fold on phones), then the next-steps line, then the pills */
+.gate-screen .email-gate-art { margin: 12px auto 0; }
+.gate-screen .gate-foot { margin: 12px 4px 10px; }
+@media (max-width: 767px) {
+  .gate-screen .email-gate-art { height: clamp(120px, calc(100dvh - 530px), 180px); margin-top: 12px; }
+}
+@media (min-width: 768px) { .gate-screen .email-gate-art { margin-top: 16px; } }
+
+/* Before / after under the gate card: one box, no seam, 3:2 each, no caption */
+.gate-proof { margin: 12px 0 0; }
+.gate-proof-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 16px; overflow: hidden; background: #cfe9ff; }
+.gate-proof-shot { position: relative; aspect-ratio: 3 / 2; overflow: hidden; }
+.gate-proof-shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+.gate-proof-tag {
+  position: absolute; left: 10px; bottom: 10px; padding: 4px 10px; border-radius: 999px;
+  background: rgba(10, 22, 40, 0.78); color: #ffffff; font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+}
+.gate-proof-tag.is-after { background: #2563eb; }
+@media (min-width: 768px) {
+  .gate-proof { margin-top: 16px; }
+  .gate-proof-pair { border-radius: 18px; }
+  .gate-proof-tag { font-size: 14px; padding: 5px 12px; }
+}
