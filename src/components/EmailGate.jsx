@@ -64,11 +64,10 @@ export default function EmailGate({
       <section className="gate-card">
         <h1 className="email-gate-title">
           <span className="step-tag">Step 1</span>{' '}
-          to your new smile.
+          to your <span className="u-smile">new smile</span>.
         </h1>
         <p className="email-gate-sub">
-          Tell us where to send your case results, then answer the 5 questions a dentist needs before
-          reviewing your case.
+          Enter your email, then answer the 5 questions a dentist needs to review your case.
         </p>
 
         <form onSubmit={onSubmit} noValidate>
