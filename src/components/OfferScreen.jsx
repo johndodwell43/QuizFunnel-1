@@ -117,6 +117,16 @@ const cellValue = (v, strong) => (v === '✓' ? <YesMark strong={strong} /> : v 
 // dentalcosts.hellopearl.com, D5213, range $1,250–$3,280, updated May 2026). Shown as a comparison, not as our old price.
 const DENTAL_OFFICE_FROM = 1250;
 
+// Affirm wordmark: drop the official file from Affirm's brand kit at public/images/pay/affirm-white.svg.
+function AffirmMark() {
+  const [failed, setFailed] = useState(false);
+  return failed ? (
+    <span className="affirm-word">affirm</span>
+  ) : (
+    <img className="affirm-logo" src="/images/pay/affirm-white.svg" alt="Affirm" onError={() => setFailed(true)} />
+  );
+}
+
 const ARCH_WORD = { upper: 'Top', lower: 'Bottom' };
 const toothWord = (t) => {
   const n = teethCount(t);
@@ -448,13 +458,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           <p className="cr-sub">
             <span className="u-smile">Here are a few of your options.</span>
           </p>
-          <ul className="cr-tags" aria-label="Your answers">
-            {(arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => (
-              <li key={a}>
-                {ARCH_WORD[a]} · {toothWord(teeth[a])}
-              </li>
-            ))}
-          </ul>
         </header>
       )}
       <div className="offer-top rec">
@@ -477,10 +480,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               <p className="offer-note">{REVIEW_LINE}</p>
             </>
           ) : (
-            <p className="cr-lead">
-              From <strong data-match-price>{money(offer.flex.price)}</strong>, same price for 1 tooth or 6. Custom-made from your own
-              impressions, with a licensed dentist overseeing your case at every step.
-            </p>
+            null
           )}
 
           {direct && (
@@ -516,8 +516,14 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 <s className="yp-ref">{money(DENTAL_OFFICE_FROM * (offer.arch === 'both' ? 2 : 1))}+</s>
                 <span className="your-partial-price">{money(active.price)}</span>
               </span>
-              <span className="yp-feel">Fills the gap in your smile and helps you chew your favorite foods again.</span>
+              <span className="yp-feel">Fills the gap in your smile and helps you chew again.</span>
             </div>
+          )}
+          {!direct && (
+            <p className="cr-lead">
+              From <strong data-match-price>{money(offer.flex.price)}</strong>, same price for 1 tooth or 6. Custom-made from your own
+              impressions, with a licensed dentist overseeing your case at every step.
+            </p>
           )}
           {direct && (<>
           <p className="pick-label">Choose your partial</p>
@@ -675,17 +681,22 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           ) : (
             <>
               <div className="atc-panel">
-                <p className="atc-promise">Nothing is made until a dentist says yes.</p>
                 {reward && (
                   <p className="atc-reward" data-reward>
                     Your {money(SMS_REWARD.amount)} off is applied <CheckIcon />
                   </p>
                 )}
                 <ul className="atc-value">
-                  {['Impression kit', 'Dentist oversight', 'U.S. lab fabrication'].map((item) => (
-                    <li key={item}>
-                      <CheckIcon />
-                      {item}
+                  {[
+                    ['Fit', 'Assurance'],
+                    ['2-day shipping', 'both ways'],
+                    ['Unlimited', 'impression retakes']
+                  ].map(([a, b]) => (
+                    <li key={a + b}>
+                      <YesMark strong />
+                      {a}
+                      <br />
+                      {b}
                     </li>
                   ))}
                 </ul>
@@ -697,15 +708,45 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               </div>
 
               <a className="affirm-btn" href={active.url} onClick={buy} data-affirm>
-                Pay over time with Affirm
+                <span>Pay over time with</span>
+                <AffirmMark />
               </a>
               <div className="affirm-panel">
-                <p>Choose Affirm at checkout. Monthly payments, subject to eligibility.</p>
+                <p>Monthly payments at checkout, subject to eligibility.</p>
               </div>
 
+              <section className="faq cr-faq" aria-label="Questions">
+                {QUIZ_FAQ.map(([title, body], i) => (
+                  <details key={title} className="faq-row">
+                    <summary>
+                      <span>{title}</span>
+                      <span className="faq-plus" aria-hidden="true">+</span>
+                    </summary>
+                    <p>
+                      {body}
+                      {i === QUIZ_FAQ.length - 1 && (
+                        <>
+                          {' '}
+                          <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+                            Refund policy
+                          </a>
+                        </>
+                      )}
+                    </p>
+                  </details>
+                ))}
+              </section>
+
               <div className={proOpen ? 'pro-drop is-open' : 'pro-drop'}>
-                <button type="button" className="both-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
-                  <span>Want it to look new for longer? See the Precision Pro upgrade</span>
+                <button type="button" className="both-toggle pro-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
+                  <span className="pro-intro">
+                    <span className="pro-tag">Upgrade option</span>
+                    <span className="pro-title">
+                      Precision Partial Pro <span className="pro-plus">+{money(offer.precision.price - offer.flex.price)}</span>
+                    </span>
+                    <span className="pro-why">Handmade · Longer lasting · 1-yr warranty</span>
+                    <span className="pro-see">{proOpen ? 'Hide the difference' : 'See the difference'}</span>
+                  </span>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M6 9l6 6 6-6" />
                   </svg>
@@ -755,7 +796,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                     </div>
                     <p className="cmp-note">
                       What is Klyros Fit Assurance?{' '}
-                      <a href={LINKS.terms} target="_blank" rel="noopener">
+                      <a href={LINKS.refund} target="_blank" rel="noopener">
                         Click here to learn more
                       </a>
                     </p>
@@ -811,19 +852,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       {!direct && (
         <div className="cr-below">
             <>
-              <div className="cr-promise">
-                <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
-                <p>{DENTIST_LINE}</p>
-                <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
-                  Read our refund policy
-                </a>
-              </div>
 
-              <Band
-                src="/images/offer/kit-band.jpg"
-                title="Everything comes in one kit"
-                points={['Impression trays', 'Step-by-step guide', 'Prepaid return']}
-              />
 
               <WhyKlyros
                 onShop={() => {
@@ -844,27 +873,14 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 </ol>
               </section>
 
-              <section className="faq cr-faq" aria-label="Questions">
-                {QUIZ_FAQ.map(([title, body], i) => (
-                  <details key={title} className="faq-row">
-                    <summary>
-                      <span>{title}</span>
-                      <span className="faq-plus" aria-hidden="true">+</span>
-                    </summary>
-                    <p>
-                      {body}
-                      {i === QUIZ_FAQ.length - 1 && (
-                        <>
-                          {' '}
-                          <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
-                            Refund policy
-                          </a>
-                        </>
-                      )}
-                    </p>
-                  </details>
-                ))}
-              </section>
+              <div className="cr-promise">
+                <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
+                <p>{DENTIST_LINE}</p>
+                <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+                  Read our refund policy
+                </a>
+              </div>
+
             </>
         </div>
       )}
@@ -919,17 +935,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         </section>
       </div>
 
-      {ready && (
-        <div className={sticky ? 'cr-sticky is-on' : 'cr-sticky'} aria-hidden={!sticky}>
-          <span className="cr-sticky-name">
-            {active.name}
-            <strong>{money(direct ? active.price : total)}</strong>
-          </span>
-          <a href={active.url} onClick={buy} tabIndex={sticky ? 0 : -1}>
-            Checkout
-          </a>
-        </div>
-      )}
 
       <p className="offer-contact">
         Questions?{' '}

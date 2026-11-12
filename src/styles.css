@@ -938,7 +938,7 @@ button { font-family: inherit; }
 @media (min-width: 900px) { .cr-sticky { left: 50%; right: auto; width: 560px; transform: translate(-50%, 130%); bottom: 16px; border-radius: 18px; padding: 10px 12px 10px 18px; }
   .cr-sticky.is-on { transform: translate(-50%, 0); } }
 .cr-secure svg { flex: 0 0 auto; margin-top: 2px; }
-.offer-screen { padding-bottom: 88px; }
+.offer-screen { padding-bottom: 24px; }
 
 /* ---- Case results v2: hero card, image tiles, add-to-cart + Affirm ---- */
 .hero-card { position: relative; margin: 0; border-radius: 20px; overflow: hidden; aspect-ratio: 1 / 1;
@@ -1219,3 +1219,44 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .yp-ref { font-size: 20px; font-weight: 800; color: #b42318; text-decoration-thickness: 2px; line-height: 1.1; }
 .your-partial .your-partial-price { font-size: 42px; margin-top: 2px; }
 .your-partial-name { font-size: 28px; }
+/* Add to cart value checks: bold, real yes marks */
+.atc-value li { font-size: 14.5px; font-weight: 800; gap: 6px; }
+.atc-value .yes-mark { width: 20px; height: 20px; }
+.atc-value .yes-mark svg { width: 11px; height: 11px; }
+/* Precision Pro intro */
+.pro-toggle { align-items: flex-start; padding: 16px 16px 14px; }
+.pro-toggle svg { margin-top: 30px; }
+.pro-intro { display: flex; flex-direction: column; gap: 3px; }
+.pro-tag { align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: #2563eb; color: #ffffff; font-size: 11.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.pro-title { margin-top: 4px; font-size: 21px; font-weight: 900; color: #0a1628; letter-spacing: -0.01em; }
+.pro-plus { margin-left: 4px; font-size: 16px; font-weight: 800; color: #1d4ed8; }
+.pro-why { font-size: 14.5px; font-weight: 700; color: rgba(10, 22, 40, 0.68); }
+.pro-see { margin-top: 4px; font-size: 14px; font-weight: 800; color: #1d4ed8; text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 1024px) { .cr-below > .cr-promise { grid-column: 1 / -1; } }
+.cr-below > .cr-promise { margin-top: 22px; } @media (min-width: 1024px) { .cr-below > .cr-promise { grid-column: 1 / -1; grid-row: auto; } }
+.affirm-btn { gap: 10px; text-transform: none; font-size: 19px; letter-spacing: 0; }
+.affirm-logo { height: 26px; width: auto; display: block; margin-top: -4px; }
+.affirm-word { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; text-transform: lowercase; }
+.your-partial + .cr-lead, .cr-lead { margin-top: 14px; }
+/* Add to cart value trio: icon over label, three equal columns */
+.atc-panel .atc-value { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; width: 100%; }
+.atc-panel .atc-value li { flex-direction: column; justify-content: flex-start; gap: 6px; white-space: normal; text-align: center;
+  font-size: 13.5px; font-weight: 800; line-height: 1.2; padding: 2px 4px; }
+.atc-panel .atc-value li + li { border-left: 1px solid rgba(10, 22, 40, 0.1); }
+.atc-panel .atc-value .yes-mark { width: 22px; height: 22px; background: #16a34a; box-shadow: none; }
+.atc-panel .atc-value .yes-mark svg { color: #ffffff; width: 12px; height: 12px; }
+/* Add to cart value trio v2: no circles, thin inline check */
+.atc-panel .atc-value li { flex-direction: row; align-items: center; justify-content: center; gap: 5px; font-size: 13.5px; padding: 4px 6px; }
+.atc-panel .atc-value .yes-mark { width: auto; height: auto; background: none; box-shadow: none; border-radius: 0; flex: 0 0 auto; }
+.atc-panel .atc-value .yes-mark svg { width: 15px; height: 15px; color: #16a34a; stroke-width: 3; }
+/* Value trio v3: wider middle column, check inline with the text, max two lines */
+.atc-panel { padding-left: 8px; padding-right: 8px; }
+.atc-panel .atc-value { grid-template-columns: 0.85fr 1.3fr 1fr; }
+.atc-panel .atc-value li { display: block; text-align: center; font-size: 13px; line-height: 1.25; padding: 2px 6px; }
+.atc-panel .atc-value .yes-mark { display: inline-block; vertical-align: -2px; margin-right: 3px; }
+.atc-panel .atc-value .yes-mark svg { width: 13px; height: 13px; }
+@media (min-width: 768px) { .atc-panel .atc-value li { font-size: 14.5px; } }
+.atc-panel .atc-value { grid-template-columns: 0.78fr 1.27fr 1.1fr; } .atc-panel .atc-value li { padding: 2px 4px; }
+.atc-panel .atc-value { grid-template-columns: 0.8fr 1.25fr 1.05fr; } .atc-panel .atc-value li { white-space: nowrap; }
+@media (max-width: 370px) { .atc-panel .atc-value li { font-size: 12px; } }
+.atc-panel .atc-value { grid-template-columns: 0.8fr 1.05fr 1.25fr; }

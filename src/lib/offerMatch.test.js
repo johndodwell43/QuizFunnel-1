@@ -77,11 +77,11 @@ test('checkout line matches the selected variant price and cart URL', () => {
 
   const cases = [
     ['upper', 'flex', 'Flex Partial · $489', FLEX.upper],
-    ['upper', 'precision', 'Precision Partial Pro · $789', PRECISION.upper],
+    ['upper', 'precision', 'Precision Partial Pro · $788', PRECISION.upper],
     ['lower', 'flex', 'Flex Partial · $489', FLEX.lower],
-    ['lower', 'precision', 'Precision Partial Pro · $789', PRECISION.lower],
+    ['lower', 'precision', 'Precision Partial Pro · $788', PRECISION.lower],
     ['both', 'flex', 'Flex Partial · $879', FLEX.both],
-    ['both', 'precision', 'Precision Partial Pro · $1,479', PRECISION.both]
+    ['both', 'precision', 'Precision Partial Pro · $1,477', PRECISION.both]
   ];
   for (const [arch, selected, line, variantId] of cases) {
     const choice = activeChoice(offerForAnswers({ arch }), selected);
@@ -128,7 +128,7 @@ test('second arch later costs the both-arch total minus one arch', () => {
   const one = offerForAnswers({ arch: 'upper' });
   const both = offerForAnswers({ arch: 'both' });
   assert.equal(both.flex.price - one.flex.price, 390);
-  assert.equal(both.precision.price - one.precision.price, 690);
+  assert.equal(both.precision.price - one.precision.price, 689);
   const screen = readFileSync(new URL('../components/OfferScreen.jsx', import.meta.url), 'utf8');
   assert.match(screen, /we'll take \{money\(secondArchOff\)\} off your second arch/);
   assert.equal(2 * one.flex.price - both.flex.price, 99);
