@@ -3,8 +3,8 @@
 export const PRICING = {
   flexPrice: 489,
   flexBoth: 879,
-  precisionPrice: 789,
-  precisionBoth: 1479
+  precisionPrice: 788,
+  precisionBoth: 1477
 };
 
 // Locked lines. Do not add a dollar amount, APR, or month count to Affirm.

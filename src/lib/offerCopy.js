@@ -1,3 +1,4 @@
+import { PRICING, money } from '../config.js';
 // One block for the What's included cards. Product name, arch, and price
 // are filled from the selected Shopify variant.
 export const INCLUDED_COPY = {
@@ -52,17 +53,20 @@ export const ORDER_STEPS = [
 
 // Quiz result page questions, written the way buyers ask them.
 export const QUIZ_FAQ = [
-  ['Who checks that this is right for me?', DENTIST_REVIEW],
-  ['How do I take my impressions?', KIT_STEP + ' The step-by-step guide walks you through it.'],
-  ['Who makes my partial?', LAB_STEP],
-  ['What if the dentist says it\'s not a fit?', 'Nothing is made until a dentist reviews your case. See our refund policy for what happens next.']
+  ['What if I am missing more than one tooth?', `Same price for 1 tooth or 6 on one arch: ${money(PRICING.flexPrice)}. Need top and bottom? Both arches together are ${money(PRICING.flexBoth)}.`],
+  ['What if it does not fit?', 'Klyros Fit Assurance covers you. If the fit needs work, we adjust it, or remake it once.'],
+  ['How do I take my impressions?', 'Your kit comes with a step-by-step app, visual guide and PDF. Not happy with a mold? Retake it as many times as you need, at no extra cost.'],
+  ['Who checks that this is right for me?', 'A licensed dentist oversees your case at every step. Nothing is made until they say yes.'],
+  ['What does custom-made mean?', 'A licensed U.S. dental lab makes your partial from your own impressions, matched to your gum and tooth shade.'],
+  ['How does shipping work?', '2-day shipping both ways is included, and we text you an update at every step.'],
+  ["What if the dentist says it's not a fit?", 'Nothing is made until a dentist reviews your case. See our refund policy for what happens next.']
 ];
 
 // "What you get with Klyros" rows on the case results page. Every line is a fact about how Klyros works.
 // [icon, row title, what you get, why it matters]
 export const WHY_ROWS = [
   ['tooth', 'Dentist case review', 'A licensed dentist reviews your case', 'Nothing is made until they say yes.'],
-  ['box', 'Impression kit', 'Kit and step-by-step guide included', 'App, visual guide and PDF walk you through it.'],
+  ['box', 'Impression kit', 'Kit, guide and unlimited retakes included', 'Redo your impressions as many times as you need, at no extra cost.'],
   ['lab', 'Certified dental tech', 'Licensed U.S. dental labs fabricate your appliance', 'Made using your custom mouth impressions.'],
   ['truck', 'Shipping', '2-day shipping both ways, included', 'Tracked, with an update at every step.'],
   ['wrench', 'Fit', 'Adjustments and 1 remake included', 'If the fit needs work, we adjust it or remake it once.'],
