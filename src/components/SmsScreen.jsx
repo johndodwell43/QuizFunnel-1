@@ -47,10 +47,16 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
   return (
     <main className="sms-screen" data-screen-label="SMS">
       <div className="sms-card">
-        <p className="sms-eyebrow">
-          {inPersonFirst ? 'Your answers are in.' : 'Great news! You can move to the dentist review.'}
-        </p>
         <h1 className="sms-title">
+          {inPersonFirst ? (
+            'Your answers are in.'
+          ) : (
+            <>
+              <span className="sms-great">Great news!</span> You're eligible for an official Klyros case review.
+            </>
+          )}
+        </h1>
+        <p className="sms-kicker">
           {reward ? (
             <>
               Take <span className="sms-off">{off} off</span> your partial.
@@ -58,7 +64,7 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
           ) : (
             'Know where your case is, every step.'
           )}
-        </h1>
+        </p>
         <p className="sms-sub">
           {reward
             ? `Add your number and ${off} comes off at checkout. We'll text you at the three moments that matter:`

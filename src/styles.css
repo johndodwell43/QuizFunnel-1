@@ -701,10 +701,11 @@ button { font-family: inherit; }
 /* Text-signup screen (after the last question, before the result) */
 .sms-screen { display: flex; flex-direction: column; align-items: stretch; gap: 14px; max-width: 560px; margin: 4px auto 0; color: #0a1628; }
 .sms-card { background: #ffffff; border-radius: 22px; padding: 22px 18px 18px; box-shadow: 0 6px 24px rgba(10, 22, 40, 0.08); }
-.sms-eyebrow { margin: 0 0 8px 0; font-size: 15px; line-height: 1.3; font-weight: 700; color: #166534; }
+.sms-great { color: #166534; }
+.sms-kicker { margin: 10px 0 0 0; font-size: clamp(20px, 4.6vw, 24px); line-height: 1.25; font-weight: 700; color: #0a1628; text-wrap: pretty; }
 .sms-title { margin: 0; font-size: clamp(30px, 6vw, 40px); line-height: 1.1; font-weight: 800; text-wrap: pretty; }
 .sms-off { color: #2563eb; }
-.sms-sub { margin: 10px 0 0 0; font-size: 18px; line-height: 1.45; color: #454e5c; }
+.sms-sub { margin: 6px 0 0 0; font-size: 18px; line-height: 1.45; color: #454e5c; }
 .sms-list { list-style: none; margin: 10px 0 4px 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .sms-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 17px; line-height: 1.35; font-weight: 600; }
 .sms-check { flex: 0 0 24px; height: 24px; border-radius: 50%; background: #e5f4e4; color: #166534; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
