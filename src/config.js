@@ -21,6 +21,7 @@ export const CHECKOUT = {
 export const LINKS = {
   home: 'https://www.klyrosdental.com',
   refund: 'https://www.klyrosdental.com/refund-policy',
+  terms: 'https://www.klyrosdental.com/policies/terms-of-service',
   privacy: 'https://www.klyrosdental.com/privacy-policy',
   email: 'help@klyrosdental.com'
 };

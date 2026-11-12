@@ -93,6 +93,30 @@ const CheckIcon = () => (
   </svg>
 );
 
+// Flex vs. Precision Pro, from the product facts. Price row is added from Shopify pricing.
+// What's different first (strongest first), then what both include.
+const COMPARE_ROWS = [
+  ['Longer lasting', '✓', '—'],
+  ['Warranty', '1 year', '—'],
+  ['Handmade', 'Start to finish', 'Finished by hand'],
+  ['Material', 'DuraFlex', 'Valplast']
+];
+const SHARED_ROWS = ['U.S. dental lab', 'Dentist oversight', 'Klyros Fit Assurance'];
+
+const YesMark = ({ strong }) => (
+  <span className={strong ? 'yes-mark is-strong' : 'yes-mark'} role="img" aria-label="Yes">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12.5l4.5 4.5L19 7.5" />
+    </svg>
+  </span>
+);
+const NoMark = () => <span className="no-mark" role="img" aria-label="No" />;
+const cellValue = (v, strong) => (v === '✓' ? <YesMark strong={strong} /> : v === '—' ? <NoMark /> : v);
+
+// Low end of the typical U.S. dental office fee range for a partial denture (ADA fee survey data via
+// dentalcosts.hellopearl.com, D5213, range $1,250–$3,280, updated May 2026). Shown as a comparison, not as our old price.
+const DENTAL_OFFICE_FROM = 1250;
+
 const ARCH_WORD = { upper: 'Top', lower: 'Bottom' };
 const toothWord = (t) => {
   const n = teethCount(t);
@@ -218,15 +242,49 @@ function HeroShot({ arch, teeth }) {
   );
 }
 
+// Small image that hides itself (shows a soft placeholder) until the real file is dropped in.
+function Slot({ src, className, label }) {
+  const [failed, setFailed] = useState(false);
+  return failed ? (
+    <span className={className + ' is-empty'} aria-hidden="true">{label}</span>
+  ) : (
+    <img className={className} src={src} alt="" onError={() => setFailed(true)} />
+  );
+}
+
+// Corner clip: someone putting the partial in, so it's obvious it's removable. Muted, looping, plays inline.
+function InsertClip() {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <span className="hero-clip is-empty" aria-hidden="true">Clip</span>;
+  return (
+    <video
+      className="hero-clip"
+      src="/images/offer/insert.mp4"
+      poster="/images/offer/insert-poster.jpg"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-label="Putting the partial in"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 function HeroCard({ shots, teeth }) {
   return (
     <figure className={shots.length > 1 ? 'hero-card is-both' : 'hero-card'}>
-      <span className="hero-tag">Kit included</span>
+      <div className="hero-tag">
+        <Slot src="/images/offer/kit-corner.png" className="hero-kit" label="Kit" />
+        <span>Kit included</span>
+      </div>
       <div className="hero-shots">
         {shots.map((a) => (
           <HeroShot key={`${a}-${teeth[a]}`} arch={a} teeth={teeth[a]} />
         ))}
       </div>
+      <InsertClip />
       <span className="hero-chip">Made in a U.S. lab</span>
     </figure>
   );
@@ -328,6 +386,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const [selected, setSelected] = useState(initial.selected);
   const [details, setDetails] = useState(false);
   const [bothOpen, setBothOpen] = useState(false);
+  const [proOpen, setProOpen] = useState(false);
   const detailsRef = useRef(null);
   const howRef = useRef(null);
   const checkoutRef = useRef(null);
@@ -384,10 +443,10 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       {!direct && (
         <header className="cr-head">
           <h1 className="cr-title">
-            <span className="cr-pill">Based on your results</span>...
+            <span className="cr-pill">Based on your results...</span>
           </h1>
           <p className="cr-sub">
-            Here are a few of your options.
+            <span className="u-smile">Here are a few of your options.</span>
           </p>
           <ul className="cr-tags" aria-label="Your answers">
             {(arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => (
@@ -419,8 +478,8 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           ) : (
             <p className="cr-lead">
-              From <strong data-match-price>{money(offer.flex.price)}</strong>, same price for 1 tooth or 6. Custom-made from your own impressions. A dentist
-              licensed in your state reviews your case before anything is made.
+              From <strong data-match-price>{money(offer.flex.price)}</strong>, same price for 1 tooth or 6. Custom-made from your own
+              impressions, with a licensed dentist overseeing your case at every step.
             </p>
           )}
 
@@ -446,29 +505,19 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           {direct && arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
 
           {!direct && (
-            <>
-              <p className="opt-label">Choose your partial</p>
-              <div className="ptiles" role="group" aria-label="Partial choices">
-                <PartialTile
-                  on={selected === 'flex'}
-                  onClick={() => setSelected('flex')}
-                  ribbon="Standard"
-                  name="Flex Partial"
-                  sub="Flexible, lightweight"
-                  price={money(offer.flex.price)}
-                  img="/images/offer/flex-tile.jpg"
-                />
-                <PartialTile
-                  on={selected === 'precision'}
-                  onClick={() => setSelected('precision')}
-                  ribbon="Upgrade"
-                  name="Precision Pro"
-                  sub="Milled, firmer feel"
-                  price={money(offer.precision.price)}
-                  img="/images/offer/precision-tile.jpg"
-                />
-              </div>
-            </>
+            <div className="your-partial" data-selected={selected}>
+              <span className="yp-badge">Recommended</span>
+              <span className="your-partial-name">
+                {active.name}
+                <span className="yp-spec">{orderSpec}</span>
+              </span>
+              <span className="yp-price">
+                <span className="yp-ref-label">Traditional options</span>
+                <s className="yp-ref">{money(DENTAL_OFFICE_FROM * (offer.arch === 'both' ? 2 : 1))}+</s>
+                <span className="your-partial-price">{money(active.price)}</span>
+              </span>
+              <span className="yp-feel">Fills the gap in your smile and helps you chew your favorite foods again.</span>
+            </div>
           )}
           {direct && (<>
           <p className="pick-label">Choose your partial</p>
@@ -626,13 +675,14 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           ) : (
             <>
               <div className="atc-panel">
+                <p className="atc-promise">Nothing is made until a dentist says yes.</p>
                 {reward && (
                   <p className="atc-reward" data-reward>
                     Your {money(SMS_REWARD.amount)} off is applied <CheckIcon />
                   </p>
                 )}
                 <ul className="atc-value">
-                  {['Impression kit', 'Dentist case review', 'U.S. lab fabrication'].map((item) => (
+                  {['Impression kit', 'Dentist oversight', 'U.S. lab fabrication'].map((item) => (
                     <li key={item}>
                       <CheckIcon />
                       {item}
@@ -640,7 +690,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                   ))}
                 </ul>
                 <PayRow />
-                <p className="atc-promise">Nothing is made until a dentist says yes.</p>
               </div>
 
               <div className="or-divider atc-or" aria-hidden="true">
@@ -652,6 +701,94 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               </a>
               <div className="affirm-panel">
                 <p>Choose Affirm at checkout. Monthly payments, subject to eligibility.</p>
+              </div>
+
+              <div className={proOpen ? 'pro-drop is-open' : 'pro-drop'}>
+                <button type="button" className="both-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
+                  <span>Want it to look new for longer? See the Precision Pro upgrade</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+                {proOpen && (
+                  <div className="both-body">
+<div className="cmp3" role="table" aria-label="Precision Pro vs. Flex Partial">
+                      <div className="cmp3-col cmp3-labels" role="rowgroup">
+                        <div className="cmp3-head" aria-hidden="true" />
+                        {COMPARE_ROWS.map(([label]) => (
+                          <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-sep" role="rowheader">Both include</div>
+                        {SHARED_ROWS.map((label) => (
+                          <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-price" role="rowheader">Price</div>
+                      </div>
+                      <div className={selected === 'precision' ? 'cmp3-col cmp3-pro is-sel' : 'cmp3-col cmp3-pro'} role="rowgroup">
+                        <span className="cmp3-tag">Upgrade</span>
+                        <div className="cmp3-head" role="columnheader">Precision Pro</div>
+                        {COMPARE_ROWS.map(([label, pro]) => (
+                          <div key={label} className="cmp3-cell" role="cell">{cellValue(pro, true)}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
+                        {SHARED_ROWS.map((label) => (
+                          <div key={label} className="cmp3-cell" role="cell"><YesMark strong /></div>
+                        ))}
+                        <div className="cmp3-cell cmp3-price" role="cell">
+                          <span>
+                            {money(offer.precision.price)}
+                            <small>+{money(offer.precision.price - offer.flex.price)}</small>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="cmp3-col cmp3-flex" role="rowgroup">
+                        <div className="cmp3-head" role="columnheader">Flex Partial</div>
+                        {COMPARE_ROWS.map(([label, , flex]) => (
+                          <div key={label} className="cmp3-cell" role="cell">{cellValue(flex, false)}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
+                        {SHARED_ROWS.map((label) => (
+                          <div key={label} className="cmp3-cell" role="cell"><YesMark /></div>
+                        ))}
+                        <div className="cmp3-cell cmp3-price" role="cell">{money(offer.flex.price)}</div>
+                      </div>
+                    </div>
+                    <p className="cmp-note">
+                      What is Klyros Fit Assurance?{' '}
+                      <a href={LINKS.terms} target="_blank" rel="noopener">
+                        Click here to learn more
+                      </a>
+                    </p>
+                    <button
+                      type="button"
+                      className={selected === 'precision' ? 'both-pick is-on' : 'both-pick'}
+                      aria-pressed={selected === 'precision'}
+                      onClick={() => {
+                        setSelected(selected === 'precision' ? 'flex' : 'precision');
+                        requestAnimationFrame(() => {
+                          const el = checkoutRef.current;
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        });
+                      }}
+                    >
+                      {selected === 'precision' ? 'Precision Pro selected ✓ (tap to go back to Flex)' : "Choose Precision Pro"}
+                    </button>
+                    <button
+                      type="button"
+                      className="pro-skip"
+                      onClick={() => {
+                        setSelected('flex');
+                        setProOpen(false);
+                        requestAnimationFrame(() => {
+                          const el = checkoutRef.current;
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        });
+                      }}
+                    >
+                      No thanks, keep Flex Partial
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           )}

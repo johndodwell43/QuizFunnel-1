@@ -26,8 +26,8 @@ function DirectShop() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#d6ecff',
-        fontFamily: "'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
+        background: '#ffffff',
+        fontFamily: "'Plus Jakarta Sans Variable', 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
         color: '#0a1628',
         display: 'flex',
         flexDirection: 'column',
@@ -175,8 +175,8 @@ function Quiz() {
     <div
       style={{
         minHeight: '100vh',
-        background: onGate || isOffer ? '#d6ecff' : '#d7ecff',
-        fontFamily: "'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
+        background: isOffer ? '#ffffff' : onGate ? '#d6ecff' : '#d7ecff',
+        fontFamily: "'Plus Jakarta Sans Variable', 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
         color: isOffer ? '#0a1628' : '#111827',
         display: 'flex',
         flexDirection: 'column',
