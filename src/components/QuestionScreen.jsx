@@ -114,9 +114,8 @@ export default function QuestionScreen({ question, sel, onPick }) {
           <path d="M9 12l2 2 4-4" />
         </svg>
         <p className="question-note" style={{ fontSize: 18, lineHeight: 1.5, margin: 0, textAlign: 'left', maxWidth: 460 }}>
-          A Licensed Dentist in our network reviews your answers and decides whether they can take
-          on your case. Klyros handles the paperwork and shipping — nothing is made until a dentist
-          says yes.
+          A dentist licensed in your state reviews your answers and decides whether they can take
+          on your case. Your Klyros support team guides you from kit to finished partial.
         </p>
       </div>
     </main>

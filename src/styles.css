@@ -806,3 +806,5 @@ button { font-family: inherit; }
 .gate-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; margin: 4px 0 16px; font-size: 15px; font-weight: 700; color: rgba(10, 22, 40, 0.5); }
 .gate-links a { color: #1d4ed8; text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 768px) { .gate-links { font-size: 16px; } }
+.email-gate-why { margin: -2px 2px 2px; font-size: 14px; line-height: 1.35; color: rgba(10, 22, 40, 0.62); text-align: left; }
+@media (min-width: 768px) { .email-gate-why { font-size: 15px; } }

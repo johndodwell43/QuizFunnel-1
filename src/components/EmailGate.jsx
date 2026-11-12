@@ -81,6 +81,7 @@ export default function EmailGate({
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
+          <p className="email-gate-why">Your case results and next steps go here.</p>
           <button type="submit" className="email-gate-submit" disabled={!emailReady || submitting}>
             {submitting ? 'Sending…' : 'Continue'}
           </button>
