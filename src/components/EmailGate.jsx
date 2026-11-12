@@ -98,7 +98,7 @@ export default function EmailGate({
           </label>
         </form>
       </section>
-      <p className="gate-foot">After the questions, you'll see your partial options and pricing.</p>
+      <p className="gate-foot">After the questions, you'll see your partial denture options, pricing and what's included.</p>
       <p className="gate-links">
         <a href={`${LINKS.home}/how-it-works`} target="_blank" rel="noopener">How it works</a>
         <span aria-hidden="true">·</span>
