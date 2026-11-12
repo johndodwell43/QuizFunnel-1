@@ -738,11 +738,11 @@ button { font-family: inherit; }
   margin: 0 0 8px 0;
 }
 .gate-card .email-gate-sub {
-  margin: 0 0 16px 0;
-  font-size: 17px;
-  line-height: 1.45;
-  color: #454e5c;
-  max-width: 52ch;
+  margin: 0 0 18px 0;
+  font-size: 19px;
+  line-height: 1.4;
+  color: #2b3445;
+  max-width: 34ch;
 }
 .gate-card form { display: flex; flex-direction: column; gap: 10px; }
 .gate-card .email-gate-input {
@@ -763,14 +763,37 @@ button { font-family: inherit; }
 .gate-card .email-gate-consent-copy { font-size: 13px; line-height: 1.4; color: rgba(10, 22, 40, 0.62); }
 .gate-foot { margin: 12px 4px 0; font-size: 14px; line-height: 1.4; color: rgba(10, 22, 40, 0.62); text-align: center; }
 @media (min-width: 768px) {
-  .gate-screen { max-width: 520px; }
-  .gate-screen .email-gate-art { height: 200px; }
-  .gate-card { padding: 30px 30px 22px; }
-  .gate-card .email-gate-title { font-size: 40px; margin-bottom: 10px; }
-  .gate-card .email-gate-sub { font-size: 18px; margin-bottom: 20px; }
-  .gate-card .email-gate-consent-copy { font-size: 14px; }
-  .gate-foot { font-size: 15px; margin-top: 14px; }
+  .gate-screen { max-width: 640px; }
+  .gate-screen .email-gate-art { height: 240px; margin-bottom: 18px; }
+  .gate-card { padding: 36px 40px 26px; border-radius: 26px; }
+  .gate-card .email-gate-title { font-size: 50px; margin-bottom: 12px; }
+  .gate-card .email-gate-sub { font-size: 22px; margin-bottom: 24px; max-width: 36ch; }
+  .gate-card form { gap: 12px; }
+  .gate-card .email-gate-input { min-height: 64px; font-size: 20px; padding: 16px 20px; }
+  .gate-card .email-gate-submit { min-height: 64px; font-size: 21px; }
+  .gate-card .email-gate-consent-copy { font-size: 15px; }
+  .gate-card .email-gate-check { width: 20px; height: 20px; min-width: 20px; min-height: 20px; }
+  .gate-foot { font-size: 16px; margin-top: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { .gate-screen { animation: none; } }
 /* "Step 1" as a step marker inside the gate headline */
 .step-tag { display: inline-block; vertical-align: 0.06em; padding: 1px 14px 3px; border-radius: 999px; background: #2563eb; color: #ffffff; font-size: 0.72em; font-weight: 800; letter-spacing: -0.01em; line-height: 1.5; }
+/* Centered gate headline + "new smile" in a soft pill (5a) */
+.gate-card .email-gate-title, .gate-card .email-gate-sub { text-align: center; }
+.gate-card .email-gate-sub { margin-left: auto; margin-right: auto; }
+.u-smile { display: inline-block; padding: 0 0.18em; border-radius: 0.35em; background: #dbeafe; color: #1d4ed8; white-space: nowrap; }
+
+/* Phones: let the photo crop taller so the first screen feels full; desktop keeps the whole wide shot */
+@media (max-width: 767px) {
+  .gate-screen .email-gate-art {
+    aspect-ratio: auto;
+    width: 100%;
+    height: clamp(150px, calc(100dvh - 470px), 210px);
+    margin-bottom: 14px;
+  }
+  .gate-screen .email-gate-art img { object-position: 50% 45%; }
+  .gate-card { padding: 24px 20px 18px; }
+  .gate-card .email-gate-title { font-size: clamp(32px, 8vw, 40px); }
+  .gate-card .email-gate-sub { font-size: 19px; }
+  .gate-card .email-gate-input, .gate-card .email-gate-submit { min-height: 60px; }
+}
