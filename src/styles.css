@@ -1009,3 +1009,56 @@ button { font-family: inherit; }
   font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; }
 .both-pick.is-on { background: #2563eb; color: #ffffff; }
 @media (prefers-reduced-motion: reduce) { .both-toggle svg { transition: none; } }
+.atc-reward { font-size: 15px; text-transform: uppercase; letter-spacing: 0.01em; }
+.atc-reward svg { color: #16a34a; }
+.atc-promise { margin: 0; font-size: 15px; font-weight: 800; color: #1d4ed8; text-align: center; }
+.atc-panel .atc-reward { display: block; font-size: 13.5px; white-space: nowrap; }
+.atc-panel .atc-reward svg { display: inline-block; vertical-align: -2px; margin-left: 4px; }
+/* Sleeker add to cart */
+.offer-checkout.atc { min-height: 54px; padding: 0 20px; border-radius: 14px 14px 0 0; background: #3fae5a; font-size: 19px; font-weight: 800; letter-spacing: 0.01em; }
+.offer-checkout.atc span:last-child { font-size: 21px; font-weight: 800; }
+.offer-checkout.atc:hover { background: #379c50; }
+.atc-panel { border-radius: 0 0 14px 14px; gap: 7px; padding: 11px 14px 12px; }
+.affirm-btn { min-height: 50px; border-radius: 14px 14px 0 0; font-size: 16px; font-weight: 800; }
+.affirm-panel { border-radius: 0 0 14px 14px; }
+
+/* Add to cart: slimmer button, clean value line, real payment marks */
+.offer-checkout.atc { min-height: 54px; padding: 0 20px; font-size: 18px; font-weight: 800; letter-spacing: 0.03em; border-radius: 14px 14px 0 0; }
+.offer-checkout.atc span:last-child { font-size: 20px; font-weight: 800; }
+.atc-panel { gap: 8px; padding: 10px 12px 12px; border-radius: 0 0 14px 14px; }
+.atc-value { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; }
+.atc-value li { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 700; color: #0a1628; white-space: nowrap; }
+.atc-value svg { color: #16a34a; }
+.pay-marks { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; gap: 8px; }
+.pay-marks li { width: 46px; height: 30px; border-radius: 6px; background: #ffffff; border: 1px solid rgba(10, 22, 40, 0.14); display: flex; align-items: center; justify-content: center; }
+.pay-marks svg { width: 34px; height: 22px; display: block; }
+.atc-panel .atc-promise { font-size: 14px; }
+.pay-marks li.is-apple svg { width: 46px; height: 30px; transform: scale(1.35); }
+
+/* ---- Desktop: use the width (no big side gutters) ---- */
+@media (min-width: 1024px) {
+  /* Email gate: one wide, short card (headline left, form right), photos and links below */
+  .gate-screen { max-width: 1120px; }
+  .gate-screen .gate-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 44px; align-items: center;
+    padding: 34px 44px 30px; }
+  .gate-screen .gate-card .email-gate-title { grid-column: 1; grid-row: 1; text-align: left; font-size: 52px; margin: 0 0 10px; }
+  .gate-screen .gate-card .email-gate-sub { grid-column: 1; grid-row: 2; align-self: start; text-align: left; margin: 0; max-width: 30ch; font-size: 20px; }
+  .gate-screen .gate-card form { grid-column: 2; grid-row: 1 / span 2; }
+  .gate-screen .gate-proof { margin-top: 16px; }
+  .gate-screen .gate-proof-pair { border-radius: 22px; }
+  .gate-screen .gate-proof-shot { aspect-ratio: 2 / 1; }
+  .gate-screen .gate-links { flex-direction: row; margin-top: 12px; }
+  .gate-screen .gate-links .gate-row { flex: 1; }
+  .gate-screen .gate-links .gate-row + .gate-row { border-top: none; border-left: 1px solid rgba(10, 22, 40, 0.1); }
+
+  /* Text signup: offer left, phone form right, one wide card */
+  .sms-screen { max-width: 1120px; }
+  .sms-screen .sms-card { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 40px; padding: 36px 40px 30px; }
+  .sms-screen .sms-card > :not(form) { grid-column: 1; }
+  .sms-screen .sms-card > form { grid-column: 2; grid-row: 1 / span 4; align-self: center; margin-top: 0; }
+  .sms-screen .sms-title { font-size: 46px; }
+  .sms-screen .sms-kicker { font-size: 26px; }
+  .sms-screen .sms-sub, .sms-screen .sms-list li { font-size: 19px; }
+  .sms-screen .sms-phone, .sms-screen .sms-submit, .sms-screen .sms-skip { min-height: 62px; }
+  .sms-screen .sms-terms { font-size: 12.5px; }
+}
