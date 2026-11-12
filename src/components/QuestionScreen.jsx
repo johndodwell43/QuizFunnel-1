@@ -3,31 +3,32 @@ import React from 'react';
 export default function QuestionScreen({ question, sel, onPick }) {
   return (
     <main className="question-screen" data-screen-label={question.label}>
-      <h1
-        style={{
-          fontSize: 'clamp(34px, 5.5vw, 44px)',
-          lineHeight: 1.15,
-          fontWeight: 700,
-          margin: '0 0 12px 0',
-          textWrap: 'pretty'
-        }}
-      >
-        {question.title}
-      </h1>
+      <header className="question-card">
+        <h1
+          style={{
+            fontSize: 'clamp(34px, 5.5vw, 44px)',
+            lineHeight: 1.15,
+            fontWeight: 700,
+            margin: 0,
+            textWrap: 'pretty'
+          }}
+        >
+          {question.title}
+        </h1>
+      </header>
       {question.sub ? (
         <p
           style={{
             fontSize: 'clamp(18px, 3vw, 21px)',
             lineHeight: 1.5,
             color: '#454e5c',
-            margin: '0 0 28px 0'
+            margin: '0 0 24px 0',
+            padding: '0 20px'
           }}
         >
           {question.sub}
         </p>
-      ) : (
-        <div style={{ height: 16 }} />
-      )}
+      ) : null}
 
       <div
         className={question.layout === 'tiles' ? 'answer-grid answer-tiles' : 'answer-grid'}
@@ -48,11 +49,11 @@ export default function QuestionScreen({ question, sel, onPick }) {
                 aria-label={`${label} ${value === '1' ? 'tooth' : 'teeth'}`}
                 style={{
                   minHeight: 72,
-                  border: 'none',
+                  border: on ? '2px solid #111827' : '2px solid #8ec2f7',
                   borderRadius: 20,
                   background: on ? '#111827' : '#ffffff',
                   color: on ? '#ffffff' : '#111827',
-                  boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
+                  boxShadow: '0 2px 10px rgba(37,99,235,0.08)',
                   cursor: 'pointer',
                   fontSize: 28,
                   fontWeight: 700,
@@ -73,11 +74,11 @@ export default function QuestionScreen({ question, sel, onPick }) {
                 width: '100%',
                 gridColumn: question.layout === 'tiles' ? '1 / -1' : undefined,
                 minHeight: 72,
-                border: 'none',
+                border: on ? '2px solid #111827' : '2px solid #8ec2f7',
                 borderRadius: 20,
                 background: on ? '#111827' : '#ffffff',
                 color: on ? '#ffffff' : '#111827',
-                boxShadow: '0 2px 10px rgba(17,24,39,0.07)',
+                boxShadow: '0 2px 10px rgba(37,99,235,0.08)',
                 cursor: 'pointer',
                 fontSize: 22,
                 fontWeight: 700,

@@ -854,3 +854,12 @@ button { font-family: inherit; }
   .gate-screen .gate-foot { margin: 10px 4px 8px; font-size: 15px; }
   .gate-row { min-height: 48px; }
 }
+
+/* Question title card */
+.question-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 20px 20px;
+  box-shadow: 0 10px 40px rgba(10, 22, 40, 0.10);
+  margin: 0 0 16px 0;
+}
