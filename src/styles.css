@@ -833,12 +833,24 @@ button { font-family: inherit; }
 .gate-proof-shot { position: relative; aspect-ratio: 3 / 2; overflow: hidden; }
 .gate-proof-shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
 .gate-proof-tag {
-  position: absolute; left: 10px; bottom: 10px; padding: 4px 10px; border-radius: 999px;
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%); padding: 8px 10px; border-radius: 999px;
   background: rgba(10, 22, 40, 0.78); color: #ffffff; font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
 }
 .gate-proof-tag.is-after { background: #2563eb; }
 @media (min-width: 768px) {
   .gate-proof { margin-top: 16px; }
   .gate-proof-pair { border-radius: 18px; }
-  .gate-proof-tag { font-size: 14px; padding: 5px 12px; }
+  .gate-proof-tag { font-size: 14px; padding: 9px 12px; }
+}
+
+/* Gate: fit on one phone screen */
+@media (max-width: 767px) {
+  .gate-card { padding: 16px 16px 12px; }
+  .gate-card .email-gate-title { margin-bottom: 6px; }
+  .gate-card .email-gate-sub { margin-bottom: 12px; font-size: 18px; line-height: 1.35; }
+  .gate-card .email-gate-why { margin: 6px 0 10px; }
+  .gate-card .email-gate-consent { margin-top: 10px; }
+  .gate-proof { margin-top: 10px; }
+  .gate-screen .gate-foot { margin: 10px 4px 8px; font-size: 15px; }
+  .gate-row { min-height: 48px; }
 }
