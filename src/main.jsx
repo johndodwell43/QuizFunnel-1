@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import posthog from 'posthog-js';
 import App from './App.jsx';
+import '@fontsource-variable/plus-jakarta-sans';
 import './styles.css';
 
 // Initialize PostHog once, before the app renders. Guarded so we never double-init

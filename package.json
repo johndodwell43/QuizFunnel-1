@@ -10,6 +10,7 @@
     "test": "node --test api/saveLead.test.js api/quiz-lead.test.js src/lib/pendingLead.test.js src/lib/offerMatch.test.js src/lib/offerCopy.test.js src/lib/reward.test.js"
   },
   "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "posthog-js": "^1.414.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

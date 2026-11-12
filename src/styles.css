@@ -1096,3 +1096,126 @@ button { font-family: inherit; }
 .cr-sub { margin: -2px 0 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.2; font-weight: 800; color: #0a1628; }
 .cr-pill { display: inline-block; padding: 0.02em 0.38em 0.08em; border-radius: 999px; background: #2563eb; color: #ffffff; white-space: nowrap; }
 .cr-title { font-size: clamp(28px, 7.2vw, 44px); }
+.cr-pill { padding: 0.02em 0.42em 0.08em; }
+.your-partial { margin-top: 14px; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 12px; align-items: center;
+  padding: 12px 16px; border-radius: 16px; background: #ffffff; border: 3px solid #0a1628; }
+.your-partial-label { grid-column: 1 / -1; font-size: 12.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #16a34a; }
+.your-partial-name { display: flex; flex-direction: column; font-size: 20px; font-weight: 900; color: #0a1628; line-height: 1.15; }
+.your-partial-sub { font-size: 14px; font-weight: 600; color: rgba(10, 22, 40, 0.62); }
+.your-partial-price { font-size: 28px; font-weight: 900; color: #16a34a; }
+.pro-drop { margin-top: 16px; border-radius: 16px; background: #ffffff; border: 2px solid #8ec2f7; overflow: hidden; }
+.pro-drop.is-open { border-color: #2563eb; }
+.pro-drop.is-open .both-toggle svg { transform: rotate(180deg); }
+.pro-price { color: #0a1628; font-size: 22px; }
+
+/* ---- Results page + /shop on white: give cards and panels clear edges ---- */
+.shell-offer .offer-screen .cr-tags li { background: #eef5ff; }
+.shell-offer .atc-panel, .shell-offer .affirm-panel { background: #eef5ff; border: 1.5px solid #d3e4fb; border-top: none; }
+.shell-offer .offer-checkout.atc, .shell-offer .affirm-btn { box-shadow: none; }
+.shell-offer .cr-steps li { background: #f4f8ff; border: 1.5px solid #e1ecfb; }
+.shell-offer .faq-row { background: #ffffff; border: 1.5px solid rgba(10, 22, 40, 0.1); }
+.shell-offer .why-card { border-color: rgba(10, 22, 40, 0.1); }
+.shell-offer .why-cta { background: #eef5ff; border: 1.5px solid #d3e4fb; }
+.shell-offer .cr-sticky { border-top: 1px solid rgba(10, 22, 40, 0.08); }
+.shell-offer .both-drop, .shell-offer .pro-drop { background: #ffffff; }
+.shell-offer .plan-row { background: #ffffff; border: 2px solid #d3e4fb; }
+.shell-offer .plan-row.is-on { border-color: #2563eb; background: #f4f8ff; }
+.shell-offer .pick-btn { border: 2px solid #d3e4fb; }
+.shell-offer .offer-contact { color: #2b3445; }
+.cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; color: #0a1628; }
+.cmp th, .cmp td { padding: 9px 6px; text-align: center; border-bottom: 1px solid rgba(10, 22, 40, 0.08); vertical-align: middle; }
+.cmp thead th { font-size: 14px; font-weight: 900; padding-top: 2px; }
+.cmp thead th.is-sel { color: #16a34a; }
+.cmp tbody th { text-align: left; font-weight: 700; color: rgba(10, 22, 40, 0.72); width: 38%; padding-left: 0; }
+.cmp td:last-child { background: #f4f8ff; font-weight: 700; }
+.cmp thead th:last-child { background: #f4f8ff; border-radius: 10px 10px 0 0; }
+.cmp .cmp-price td { font-size: 19px; font-weight: 900; border-bottom: none; }
+.cmp .cmp-price td:last-child { border-radius: 0 0 10px 10px; }
+.cmp-note { margin: 8px 0 2px; font-size: 12.5px; line-height: 1.4; color: rgba(10, 22, 40, 0.62); } .cmp-note a { color: #1d4ed8; font-weight: 700; }
+.pro-skip { min-height: 50px; margin-top: 2px; border-radius: 12px; border: 2px solid #8ec2f7; background: #f6f9fe; color: #0a1628; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
+.pro-skip:hover { background: #eaf2fd; }
+/* Compare chart: Klyros baby blue, Precision column a shade darker, all black text */
+.cmp { border-collapse: separate; border-spacing: 0; background: #d6ecff; border-radius: 14px; overflow: hidden; color: #0a1628; }
+.cmp th, .cmp td { border-bottom: 1px solid rgba(10, 22, 40, 0.08); padding: 11px 8px; font-size: 15px; }
+.cmp tbody th { color: #0a1628; font-weight: 700; padding-left: 12px; width: 34%; }
+.cmp td { font-weight: 600; }
+.cmp td:last-child, .cmp thead th:last-child { background: #b9dbfb; font-weight: 800; }
+.cmp thead th { font-size: 18px; font-weight: 900; color: #0a1628; line-height: 1.15; padding: 14px 8px 12px; border-radius: 0; }
+.cmp thead th.is-sel { color: #0a1628; }
+.cmp .cmp-price td { font-size: 21px; font-weight: 900; border-radius: 0; }
+.cmp tr:last-child th, .cmp tr:last-child td { border-bottom: none; }
+.cmp tbody th { white-space: nowrap; width: auto; font-size: 14.5px; } .cmp td { font-size: 14.5px; } .cmp td.ck { font-size: 18px; font-weight: 900; }
+.cmp-note { text-align: center; font-size: 14px; }
+
+/* Compare: labels (white) | Precision Pro (raised) | Flex (baby blue) */
+.cmp3 { display: grid; grid-template-columns: 1.08fr 1fr 0.92fr; align-items: stretch; margin: 10px 0 4px; }
+.cmp3-col { display: flex; flex-direction: column; }
+.cmp3-cell, .cmp3-head { height: 52px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 6px;
+  font-size: 14.5px; line-height: 1.2; color: #0a1628; border-bottom: 1px solid rgba(10, 22, 40, 0.07); }
+.cmp3-head { height: 62px; font-size: 18px; font-weight: 900; line-height: 1.1; border-bottom: none; }
+.cmp3-price { height: 60px; font-size: 22px; font-weight: 900; border-bottom: none; }
+.cmp3-labels { background: #ffffff; }
+.cmp3-labels .cmp3-cell { justify-content: flex-start; text-align: left; font-weight: 700; padding-left: 2px; }
+.cmp3-labels .cmp3-price { font-size: 15px; font-weight: 700; }
+.cmp3-flex { background: #d6ecff; border-radius: 0 14px 14px 0; }
+.cmp3-flex .cmp3-cell { font-weight: 600; }
+.cmp3-pro { position: relative; z-index: 1; margin: -12px -2px; padding: 12px 0; background: #b9dbfb; border: 2px solid #2563eb; border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.28); }
+.cmp3-pro .cmp3-cell { font-weight: 800; border-bottom-color: rgba(10, 22, 40, 0.09); }
+.cmp3-pro .cmp3-head { font-size: 19px; }
+.cmp3-tag { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); padding: 3px 10px; border-radius: 999px; background: #2563eb;
+  color: #ffffff; font-size: 11.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+.cmp3 .ck { font-size: 19px; font-weight: 900; }
+.pro-drop .both-body { overflow: visible; padding-top: 22px; }
+.pro-drop { overflow: visible; }
+@media (min-width: 768px) { .cmp3-cell { font-size: 15.5px; } .cmp3-head { font-size: 20px; } }
+.pro-drop .both-pick:not(.is-on) { background: #2563eb; color: #ffffff; border-color: #2563eb; }
+.pro-drop .both-pick.is-on { background: #16a34a; border-color: #16a34a; color: #ffffff; }
+.cmp3-cell { border-bottom-width: 1px; }
+.cmp3-pro .cmp3-cell, .cmp3-pro .cmp3-head { margin: 0 -2px; }
+
+/* Premium type across the funnel */
+body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+
+/* Yes / no marks */
+.yes-mark { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: #ffffff; color: #2563eb; box-shadow: inset 0 0 0 2px #93c5fd; }
+.yes-mark.is-strong { background: #2563eb; color: #ffffff; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35); }
+.no-mark { width: 14px; height: 3px; border-radius: 2px; background: rgba(10, 22, 40, 0.22); display: inline-block; }
+.cmp3-price small { display: block; margin-top: 2px; font-size: 12px; font-weight: 800; color: #1d4ed8; letter-spacing: 0.01em; }
+.cmp3-pro .cmp3-price { height: 64px; }
+.cmp3-sep { height: 30px; font-size: 11.5px !important; font-weight: 800 !important; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(10, 22, 40, 0.55) !important;
+  border-bottom: 1px solid rgba(10, 22, 40, 0.1); }
+.cmp3-labels .cmp3-cell { white-space: normal; }
+.cr-sub .u-smile { padding: 0 0.22em; }
+
+/* Hero: kit photo next to "Kit included", corner clip of the partial going in */
+.hero-tag { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 16px 8px 8px; min-height: 64px; }
+.hero-kit { height: 76px; width: auto; max-width: 42%; object-fit: contain; margin: -10px 0 -18px; filter: drop-shadow(0 6px 12px rgba(10, 22, 40, 0.3)); }
+.hero-kit.is-empty, .hero-clip.is-empty { display: flex; align-items: center; justify-content: center; border: 2px dashed rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.85); font-size: 13px; font-weight: 800; background: rgba(255, 255, 255, 0.1); }
+.hero-kit.is-empty { width: 96px; height: 52px; margin: 0; border-radius: 12px; }
+.hero-clip { position: absolute; left: 14px; bottom: 14px; z-index: 1; width: 34%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 16px;
+  border: 3px solid #ffffff; box-shadow: 0 8px 20px rgba(10, 22, 40, 0.3); background: #1d4ed8; }
+.hero-clip.is-empty { border-style: dashed; }
+.cr-sub .u-smile { white-space: normal; padding: 0.02em 0.3em 0.06em; }
+@media (prefers-reduced-motion: reduce) { .hero-clip { animation: none; } }
+/* Your partial card: badge, arch + teeth, comparison price */
+.your-partial { position: relative; grid-template-columns: 1fr auto; grid-template-rows: auto; padding: 22px 16px 14px; margin-top: 18px; }
+.yp-badge { position: absolute; top: -12px; left: 14px; padding: 4px 12px; border-radius: 999px; background: #16a34a; color: #ffffff;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.your-partial-name { font-size: 26px; font-weight: 900; letter-spacing: -0.015em; gap: 3px; }
+.yp-spec { font-size: 15px; font-weight: 800; color: #1d4ed8; }
+.yp-feel { font-size: 14.5px; font-weight: 600; color: rgba(10, 22, 40, 0.68); }
+.yp-price { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.yp-ref { font-size: 12.5px; font-weight: 600; color: rgba(10, 22, 40, 0.6); white-space: nowrap; }
+.yp-ref s { font-weight: 800; }
+.your-partial .your-partial-price { color: #2563eb; font-size: 34px; font-weight: 900; line-height: 1; }
+.atc-panel .atc-promise { font-size: 15px; order: 0; } .yp-feel { white-space: nowrap; }
+.your-partial { grid-template-columns: 1fr auto; row-gap: 10px; align-items: start; }
+.yp-feel { grid-column: 1 / -1; white-space: normal; font-size: 15px; line-height: 1.35; padding-top: 10px; border-top: 1px solid rgba(10, 22, 40, 0.08); }
+.yp-price { gap: 0; }
+.yp-ref-label { font-size: 12.5px; font-weight: 700; color: rgba(10, 22, 40, 0.6); }
+.yp-ref { font-size: 20px; font-weight: 800; color: #b42318; text-decoration-thickness: 2px; line-height: 1.1; }
+.your-partial .your-partial-price { font-size: 42px; margin-top: 2px; }
+.your-partial-name { font-size: 28px; }
