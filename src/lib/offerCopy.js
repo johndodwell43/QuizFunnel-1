@@ -42,3 +42,18 @@ export const NEXT_STEPS = [
   ['Kit', KIT_STEP, 'PLACEHOLDER: kit on plain background, 1:1, 800px'],
   ['U.S. lab', LAB_STEP, 'PLACEHOLDER: finished partial on plain background, 1:1, 800px']
 ];
+
+// Quiz result page: what happens after they pay, in order.
+export const ORDER_STEPS = [
+  ['Your kit ships', 'Take your impressions with the step-by-step guide, then send them back.'],
+  ['A dentist reviews your case', DENTIST_REVIEW],
+  ['A U.S. lab makes your partial', 'It is made from your own impressions and shipped to you.']
+];
+
+// Quiz result page questions, written the way buyers ask them.
+export const QUIZ_FAQ = [
+  ['Who checks that this is right for me?', DENTIST_REVIEW],
+  ['How do I take my impressions?', KIT_STEP + ' The step-by-step guide walks you through it.'],
+  ['Who makes my partial?', LAB_STEP],
+  ['What if the dentist says it\'s not a fit?', 'Nothing is made until a dentist reviews your case. See our refund policy for what happens next.']
+];
