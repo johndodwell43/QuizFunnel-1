@@ -99,9 +99,10 @@ const COMPARE_ROWS = [
   ['Longer lasting', '✓', '—'],
   ['Warranty', '1 year', '—'],
   ['Handmade', 'Start to finish', 'Finished by hand'],
-  ['Material', 'DuraFlex', 'Valplast']
+  ['Material', 'DuraFlex', 'Valplast'],
+  ['Build process', 'More thorough', 'Standard']
 ];
-const SHARED_ROWS = ['U.S. dental lab', 'Dentist oversight', 'Klyros Fit Assurance'];
+const SHARED_ROWS = ['Impression kit', 'Dentist review', 'U.S. dental lab', '2-day shipping', 'Klyros Fit Assurance'];
 
 const YesMark = ({ strong }) => (
   <span className={strong ? 'yes-mark is-strong' : 'yes-mark'} role="img" aria-label="Yes">
@@ -346,7 +347,7 @@ const WHY_ICONS = {
 };
 
 // "What you get with Klyros": one card per row (icon + title, then what you get vs. why it matters).
-function WhyKlyros({ onShop }) {
+function WhyKlyros({ href, onBuy, name, price }) {
   return (
     <section className="why" aria-label="What you get with Klyros">
       <h2 className="why-title">
@@ -369,12 +370,39 @@ function WhyKlyros({ onShop }) {
           </article>
         ))}
       </div>
-      <div className="why-cta">
-        <p>A partial made for your mouth.</p>
-        <button type="button" onClick={onShop}>
-          Add to cart
-        </button>
+      <a className="why-cta" href={href} onClick={onBuy} data-checkout-mid>
+        <span className="why-cta-text">
+          <strong>A partial made for your mouth.</strong>
+          <span>{name} · {price}</span>
+        </span>
+        <span className="why-cta-btn">Add to cart</span>
+      </a>
+    </section>
+  );
+}
+
+// Fit Assurance block near the bottom: answers "what if it doesn't fit?" before the footer.
+function FitAssurance() {
+  return (
+    <section className="fitassure" aria-label="Klyros Fit Assurance">
+      <div className="fitassure-shield" aria-hidden="true">
+        <svg viewBox="0 0 64 72" width="86" height="96">
+          <path d="M32 3 6 13v22c0 17 11 28 26 34 15-6 26-17 26-34V13L32 3z" fill="#1d4ed8" />
+          <path d="M32 9 11 17v18c0 14 9 23 21 28 12-5 21-14 21-28V17L32 9z" fill="#2563eb" />
+          <path d="M20 37l8 8 16-17" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span className="fitassure-ribbon">Fit Assurance</span>
       </div>
+      <p className="fitassure-kicker">You're probably wondering&hellip;</p>
+      <h2 className="fitassure-title">What if it doesn't fit?</h2>
+      <p className="fitassure-lead">It's covered. Every Klyros partial comes with Fit Assurance, at no extra charge.</p>
+      <p className="fitassure-body">
+        A good fit is the whole point. If yours needs work, we adjust it. If it still isn't right, we remake it once. It's part of
+        your order, not an add-on.
+      </p>
+      <a href={LINKS.refund} target="_blank" rel="noopener" className="fitassure-link">
+        Read the Fit Assurance details
+      </a>
     </section>
   );
 }
@@ -543,6 +571,103 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               <span className="sr-only" data-match-price>{money(offer.flex.price)}</span>
               Custom-made from your own impressions, with a licensed dentist overseeing your case at every step.
             </p>
+          )}
+
+          {!direct && (
+            <>
+              <div className={proOpen ? 'pro-drop is-open' : 'pro-drop'}>
+                <button type="button" className="pro-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
+                  <span className="pro-pill">Upgrade · Precision Partial Pro</span>
+                  <span className="pro-title">The same partial, built to last longer.</span>
+                  <span className="pro-why">Handmade start to finish with DuraFlex and a 1-year warranty. +{money(offer.precision.price - offer.flex.price)}</span>
+                  <span className="pro-cta">
+                    {proOpen ? 'Hide the comparison' : 'See what else is included'}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </span>
+                </button>
+                {proOpen && (
+                  <div className="both-body">
+<div className="cmp3" role="table" aria-label="Precision Pro vs. Flex Partial">
+                      <div className="cmp3-col cmp3-labels" role="rowgroup">
+                        <div className="cmp3-head" aria-hidden="true" />
+                        {COMPARE_ROWS.map(([label]) => (
+                          <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-sep" role="rowheader">Both include</div>
+                        {SHARED_ROWS.map((label) => (
+                          <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-price" role="rowheader">Price</div>
+                      </div>
+                      <div className={selected === 'precision' ? 'cmp3-col cmp3-pro is-sel' : 'cmp3-col cmp3-pro'} role="rowgroup">
+                        <span className="cmp3-tag">Upgrade</span>
+                        <div className="cmp3-head" role="columnheader">Precision Pro</div>
+                        {COMPARE_ROWS.map(([label, pro]) => (
+                          <div key={label} className="cmp3-cell" role="cell">{cellValue(pro, true)}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
+                        {SHARED_ROWS.map((label) => (
+                          <div key={label} className="cmp3-cell" role="cell"><YesMark strong /></div>
+                        ))}
+                        <div className="cmp3-cell cmp3-price" role="cell">
+                          <span>
+                            {money(offer.precision.price)}
+                            <small>+{money(offer.precision.price - offer.flex.price)}</small>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="cmp3-col cmp3-flex" role="rowgroup">
+                        <div className="cmp3-head" role="columnheader">Flex Partial</div>
+                        {COMPARE_ROWS.map(([label, , flex]) => (
+                          <div key={label} className="cmp3-cell" role="cell">{cellValue(flex, false)}</div>
+                        ))}
+                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
+                        {SHARED_ROWS.map((label) => (
+                          <div key={label} className="cmp3-cell" role="cell"><YesMark /></div>
+                        ))}
+                        <div className="cmp3-cell cmp3-price" role="cell">{money(offer.flex.price)}</div>
+                      </div>
+                    </div>
+                    <p className="cmp-note">
+                      What is Klyros Fit Assurance?{' '}
+                      <a href={LINKS.refund} target="_blank" rel="noopener">
+                        Click here to learn more
+                      </a>
+                    </p>
+                    <button
+                      type="button"
+                      className={selected === 'precision' ? 'both-pick is-on' : 'both-pick'}
+                      aria-pressed={selected === 'precision'}
+                      onClick={() => {
+                        setSelected(selected === 'precision' ? 'flex' : 'precision');
+                        requestAnimationFrame(() => {
+                          const el = checkoutRef.current;
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        });
+                      }}
+                    >
+                      {selected === 'precision' ? 'Precision Pro selected ✓ (tap to go back to Flex)' : "Choose Precision Pro"}
+                    </button>
+                    <button
+                      type="button"
+                      className="pro-skip"
+                      onClick={() => {
+                        setSelected('flex');
+                        setProOpen(false);
+                        requestAnimationFrame(() => {
+                          const el = checkoutRef.current;
+                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        });
+                      }}
+                    >
+                      No thanks, keep Flex Partial
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
           )}
           {direct && (<>
           <p className="pick-label">Choose your partial</p>
@@ -756,100 +881,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 ))}
               </section>
 
-              <div className={proOpen ? 'pro-drop is-open' : 'pro-drop'}>
-                <button type="button" className="both-toggle pro-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
-                  <span className="pro-intro">
-                    <span className="pro-tag">Upgrade option</span>
-                    <span className="pro-title">
-                      Precision Partial Pro <span className="pro-plus">+{money(offer.precision.price - offer.flex.price)}</span>
-                    </span>
-                    <span className="pro-why">Handmade · Longer lasting · 1-yr warranty</span>
-                    <span className="pro-see">{proOpen ? 'Hide the difference' : 'See the difference'}</span>
-                  </span>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </button>
-                {proOpen && (
-                  <div className="both-body">
-<div className="cmp3" role="table" aria-label="Precision Pro vs. Flex Partial">
-                      <div className="cmp3-col cmp3-labels" role="rowgroup">
-                        <div className="cmp3-head" aria-hidden="true" />
-                        {COMPARE_ROWS.map(([label]) => (
-                          <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
-                        ))}
-                        <div className="cmp3-cell cmp3-sep" role="rowheader">Both include</div>
-                        {SHARED_ROWS.map((label) => (
-                          <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
-                        ))}
-                        <div className="cmp3-cell cmp3-price" role="rowheader">Price</div>
-                      </div>
-                      <div className={selected === 'precision' ? 'cmp3-col cmp3-pro is-sel' : 'cmp3-col cmp3-pro'} role="rowgroup">
-                        <span className="cmp3-tag">Upgrade</span>
-                        <div className="cmp3-head" role="columnheader">Precision Pro</div>
-                        {COMPARE_ROWS.map(([label, pro]) => (
-                          <div key={label} className="cmp3-cell" role="cell">{cellValue(pro, true)}</div>
-                        ))}
-                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
-                        {SHARED_ROWS.map((label) => (
-                          <div key={label} className="cmp3-cell" role="cell"><YesMark strong /></div>
-                        ))}
-                        <div className="cmp3-cell cmp3-price" role="cell">
-                          <span>
-                            {money(offer.precision.price)}
-                            <small>+{money(offer.precision.price - offer.flex.price)}</small>
-                          </span>
-                        </div>
-                      </div>
-                      <div className="cmp3-col cmp3-flex" role="rowgroup">
-                        <div className="cmp3-head" role="columnheader">Flex Partial</div>
-                        {COMPARE_ROWS.map(([label, , flex]) => (
-                          <div key={label} className="cmp3-cell" role="cell">{cellValue(flex, false)}</div>
-                        ))}
-                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
-                        {SHARED_ROWS.map((label) => (
-                          <div key={label} className="cmp3-cell" role="cell"><YesMark /></div>
-                        ))}
-                        <div className="cmp3-cell cmp3-price" role="cell">{money(offer.flex.price)}</div>
-                      </div>
-                    </div>
-                    <p className="cmp-note">
-                      What is Klyros Fit Assurance?{' '}
-                      <a href={LINKS.refund} target="_blank" rel="noopener">
-                        Click here to learn more
-                      </a>
-                    </p>
-                    <button
-                      type="button"
-                      className={selected === 'precision' ? 'both-pick is-on' : 'both-pick'}
-                      aria-pressed={selected === 'precision'}
-                      onClick={() => {
-                        setSelected(selected === 'precision' ? 'flex' : 'precision');
-                        requestAnimationFrame(() => {
-                          const el = checkoutRef.current;
-                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        });
-                      }}
-                    >
-                      {selected === 'precision' ? 'Precision Pro selected ✓ (tap to go back to Flex)' : "Choose Precision Pro"}
-                    </button>
-                    <button
-                      type="button"
-                      className="pro-skip"
-                      onClick={() => {
-                        setSelected('flex');
-                        setProOpen(false);
-                        requestAnimationFrame(() => {
-                          const el = checkoutRef.current;
-                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        });
-                      }}
-                    >
-                      No thanks, keep Flex Partial
-                    </button>
-                  </div>
-                )}
-              </div>
             </>
           )}
 
@@ -870,15 +901,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
       {!direct && (
         <div className="cr-below">
-            <>
-
-
-              <WhyKlyros
-                onShop={() => {
-                  const el = checkoutRef.current;
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }}
-              />
+              <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
 
               <section className="cr-steps" aria-label="What happens after you order">
                 <h2>What happens after you order</h2>
@@ -899,8 +922,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                   Read our refund policy
                 </a>
               </div>
-
-            </>
         </div>
       )}
 
@@ -954,6 +975,19 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         </section>
       </div>
 
+
+      {!direct && (
+        <>
+          <FitAssurance />
+          <a className="final-cta" href={active.url} onClick={buy} data-checkout-end>
+            <span className="final-cta-text">
+              <strong>Ready when you are.</strong>
+              <span>{active.name} · {money(total)}</span>
+            </span>
+            <span className="final-cta-btn">Add to cart</span>
+          </a>
+        </>
+      )}
 
       <p className="offer-contact">
         Questions?{' '}

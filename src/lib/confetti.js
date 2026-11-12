@@ -1,6 +1,17 @@
 // Tiny dependency-free confetti burst. Respects reduced-motion. Cleans itself up.
+let active = null;
+
+// Stops a running burst at once (used when the screen that started it goes away).
+export function clearConfetti() {
+  if (active) {
+    active.remove();
+    active = null;
+  }
+}
+
 export function burstConfetti({ count = 140, duration = 1800 } = {}) {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  clearConfetti();
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const canvas = document.createElement('canvas');
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -13,6 +24,7 @@ export function burstConfetti({ count = 140, duration = 1800 } = {}) {
   });
   canvas.setAttribute('aria-hidden', 'true');
   document.body.appendChild(canvas);
+  active = canvas;
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
   const colors = ['#2563eb', '#60a5fa', '#16a34a', '#86efac', '#f59e0b', '#ffffff'];
@@ -52,8 +64,9 @@ export function burstConfetti({ count = 140, duration = 1800 } = {}) {
       ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
       ctx.restore();
     }
+    if (canvas !== active) return;
     if (t < duration) requestAnimationFrame(frame);
-    else canvas.remove();
+    else clearConfetti();
   }
   requestAnimationFrame(frame);
 }
