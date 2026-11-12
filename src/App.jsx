@@ -44,13 +44,40 @@ function DirectShop() {
   );
 }
 
+// Where the visitor is in the funnel, kept for this browser tab so a refresh doesn't
+// send them back to the email gate. Closing the tab starts fresh.
+const PROGRESS_KEY = 'klyros_quiz_progress';
+function loadProgress() {
+  try {
+    const raw = window.sessionStorage.getItem(PROGRESS_KEY);
+    const saved = raw ? JSON.parse(raw) : null;
+    if (!saved || !saved.lead || typeof saved.screen !== 'string') return null;
+    return saved;
+  } catch {
+    return null;
+  }
+}
+function saveProgress(progress) {
+  try {
+    if (progress.lead) window.sessionStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    else window.sessionStorage.removeItem(PROGRESS_KEY);
+  } catch {
+    /* storage blocked: the funnel still works, a refresh just starts over */
+  }
+}
+
 function Quiz() {
-  const [step, setStep] = useState(0);
-  const [screen, setScreen] = useState('email'); // email | quiz | pause | offer
-  const [answers, setAnswers] = useState({});
-  const [lead, setLead] = useState(null);
+  const restored = useRef(typeof window !== 'undefined' ? loadProgress() : null).current;
+  const [step, setStep] = useState(restored?.step ?? 0);
+  const [screen, setScreen] = useState(restored?.screen ?? 'email'); // email | quiz | pause | sms | offer
+  const [answers, setAnswers] = useState(restored?.answers ?? {});
+  const [lead, setLead] = useState(restored?.lead ?? null);
   const [sel, setSel] = useState(null);
-  const [pause, setPause] = useState({ kind: 'healing', step: 2 });
+  const [pause, setPause] = useState(restored?.pause ?? { kind: 'healing', step: 2 });
+
+  useEffect(() => {
+    saveProgress({ step, screen, answers, lead, pause });
+  }, [step, screen, answers, lead, pause]);
   const leadRef = useRef(null);
   leadRef.current = lead;
 

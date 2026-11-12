@@ -251,6 +251,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const [arch, setArch] = useState(direct ? null : initial.arch === 'both' ? 'upper' : initial.arch);
   const [selected, setSelected] = useState(initial.selected);
   const [details, setDetails] = useState(false);
+  const [bothOpen, setBothOpen] = useState(false);
   const detailsRef = useRef(null);
   const howRef = useRef(null);
   const checkoutRef = useRef(null);
@@ -364,65 +365,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          {!direct && arches.length > 1 && (
-            <>
-              <p className="opt-label">Your plan</p>
-              <div className="plan-list" role="group" aria-label="Arch">
-                <button
-                  type="button"
-                  className={arch !== 'both' ? 'plan-row plan-row-stack is-on' : 'plan-row plan-row-stack'}
-                  aria-pressed={arch !== 'both'}
-                  onClick={() => setArch(arch === 'both' ? 'upper' : arch)}
-                >
-                  <span className="plan-top">
-                    <span className="plan-title">Just one arch for now</span>
-                    <span className="plan-price">{money(oneArchPrice)}</span>
-                  </span>
-                  <span className="plan-detail" data-second-arch>
-                    If you're satisfied, we'll take {money(secondArchOff)} off your second arch:
-                    <span className="second-price">
-                      <s>{money(oneArchPrice)}</s> <strong>{money(secondArchPrice)}</strong>
-                    </span>
-                    <span className="second-when">
-                      Order within 60 days after your first case is finished.
-                    </span>
-                  </span>
-                </button>
-                {arch !== 'both' && (
-                  <div className="pick-row pick-row-2" role="group" aria-label="Which arch first">
-                    {[['upper', 'Top'], ['lower', 'Bottom']].map(([value, label]) => (
-                      <button
-                        key={value}
-                        type="button"
-                        className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
-                        aria-pressed={arch === value}
-                        onClick={() => setArch(value)}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div className="or-divider" aria-hidden="true">
-                  <span>OR</span>
-                </div>
-                <button
-                  type="button"
-                  className={arch === 'both' ? 'plan-row is-on' : 'plan-row'}
-                  aria-pressed={arch === 'both'}
-                  onClick={() => setArch('both')}
-                >
-                  <span className="plan-name">
-                    Get both now
-                    <span className="plan-sub">Top + bottom</span>
-                  </span>
-                  <span className="plan-price">{money(bothPrice)}</span>
-                </button>
-              </div>
-              {arch === 'both' && <TeethPickers arch="both" teeth={teeth} setTeeth={setTeeth} />}
-            </>
-          )}
-
           {direct && arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
 
           {!direct && (
@@ -505,6 +447,82 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </div>
           )}
 
+          {!direct && arches.length > 1 && (
+            <>
+              <p className="opt-label">Your plan</p>
+              <div className="plan-list" role="group" aria-label="Arch">
+                <button
+                  type="button"
+                  className={arch !== 'both' ? 'plan-row plan-row-stack is-on' : 'plan-row plan-row-stack'}
+                  aria-pressed={arch !== 'both'}
+                  onClick={() => setArch(arch === 'both' ? 'upper' : arch)}
+                >
+                  <span className="plan-top">
+                    <span className="plan-title">Just one arch for now</span>
+                    <span className="plan-price">{money(oneArchPrice)}</span>
+                  </span>
+                  <span className="plan-detail" data-second-arch>
+                    If you're satisfied, we'll take {money(secondArchOff)} off your second arch:
+                    <span className="second-price">
+                      <s>{money(oneArchPrice)}</s> <strong>{money(secondArchPrice)}</strong>
+                    </span>
+                    <span className="second-when">
+                      Order within 60 days after your first case is finished.
+                    </span>
+                  </span>
+                </button>
+                {arch !== 'both' && (
+                  <div className="pick-row pick-row-2" role="group" aria-label="Which arch first">
+                    {[['upper', 'Top'], ['lower', 'Bottom']].map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
+                        aria-pressed={arch === value}
+                        onClick={() => setArch(value)}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className={bothOpen || arch === 'both' ? 'both-drop is-open' : 'both-drop'}>
+                  <button
+                    type="button"
+                    className="both-toggle"
+                    aria-expanded={bothOpen || arch === 'both'}
+                    onClick={() => setBothOpen((v) => !v)}
+                  >
+                    <span>I'm interested in replacing both top and bottom</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                  {(bothOpen || arch === 'both') && (
+                    <div className="both-body">
+                      <p className="both-line">
+                        Both arches together:{' '}
+                        <span className="second-price">
+                          <s>{money(oneArchPrice * 2)}</s> <strong>{money(bothPrice)}</strong>
+                        </span>
+                      </p>
+                      <p className="both-note">{money(oneArchPrice * 2 - bothPrice)} less than ordering each arch on its own.</p>
+                      <button
+                        type="button"
+                        className={arch === 'both' ? 'both-pick is-on' : 'both-pick'}
+                        aria-pressed={arch === 'both'}
+                        onClick={() => setArch(arch === 'both' ? 'upper' : 'both')}
+                      >
+                        {arch === 'both' ? 'Both arches selected ✓' : `Choose both for ${money(bothPrice)}`}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {arch === 'both' && <TeethPickers arch="both" teeth={teeth} setTeeth={setTeeth} />}
+            </>
+          )}
+
           <p className={direct ? "offer-selected" : "offer-selected sr-only"} data-selected-offer>
             {ready ? purchaseLine(active) : !arch ? 'Pick your arch to see your price' : 'Pick how many teeth to replace'}
           </p>
@@ -516,7 +534,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             aria-disabled={!ready}
             onClick={buy}
           >
-            <span>{ready ? (direct ? 'Continue to checkout' : 'Secure checkout') : 'Choose your options above'}</span>
+            <span>{ready ? (direct ? 'Continue to checkout' : 'Add to cart') : 'Choose your options above'}</span>
             <span>{ready ? money(direct ? active.price : total) : ''}</span>
           </a>
 
