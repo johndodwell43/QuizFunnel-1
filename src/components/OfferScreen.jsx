@@ -10,6 +10,7 @@ import {
   NEXT_STEPS,
   ORDER_STEPS,
   QUIZ_FAQ,
+  WHY_ROWS,
   includedProductLine
 } from '../lib/offerCopy.js';
 import {
@@ -236,7 +237,7 @@ function PartialTile({ on, onClick, ribbon, name, sub, price, img }) {
   const [failed, setFailed] = useState(false);
   return (
     <button type="button" className={on ? 'ptile is-on' : 'ptile'} aria-pressed={on} onClick={onClick}>
-      {ribbon && <span className={ribbon === 'Recommended' ? 'ptile-ribbon' : 'ptile-ribbon is-alt'}>{ribbon}</span>}
+      {ribbon && <span className={ribbon === 'Standard' ? 'ptile-ribbon' : 'ptile-ribbon is-alt'}>{ribbon}</span>}
       <span className="ptile-name">{name}</span>
       <span className="ptile-img">
         {failed ? <span className="ptile-ph" aria-hidden="true" /> : <img src={img} alt="" onError={() => setFailed(true)} />}
@@ -262,6 +263,49 @@ function Band({ src, title, points }) {
         </span>
       </figcaption>
     </figure>
+  );
+}
+
+const WHY_ICONS = {
+  tooth: <path d="M7 3c-2.5 0-4 2-4 4.5 0 2 1 3.5 1.6 5.6L6 19c.3 1.3 1.9 1.4 2.3.1L10 14h4l1.7 5.1c.4 1.3 2 1.2 2.3-.1l1.4-5.9C20 11 21 9.5 21 7.5 21 5 19.5 3 17 3c-1.9 0-3 1-5 1S8.9 3 7 3z" />,
+  box: <><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z" /><path d="M3 7.5 12 12l9-4.5M12 12v9" /></>,
+  lab: <><path d="M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3" /><path d="M7.5 15h9" /></>,
+  truck: <><path d="M2 6h11v10H2zM13 10h4l4 3.5V16h-8" /><circle cx="6" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></>,
+  wrench: <path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 1-5-5L13 2l1.7 4.3zM3 21l6-6" />,
+  chat: <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z" />
+};
+
+// "What you get with Klyros": one card per row (icon + title, then what you get vs. why it matters).
+function WhyKlyros({ onShop }) {
+  return (
+    <section className="why" aria-label="What you get with Klyros">
+      <h2 className="why-title">
+        Everything you need, <span>kit to finished partial.</span>
+      </h2>
+      <div className="why-grid">
+        {WHY_ROWS.map(([icon, title, get, why]) => (
+          <article key={title} className="why-card">
+            <header>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                {WHY_ICONS[icon]}
+              </svg>
+              <h3>{title}</h3>
+            </header>
+            <div className="why-body">
+              <span className="why-check" aria-hidden="true"><CheckIcon /></span>
+              <span className="why-get">{get}</span>
+              <span className="why-why">{why}</span>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="why-cta">
+        <p>A partial made for your mouth.</p>
+        <button type="button" onClick={onShop}>
+          Add to cart
+        </button>
+      </div>
+    </section>
   );
 }
 
@@ -339,10 +383,12 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
     <main data-screen-label="Offer" data-arch={offer.arch} className={inPersonFirst ? 'offer-screen has-visit' : 'offer-screen'}>
       {!direct && (
         <header className="cr-head">
-          <p className="cr-eyebrow">Your case results</p>
           <h1 className="cr-title">
-            <span className="cr-brand">Flex Partial</span> may be a fit for you.
+            <span className="cr-pill">Based on your results</span>...
           </h1>
+          <p className="cr-sub">
+            Here are a few of your options.
+          </p>
           <ul className="cr-tags" aria-label="Your answers">
             {(arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => (
               <li key={a}>
@@ -373,7 +419,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           ) : (
             <p className="cr-lead">
-              From <strong data-match-price>{money(offer.flex.price)}</strong>. Custom-made from your own impressions. A dentist
+              From <strong data-match-price>{money(offer.flex.price)}</strong>, same price for 1 tooth or 6. Custom-made from your own impressions. A dentist
               licensed in your state reviews your case before anything is made.
             </p>
           )}
@@ -406,7 +452,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 <PartialTile
                   on={selected === 'flex'}
                   onClick={() => setSelected('flex')}
-                  ribbon="Recommended"
+                  ribbon="Standard"
                   name="Flex Partial"
                   sub="Flexible, lightweight"
                   price={money(offer.flex.price)}
@@ -436,7 +482,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               <span className="plan-name">
                 <span className="plan-name-row">
                   Flex Partial
-                  {!direct && <span className="rec-badge">Recommended</span>}
                 </span>
                 <span className="plan-sub">Flexible, lightweight, gum-colored</span>
               </span>
@@ -611,7 +656,23 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          {!direct && (
+          {direct && (
+          <div className="details-links">
+            <button type="button" className="details-link" onClick={() => openDetails('details')}>
+              <span>See product details</span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <button type="button" className="details-link" onClick={() => openDetails('how')}>
+              <span>How it works</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+          )}
+        </div>
+      </div>
+
+      {!direct && (
+        <div className="cr-below">
             <>
               <div className="cr-promise">
                 <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
@@ -625,6 +686,13 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 src="/images/offer/kit-band.jpg"
                 title="Everything comes in one kit"
                 points={['Impression trays', 'Step-by-step guide', 'Prepaid return']}
+              />
+
+              <WhyKlyros
+                onShop={() => {
+                  const el = checkoutRef.current;
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
               />
 
               <section className="cr-steps" aria-label="What happens after you order">
@@ -661,22 +729,8 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 ))}
               </section>
             </>
-          )}
-
-          {direct && (
-          <div className="details-links">
-            <button type="button" className="details-link" onClick={() => openDetails('details')}>
-              <span>See product details</span>
-              <span aria-hidden="true">→</span>
-            </button>
-            <button type="button" className="details-link" onClick={() => openDetails('how')}>
-              <span>How it works</span>
-              <span aria-hidden="true">→</span>
-            </button>
-          </div>
-          )}
         </div>
-      </div>
+      )}
 
       <div className="offer-details" ref={detailsRef} hidden={!details}>
         <div className="offer-gallery">

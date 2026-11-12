@@ -57,3 +57,14 @@ export const QUIZ_FAQ = [
   ['Who makes my partial?', LAB_STEP],
   ['What if the dentist says it\'s not a fit?', 'Nothing is made until a dentist reviews your case. See our refund policy for what happens next.']
 ];
+
+// "What you get with Klyros" rows on the case results page. Every line is a fact about how Klyros works.
+// [icon, row title, what you get, why it matters]
+export const WHY_ROWS = [
+  ['tooth', 'Dentist case review', 'A licensed dentist reviews your case', 'Nothing is made until they say yes.'],
+  ['box', 'Impression kit', 'Kit and step-by-step guide included', 'App, visual guide and PDF walk you through it.'],
+  ['lab', 'Certified dental tech', 'Licensed U.S. dental labs fabricate your appliance', 'Made using your custom mouth impressions.'],
+  ['truck', 'Shipping', '2-day shipping both ways, included', 'Tracked, with an update at every step.'],
+  ['wrench', 'Fit', 'Adjustments and 1 remake included', 'If the fit needs work, we adjust it or remake it once.'],
+  ['chat', 'Support', 'Live chat with real people', 'Message us any time you need help.']
+];
