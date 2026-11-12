@@ -166,6 +166,7 @@ function Quiz() {
           showBack={!onGate}
           onBack={goBack}
           gate={onGate}
+          plain={isSms}
           offer={isOffer}
           showExit={!isQuiz && !isSms}
           stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}

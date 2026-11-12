@@ -5,6 +5,7 @@ import { persistQuizLead } from '../lib/lead.js';
 import { scheduleLeadRetry } from '../lib/pendingLead.js';
 import { isTaggedLink, markRewardEarned } from '../lib/reward.js';
 import { trackSmsOptIn, trackSmsScreenViewed } from '../lib/track.js';
+import { burstConfetti } from '../lib/confetti.js';
 
 // Shown after the last question, right before the result.
 // Visitors from our own tagged links get $50 off for texts; everyone else is offered case updates.
@@ -28,6 +29,10 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
   useEffect(() => {
     trackSmsScreenViewed(reward);
   }, [reward]);
+
+  useEffect(() => {
+    if (!inPersonFirst) burstConfetti();
+  }, [inPersonFirst]);
 
   async function submit(event) {
     event.preventDefault();

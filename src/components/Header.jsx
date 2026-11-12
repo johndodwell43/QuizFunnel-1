@@ -10,7 +10,7 @@ const chromeButton = {
   justifyContent: 'center'
 };
 
-export default function Header({ showBack, onBack, stepLabel, gate = false, offer = false, showExit = true }) {
+export default function Header({ showBack, onBack, stepLabel, gate = false, offer = false, showExit = true, plain = false }) {
   const ink = gate || offer ? '#0a1628' : '#111827';
   const muted = offer ? '#0a1628' : gate ? 'rgba(10, 22, 40, 0.62)' : '#454e5c';
   const chip = gate ? '#cfe9ff' : 'rgba(255,255,255,0.7)';
@@ -51,7 +51,7 @@ export default function Header({ showBack, onBack, stepLabel, gate = false, offe
         }}
       >
         <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: 30, width: 'auto', display: 'block' }} />
-        {!gate && (
+        {!gate && !plain && (
           <div style={{ fontSize: 18, color: muted, lineHeight: 1.3 }}>
             Find Your Fit{stepLabel ? ` · ${stepLabel}` : ''}
           </div>
