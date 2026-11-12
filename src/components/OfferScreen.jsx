@@ -117,13 +117,15 @@ const cellValue = (v, strong) => (v === '✓' ? <YesMark strong={strong} /> : v 
 // dentalcosts.hellopearl.com, D5213, range $1,250–$3,280, updated May 2026). Shown as a comparison, not as our old price.
 const DENTAL_OFFICE_FROM = 1250;
 
-// Affirm wordmark: drop the official file from Affirm's brand kit at public/images/pay/affirm-white.svg.
+// Affirm's official wordmark (public/images/pay/affirm.png) on a white tab so it reads on the dark button.
 function AffirmMark() {
   const [failed, setFailed] = useState(false);
   return failed ? (
     <span className="affirm-word">affirm</span>
   ) : (
-    <img className="affirm-logo" src="/images/pay/affirm-white.svg" alt="Affirm" onError={() => setFailed(true)} />
+    <span className="affirm-chip">
+      <img className="affirm-logo" src="/images/pay/affirm.png" alt="Affirm" onError={() => setFailed(true)} />
+    </span>
   );
 }
 
@@ -285,6 +287,7 @@ function InsertClip() {
 function HeroCard({ shots, teeth }) {
   return (
     <figure className={shots.length > 1 ? 'hero-card is-both' : 'hero-card'}>
+      <InsertClip />
       <div className="hero-tag">
         <Slot src="/images/offer/kit-corner.png" className="hero-kit" label="Kit" />
         <span>Kit included</span>
@@ -294,7 +297,6 @@ function HeroCard({ shots, teeth }) {
           <HeroShot key={`${a}-${teeth[a]}`} arch={a} teeth={teeth[a]} />
         ))}
       </div>
-      <InsertClip />
       <span className="hero-chip">Made in a U.S. lab</span>
     </figure>
   );
@@ -506,23 +508,40 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
           {!direct && (
             <div className="your-partial" data-selected={selected}>
-              <span className="yp-badge">Recommended</span>
+              <span className="yp-badge">Recommended for you</span>
               <span className="your-partial-name">
                 {active.name}
-                <span className="yp-spec">{orderSpec}</span>
+                <span className="yp-answers">
+                  {orderArches.map((a) => (
+                    <span key={a} className="yp-row">
+                      <span className="yp-k">{arch === 'both' ? ARCH_WORD[a] + ' arch' : 'Arch'}</span>
+                      <span className="yp-v">{arch === 'both' ? toothWord(teeth[a]) : ARCH_WORD[a]}</span>
+                    </span>
+                  ))}
+                  {arch !== 'both' && (
+                    <span className="yp-row">
+                      <span className="yp-k">Teeth to replace</span>
+                      <span className="yp-v">{toothWord(teeth[arch]).replace(/ (tooth|teeth)$/, '')}</span>
+                    </span>
+                  )}
+                </span>
               </span>
               <span className="yp-price">
                 <span className="yp-ref-label">Traditional options</span>
                 <s className="yp-ref">{money(DENTAL_OFFICE_FROM * (offer.arch === 'both' ? 2 : 1))}+</s>
                 <span className="your-partial-price">{money(active.price)}</span>
+                <span className="yp-flat">Same price for 1 tooth or 6</span>
               </span>
-              <span className="yp-feel">Fills the gap in your smile and helps you chew again.</span>
+              <span className="yp-feel">
+                <strong>Smile, chew and talk with ease again.</strong> Take it out to clean, to sleep, or whenever you like. It pops
+                right back in.
+              </span>
             </div>
           )}
           {!direct && (
             <p className="cr-lead">
-              From <strong data-match-price>{money(offer.flex.price)}</strong>, same price for 1 tooth or 6. Custom-made from your own
-              impressions, with a licensed dentist overseeing your case at every step.
+              <span className="sr-only" data-match-price>{money(offer.flex.price)}</span>
+              Custom-made from your own impressions, with a licensed dentist overseeing your case at every step.
             </p>
           )}
           {direct && (<>
