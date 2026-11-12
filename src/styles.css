@@ -1062,3 +1062,37 @@ button { font-family: inherit; }
   .sms-screen .sms-phone, .sms-screen .sms-submit, .sms-screen .sms-skip { min-height: 62px; }
   .sms-screen .sms-terms { font-size: 12.5px; }
 }
+
+/* ---- What you get with Klyros ---- */
+.why { margin-top: 26px; }
+.why-title { margin: 0 0 12px; font-size: clamp(26px, 6.4vw, 38px); line-height: 1.1; font-weight: 900; letter-spacing: -0.015em; color: #0a1628; text-wrap: balance; }
+.why-title span { color: #2563eb; }
+.why-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.why-card { background: #ffffff; border-radius: 18px; border: 1.5px solid rgba(10, 22, 40, 0.08); overflow: hidden; }
+.why-card header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #1d4ed8; border-bottom: 1px solid rgba(10, 22, 40, 0.07); }
+.why-card h3 { margin: 0; font-size: 17px; font-weight: 800; color: #0a1628; }
+.why-body { display: grid; grid-template-columns: 30px 1fr; column-gap: 10px; row-gap: 2px; align-items: center; padding: 12px 16px 14px; background: #eef5ff; }
+.why-check { grid-row: 1 / span 2; width: 28px; height: 28px; border-radius: 50%; background: #2563eb; color: #ffffff; display: flex; align-items: center; justify-content: center; }
+.why-check svg { width: 15px; height: 15px; }
+.why-get { font-size: 17px; font-weight: 800; color: #0a1628; line-height: 1.25; }
+.why-why { font-size: 14.5px; color: rgba(10, 22, 40, 0.68); line-height: 1.35; }
+.why-cta { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 16px 16px 18px; border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff, #e6f1ff); }
+.why-cta p { margin: 0; font-size: 19px; font-weight: 900; line-height: 1.2; color: #0a1628; }
+.why-cta button { flex: 0 0 auto; min-height: 50px; padding: 0 20px; border: none; border-radius: 12px; background: #16a34a; color: #ffffff;
+  font: inherit; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; }
+@media (min-width: 768px) { .why-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .why-grid { grid-template-columns: repeat(3, 1fr); } .why-title { font-size: 40px; } .why-cta { padding: 20px 24px; } .why-cta p { font-size: 24px; } }
+.cr-below { margin-top: 4px; }
+@media (min-width: 1024px) {
+  .cr-below { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; align-items: start; }
+  .cr-below > .cr-promise { grid-column: 1; margin-top: 26px; }
+  .cr-below > .band { grid-column: 2; grid-row: 1 / span 1; margin-top: 26px; }
+  .cr-below > .why, .cr-below > .cr-steps, .cr-below > .cr-faq { grid-column: 1 / -1; }
+  .cr-below .cr-steps ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .cr-below .cr-faq { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+.why-card { display: flex; flex-direction: column; } .why-card .why-body { flex: 1; }
+.cr-sub { margin: -2px 0 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.2; font-weight: 800; color: #0a1628; }
+.cr-pill { display: inline-block; padding: 0.02em 0.38em 0.08em; border-radius: 999px; background: #2563eb; color: #ffffff; white-space: nowrap; }
+.cr-title { font-size: clamp(28px, 7.2vw, 44px); }
