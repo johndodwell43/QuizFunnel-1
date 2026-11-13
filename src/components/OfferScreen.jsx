@@ -960,14 +960,21 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       {!direct && (
         <div className="cr-below">
               <figure className="ba" aria-label="Before and after a Flex Partial">
-                <div className="ba-side">
-                  <span className="ba-label">Before Flex Partial</span>
-                  <img src="/images/offer/ba-before.webp" alt="Lower teeth before a Flex Partial, with a gap on one side" width="954" height="816" loading="lazy" />
+                <h2 className="ba-title"><span className="ba-pill">Back to chewing on both sides.</span></h2>
+                <div className="ba-pair">
+                  <div className="ba-side">
+                    <img src="/images/offer/ba-before.webp" alt="Lower teeth before a Flex Partial, with a gap on one side" width="820" height="680" loading="lazy" />
+                    <span className="ba-tag">Before</span>
+                  </div>
+                  <div className="ba-side">
+                    <img src="/images/offer/ba-after.webp" alt="The same lower teeth with a Flex Partial filling the gap" width="820" height="680" loading="lazy" />
+                    <span className="ba-tag ba-tag--after">After</span>
+                  </div>
                 </div>
-                <div className="ba-side">
-                  <span className="ba-label ba-label--after">After Flex Partial</span>
-                  <img src="/images/offer/ba-after.webp" alt="The same lower teeth with a Flex Partial filling the gap" width="954" height="816" loading="lazy" />
-                </div>
+                <figcaption className="ba-proof">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5C8 19.2 5 15.4 5 11V6z" /><path d="M9 12l2 2 4-4" /></svg>
+                  Real Klyros patient
+                </figcaption>
               </figure>
 
               <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
