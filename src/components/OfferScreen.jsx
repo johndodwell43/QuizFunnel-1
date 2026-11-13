@@ -422,7 +422,7 @@ function FitAssurance() {
           <path d="M32 9 11 17v18c0 14 9 23 21 28 12-5 21-14 21-28V17L32 9z" fill="#2563eb" />
           <path d="M20 37l8 8 16-17" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span className="fitassure-ribbon">Fit Assurance</span>
+        <span className="fitassure-ribbon">Klyros Fit Assurance</span>
       </div>
       <p className="fitassure-kicker">You're probably wondering&hellip;</p>
       <h2 className="fitassure-title">What if it doesn't fit?</h2>
@@ -1069,6 +1069,13 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
       {!direct && (
         <>
+          <div className="cr-promise cr-promise--end">
+            <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
+            <p>{DENTIST_LINE}</p>
+            <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+              Read our refund policy
+            </a>
+          </div>
           <FitAssurance />
           <a className="final-cta" href={active.url} onClick={buy} data-checkout-end>
             <span className="final-cta-text">
@@ -1078,13 +1085,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </span>
             <span className="final-cta-btn">Send my kit</span>
           </a>
-          <div className="cr-promise cr-promise--end">
-            <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
-            <p>{DENTIST_LINE}</p>
-            <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
-              Read our refund policy
-            </a>
-          </div>
         </>
       )}
 
