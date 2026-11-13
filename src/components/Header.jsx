@@ -50,7 +50,9 @@ export default function Header({ showBack, onBack, stepLabel, gate = false, offe
           minWidth: 0
         }}
       >
-        <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: 30, width: 'auto', display: 'block' }} />
+        <a href={LINKS.home} aria-label="Klyros home" style={{ display: 'block', lineHeight: 0 }}>
+          <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: 30, width: 'auto', display: 'block' }} />
+        </a>
         {!gate && !plain && (
           <div style={{ fontSize: 18, color: muted, lineHeight: 1.3 }}>
             Find Your Fit{stepLabel ? ` · ${stepLabel}` : ''}
