@@ -1598,3 +1598,4 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .why-cta-text strong { font-size: 19px; }
   .why-cta-btn { justify-content: center; min-height: 54px; border-radius: 999px; }
 }
+.offer-screen .pro-drop .both-pick.pro-choose { background: #2563eb; border-color: #2563eb; color: #ffffff; }
