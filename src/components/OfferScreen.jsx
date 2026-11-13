@@ -384,7 +384,7 @@ function WhyKlyros({ href, onBuy, name, price }) {
       <a className="why-cta" href={href} onClick={onBuy} data-checkout-mid>
         <span className="why-cta-text">
           <strong>The sooner your impressions are in, the sooner the lab can start on your partial.</strong>
-          <span>{name} · {price}</span>
+          <span className="cta-price"><b>{name}</b> · {price}. Everything above is included.</span>
         </span>
         <span className="why-cta-btn">Start my case</span>
       </a>
@@ -1000,7 +1000,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                   </figure>
                   <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
                     <span className="tl-cta-btn">Start with step 1</span>
-                    <span className="tl-cta-sub">{active.name} · {money(total)}</span>
+                    <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)}. Everything above is included.</span>
                   </a>
                 </div>
               </section>

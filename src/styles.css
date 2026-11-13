@@ -1655,3 +1655,8 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .ba-title { margin: 2px 0 14px; font-size: 25px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 900; color: #0a1628; text-wrap: balance; }
 .ba-pill { display: inline; padding: 0; border-radius: 0; background: none; color: inherit; }
 @media (min-width: 1024px) { .ba-title { font-size: 38px; margin-bottom: 20px; } .ba-pill { padding: 0; } }
+/* Price line under the green buttons: product name bold, rest lighter */
+.cta-price b { font-weight: 800; }
+.tl-cta-sub.cta-price b { color: #0a1628; }
+.why-cta .cta-price b { color: #ffffff; }
+.tl-cta-sub.cta-price { text-align: center; }
