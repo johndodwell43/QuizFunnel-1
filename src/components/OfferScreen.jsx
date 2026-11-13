@@ -982,12 +982,16 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 <div className="tl-kitrow">
                   <figure className="tl-kit">
                     <img src="/images/offer/kit.webp" alt="The Klyros impression kit: pouch, guide card, app steps, impression trays and a phone photo of an impression" width="1400" height="749" loading="lazy" />
-                    <figcaption>Step 1: Take your impressions with our step-by-step guide. Unlimited tries, at no extra cost.</figcaption>
                   </figure>
+                  <div className="tl-cta-col">
+                  <p className="tl-step1">
+                    <span className="tl-step1-pill">Step 1</span> Take your impressions with our step-by-step guide. Unlimited impression attempts, at no extra cost.
+                  </p>
                   <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
                     <span className="tl-cta-btn">Start with step 1</span>
                     <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)} · 2-day shipping on us, every step of the way.</span>
                   </a>
+                  </div>
                 </div>
               </section>
 
