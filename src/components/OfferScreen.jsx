@@ -960,7 +960,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       {!direct && (
         <div className="cr-below">
               <figure className="ba" aria-label="Before and after a Flex Partial">
-                <h2 className="ba-title"><span className="ba-pill">Back to chewing on both sides.</span></h2>
+                <h2 className="ba-title"><span className="ba-pill">No more avoiding your favorite foods.</span></h2>
                 <div className="ba-pair">
                   <div className="ba-side">
                     <img src="/images/offer/ba-before.webp" alt="Lower teeth before a Flex Partial, with a gap on one side" width="820" height="680" loading="lazy" />
@@ -996,7 +996,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 <div className="tl-kitrow">
                   <figure className="tl-kit">
                     <img src="/images/offer/kit.webp" alt="The Klyros impression kit: pouch, guide card, app steps, impression trays and a phone photo of an impression" width="1400" height="749" loading="lazy" />
-                    <figcaption>Step 1: your impression kit, at your door.</figcaption>
+                    <figcaption>Step 1: your impression kit. 2-day shipping, on us.</figcaption>
                   </figure>
                   <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
                     <span className="tl-cta-btn">Start with step 1</span>
