@@ -331,7 +331,6 @@ function HeroCard({ shots, teeth }) {
               preload="metadata"
               aria-label="A Flex Partial being put in"
             />
-            <span className="hv-cap">Pops right in</span>
           </figure>
         </div>
       </div>
