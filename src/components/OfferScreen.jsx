@@ -360,7 +360,7 @@ function WhyKlyros({ href, onBuy, name, price }) {
   return (
     <section className="why" aria-label="What you get with Klyros">
       <h2 className="why-title">
-        Everything your <span>new smile</span> comes with.
+        Everything that's included with your <span>new smile</span>.
       </h2>
       <div className="why-grid">
         {WHY_ROWS.map(([icon, title, get, why]) => (
@@ -381,8 +381,8 @@ function WhyKlyros({ href, onBuy, name, price }) {
       </div>
       <a className="why-cta" href={href} onClick={onBuy} data-checkout-mid>
         <span className="why-cta-text">
-          <strong>All of it comes with your {name}.</strong>
-          <span>{price}, everything above included.</span>
+          <strong>The sooner your impressions are in, the sooner the lab can start on your partial.</strong>
+          <span>{name} · {price}</span>
         </span>
         <span className="why-cta-btn">Start my case</span>
       </a>
@@ -391,6 +391,20 @@ function WhyKlyros({ href, onBuy, name, price }) {
 }
 
 // Fit Assurance block near the bottom: answers "what if it doesn't fit?" before the footer.
+// Shows which partial is in the cart: filled "Selected" or an empty "Select".
+function SelFlag({ on }) {
+  return (
+    <span className={on ? 'sel-flag is-on' : 'sel-flag'} aria-hidden="true">
+      <span className="sel-dot">
+        {on && (
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+        )}
+      </span>
+      {on ? 'Selected' : 'Select'}
+    </span>
+  );
+}
+
 function FitAssurance() {
   return (
     <section className="fitassure" aria-label="Klyros Fit Assurance">
@@ -565,7 +579,10 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 }
               }}
             >
-              <span className="yp-badge">Recommended for you</span>
+              <span className="yp-flagrow">
+                <span className="yp-badge">Recommended for you</span>
+                <SelFlag on={selected === 'flex'} />
+              </span>
               <span className="your-partial-name">
                 {offer.flex.name}
                 <span className="yp-answers">
@@ -597,20 +614,40 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           )}
           {!direct && (
             <>
-              <div className={'pro-drop' + (proOpen ? ' is-open' : '') + (selected === 'precision' ? ' is-sel' : '')}>
-                <button type="button" className="pro-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
+              <div
+                className={'pro-drop' + (proOpen ? ' is-open' : '') + (selected === 'precision' ? ' is-sel' : '')}
+                onClick={(e) => {
+                  if (e.target.closest('.pro-cta, .both-body')) return;
+                  setSelected('precision');
+                }}
+              >
+                <div
+                  className="pro-toggle"
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selected === 'precision'}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelected('precision');
+                    }
+                  }}
+                >
+                  <SelFlag on={selected === 'precision'} />
                   <span className="pro-headrow">
                     <span className="pro-name">Precision Partial Pro</span>
                     <span className="pro-price">{money(offer.precision.price)}</span>
                   </span>
                   <span className="pro-why">The same partial, built to last even longer.</span>
-                  <span className="pro-cta">
+                </div>
+                <div className="pro-cta-wrap">
+                  <button type="button" className="pro-cta" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
                     {proOpen ? 'Hide the difference' : "What's the difference?"}
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M6 9l6 6 6-6" />
                     </svg>
-                  </span>
-                </button>
+                  </button>
+                </div>
                 {proOpen && (
                   <div className="both-body">
 <div className="cmp3" role="table" aria-label="Precision Pro vs. Flex Partial">
@@ -671,9 +708,13 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                       onClick={() => {
                         setSelected('flex');
                         setProOpen(false);
+                        // Back up to the Flex card so they see it selected with the Add to cart total under it.
                         requestAnimationFrame(() => {
-                          const el = checkoutRef.current;
-                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          const el = document.querySelector('.offer-screen .your-partial');
+                          if (!el) return;
+                          const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                          const top = el.getBoundingClientRect().top + window.scrollY - 14;
+                          window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
                         });
                       }}
                     >
@@ -940,6 +981,10 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                     </li>
                   ))}
                 </ol>
+                <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
+                  <span className="tl-cta-btn">Start with step 1</span>
+                  <span className="tl-cta-sub">{active.name} · {money(total)}</span>
+                </a>
               </section>
 
               <div className="cr-promise">

@@ -1551,3 +1551,50 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .help-title { font-size: 30px; }
   .help-tiles { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Precision card: tapping the card selects it; the difference button only opens the chart */
+.offer-screen .pro-drop { cursor: pointer; }
+.offer-screen .pro-drop.is-open { cursor: default; }
+.offer-screen .pro-toggle { padding-bottom: 4px; outline: none; }
+.offer-screen .pro-toggle:focus-visible { box-shadow: inset 0 0 0 3px rgba(37, 99, 235, .35); border-radius: 18px; }
+.offer-screen .pro-cta-wrap { position: relative; z-index: 1; padding: 10px 16px 16px; }
+.offer-screen .pro-drop .pro-cta, .offer-screen .pro-drop.is-sel .pro-cta, .offer-screen .pro-drop.is-open .pro-cta {
+  width: 100%; margin: 0; min-height: 60px; border: none; border-radius: 999px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: #2563eb; color: #ffffff; font: inherit; font-size: 18px; font-weight: 800; box-shadow: 0 6px 16px rgba(37, 99, 235, .28); }
+.offer-screen .pro-drop .pro-cta:active { transform: scale(.985); }
+.offer-screen .pro-drop .pro-cta:focus-visible { outline: 3px solid #0a1628; outline-offset: 2px; }
+
+/* Selected / Tap to select flag on both cards */
+.yp-flagrow { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: -4px 0 2px; }
+.offer-screen .yp-flagrow .yp-badge { margin: 0; }
+.sel-flag { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 4px 10px 4px 5px; border-radius: 999px;
+  font-size: 12.5px; font-weight: 800; letter-spacing: .01em; color: #51607a; background: rgba(255, 255, 255, .9); box-shadow: inset 0 0 0 1.5px #c9d5e6; white-space: nowrap; }
+.sel-dot { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 2px #b7c5d9; background: #ffffff; }
+.sel-flag.is-on { color: #ffffff; background: #2563eb; box-shadow: none; }
+.sel-flag.is-on .sel-dot { background: #ffffff; color: #2563eb; box-shadow: none; }
+.offer-screen .pro-toggle .sel-flag { margin-bottom: 2px; }
+
+/* Line above Add to cart: centered, darker, bolder */
+.offer-screen .cr-lead { text-align: center; color: #0a1628; font-weight: 800; }
+.offer-screen .pro-drop .pro-toggle { box-sizing: border-box; width: 100%; padding: 18px 18px 4px; }
+.offer-screen .pro-toggle .sel-dot svg, .sel-dot svg { margin: 0; color: #2563eb; transform: none; }
+.offer-screen .yp-flagrow .yp-badge { white-space: nowrap; }
+.offer-screen .pro-drop .pro-headrow { width: 100%; }
+
+/* Timeline CTA: continues the numbered steps */
+.tl-cta { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 18px 0 4px; text-decoration: none; }
+.tl-cta-btn { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; min-height: 56px; padding: 0 20px; border-radius: 999px;
+  background: #16a34a; color: #ffffff; font-size: 17px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.25); }
+.tl-cta:hover .tl-cta-btn { background: #15803d; }
+.tl-cta:focus-visible { outline: none; }
+.tl-cta:focus-visible .tl-cta-btn { outline: 3px solid #0a1628; outline-offset: 2px; }
+.tl-cta-sub { font-size: 14px; font-weight: 700; color: rgba(10, 22, 40, 0.62); }
+@media (min-width: 1024px) { .tl-cta { align-items: flex-start; } .tl-cta-btn { width: auto; min-width: 340px; } .tl-cta-sub { padding-left: 4px; } }
+
+/* Mid CTA: longer line, so stack text over a full-width button on phones */
+@media (max-width: 1023px) {
+  .why-cta { flex-direction: column; align-items: stretch; gap: 12px; padding: 18px; }
+  .why-cta-text strong { font-size: 19px; }
+  .why-cta-btn { justify-content: center; min-height: 54px; border-radius: 999px; }
+}
