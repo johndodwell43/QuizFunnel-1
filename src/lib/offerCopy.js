@@ -45,10 +45,11 @@ export const NEXT_STEPS = [
 ];
 
 // Quiz result page: what happens after they pay, in order.
+// Quiz result page: what happens after they pay. [title, what you do, what we do, photo]
 export const ORDER_STEPS = [
-  ['Your kit ships', 'Take your impressions with the step-by-step guide, then send them back.'],
-  ['A dentist reviews your case', DENTIST_REVIEW],
-  ['A U.S. lab makes your partial', 'It is made from your own impressions and shipped to you.']
+  ['Your kit arrives', 'Take your impressions with the step-by-step guide, then send them back with the prepaid label. Retake as many times as you need.', '/images/offer/step-kit.jpg'],
+  ['A dentist reviews your case', 'A licensed dentist checks your impressions and photos. Nothing is made until they say yes.', '/images/offer/step-review.jpg'],
+  ['Your partial arrives', 'A U.S. lab makes it from your impressions and ships it 2-day to your door. Pop it in and smile.', '/images/offer/step-smile.jpg']
 ];
 
 // Quiz result page questions, written the way buyers ask them.
