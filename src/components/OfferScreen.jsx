@@ -96,11 +96,11 @@ const CheckIcon = () => (
 // Flex vs. Precision Pro, from the product facts. Price row is added from Shopify pricing.
 // What's different first (strongest first), then what both include.
 const COMPARE_ROWS = [
-  ['Longer lasting', '✓', '—'],
-  ['Warranty', '1 year', '—'],
-  ['Handmade', 'Start to finish', 'Finished by hand'],
   ['Material', 'DuraFlex', 'Valplast'],
-  ['Build process', 'More thorough', 'Standard']
+  ['Handmade', 'Start to finish', 'Finished by hand'],
+  ['Build process', 'More thorough', 'Standard'],
+  ['Longer lifespan', '✓', '—'],
+  ['Warranty', '1 year', '—']
 ];
 const SHARED_ROWS = ['Impression kit', 'Dentist review', 'U.S. dental lab', '2-day shipping', 'Klyros Fit Assurance'];
 
@@ -116,6 +116,15 @@ const cellValue = (v, strong) => (v === '✓' ? <YesMark strong={strong} /> : v 
 
 // Low end of the typical U.S. dental office fee range for a partial denture (ADA fee survey data via
 // dentalcosts.hellopearl.com, D5213, range $1,250–$3,280, updated May 2026). Shown as a comparison, not as our old price.
+const HELP_LINKS = [
+  ['How it works', LINKS.howItWorks],
+  ['FAQ', LINKS.faq],
+  ['About us', LINKS.about],
+  ['Refund policy', LINKS.refund],
+  ['Privacy policy', LINKS.privacy],
+  ['Terms of service', LINKS.terms],
+  ['Teledentistry consent', LINKS.consent]
+];
 const DENTAL_OFFICE_FROM = 1250;
 
 // Affirm's official wordmark (public/images/pay/affirm.png) on a white tab so it reads on the dark button.
@@ -372,8 +381,8 @@ function WhyKlyros({ href, onBuy, name, price }) {
       </div>
       <a className="why-cta" href={href} onClick={onBuy} data-checkout-mid>
         <span className="why-cta-text">
-          <strong>Your new smile starts here.</strong>
-          <span>{name} · {price}</span>
+          <strong>All of it comes with your {name}.</strong>
+          <span>{price}, everything above included.</span>
         </span>
         <span className="why-cta-btn">Start my case</span>
       </a>
@@ -542,10 +551,23 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           {direct && arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
 
           {!direct && (
-            <div className="your-partial" data-selected={selected}>
+            <div
+              className={selected === 'flex' ? 'your-partial is-sel' : 'your-partial'}
+              data-selected={selected}
+              role="button"
+              tabIndex={0}
+              aria-pressed={selected === 'flex'}
+              onClick={() => setSelected('flex')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelected('flex');
+                }
+              }}
+            >
               <span className="yp-badge">Recommended for you</span>
               <span className="your-partial-name">
-                {active.name}
+                {offer.flex.name}
                 <span className="yp-answers">
                   {orderArches.map((a) => (
                     <span key={a} className="yp-row">
@@ -564,7 +586,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               <span className="yp-price">
                 <span className="yp-ref-label">Traditional options</span>
                 <s className="yp-ref">{money(DENTAL_OFFICE_FROM * (offer.arch === 'both' ? 2 : 1))}+</s>
-                <span className="your-partial-price">{money(active.price)}</span>
+                <span className="your-partial-price">{money(offer.flex.price)}</span>
                 <span className="yp-flat">Same price for 1 tooth or 6</span>
               </span>
               <span className="yp-feel">
@@ -575,13 +597,15 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           )}
           {!direct && (
             <>
-              <div className={proOpen ? 'pro-drop is-open' : 'pro-drop'}>
+              <div className={'pro-drop' + (proOpen ? ' is-open' : '') + (selected === 'precision' ? ' is-sel' : '')}>
                 <button type="button" className="pro-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
-                  <span className="pro-pill">Upgrade · Precision Partial Pro</span>
-                  <span className="pro-title">The same partial, built to last even longer.</span>
-                  <span className="pro-why">Handmade start to finish with DuraFlex and a 1-year warranty. +{money(offer.precision.price - offer.flex.price)}</span>
+                  <span className="pro-headrow">
+                    <span className="pro-name">Precision Partial Pro</span>
+                    <span className="pro-price">{money(offer.precision.price)}</span>
+                  </span>
+                  <span className="pro-why">The same partial, built to last even longer.</span>
                   <span className="pro-cta">
-                    {proOpen ? 'Hide the comparison' : 'See what else is included'}
+                    {proOpen ? 'Hide the difference' : "What's the difference?"}
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M6 9l6 6 6-6" />
                     </svg>
@@ -612,10 +636,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                           <div key={label} className="cmp3-cell" role="cell"><YesMark strong /></div>
                         ))}
                         <div className="cmp3-cell cmp3-price" role="cell">
-                          <span>
-                            {money(offer.precision.price)}
-                            <small>+{money(offer.precision.price - offer.flex.price)}</small>
-                          </span>
+                          {money(offer.precision.price)}
                         </div>
                       </div>
                       <div className="cmp3-col cmp3-flex" role="rowgroup">
@@ -630,12 +651,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                         <div className="cmp3-cell cmp3-price" role="cell">{money(offer.flex.price)}</div>
                       </div>
                     </div>
-                    <p className="cmp-note">
-                      What is Klyros Fit Assurance?{' '}
-                      <a href={LINKS.refund} target="_blank" rel="noopener">
-                        Click here to learn more
-                      </a>
-                    </p>
                     <button
                       type="button"
                       className={selected === 'precision' ? 'both-pick is-on' : 'both-pick'}
@@ -993,18 +1008,44 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           <FitAssurance />
           <a className="final-cta" href={active.url} onClick={buy} data-checkout-end>
             <span className="final-cta-text">
-              <strong>Ready when you are.</strong>
+              <strong>Your fit is covered.</strong>
+              <em>Next, we send your impression kit.</em>
               <span>{active.name} · {money(total)}</span>
             </span>
-            <span className="final-cta-btn">Add to cart</span>
+            <span className="final-cta-btn">Send my kit</span>
           </a>
         </>
       )}
 
-      <p className="offer-contact">
-        Questions?{' '}
-        <a href={`mailto:${LINKS.email}`} className="offer-mail">{LINKS.email}</a>
-      </p>
+      <section className="help" aria-label="Contact Klyros">
+        <h2 className="help-title">Still have a question?</h2>
+        <p className="help-sub">Ask a real person on our team. We're happy to help before you order.</p>
+        <div className="help-tiles">
+          <a className="help-tile" href={LINKS.sms}>
+            <span className="help-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z" /></svg>
+            </span>
+            <span className="help-text"><strong>Text us</strong><span>{LINKS.phone}</span></span>
+          </a>
+          <a className="help-tile" href={`mailto:${LINKS.email}`}>
+            <span className="help-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
+            </span>
+            <span className="help-text"><strong>Email us</strong><span>{LINKS.email}</span></span>
+          </a>
+          <a className="help-tile" href={LINKS.contact} target="_blank" rel="noopener">
+            <span className="help-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16v12H8l-4 4z" /><path d="M8 9h8M8 12h5" /></svg>
+            </span>
+            <span className="help-text"><strong>Send a message</strong><span>Use our contact form</span></span>
+          </a>
+        </div>
+        <nav className="help-links" aria-label="Helpful links">
+          {HELP_LINKS.map(([label, href]) => (
+            <a key={label} href={href} target="_blank" rel="noopener">{label}</a>
+          ))}
+        </nav>
+      </section>
     </main>
   );
 }

@@ -21,9 +21,16 @@ export const CHECKOUT = {
 export const LINKS = {
   home: 'https://www.klyrosdental.com',
   refund: 'https://www.klyrosdental.com/refund-policy',
-  terms: 'https://www.klyrosdental.com/policies/terms-of-service',
+  terms: 'https://www.klyrosdental.com/terms-of-service',
   privacy: 'https://www.klyrosdental.com/privacy-policy',
-  email: 'help@klyrosdental.com'
+  consent: 'https://www.klyrosdental.com/teledentistry-consent',
+  howItWorks: 'https://www.klyrosdental.com/how-it-works',
+  faq: 'https://www.klyrosdental.com/faq',
+  about: 'https://www.klyrosdental.com/about',
+  contact: 'https://www.klyrosdental.com/contact',
+  email: 'help@klyrosdental.com',
+  phone: '(818) 418-1944',
+  sms: 'sms:+18184181944'
 };
 
 export const money = (n) => '$' + Math.round(n).toLocaleString('en-US');

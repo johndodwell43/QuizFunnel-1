@@ -190,15 +190,15 @@ function Quiz() {
         style={{ width: '100%' }}
       >
         <Header
-          showBack={!onGate}
+          showBack={!onGate && !isOffer}
           onBack={goBack}
           gate={onGate}
           plain={isSms || isOffer}
           offer={isOffer}
-          showExit={!isQuiz && !isSms}
+          showExit={!isQuiz && !isSms && !isOffer}
           stepLabel={onGate ? undefined : `Step ${stepNum} of ${TOTAL_STEPS}`}
         />
-        <ProgressBar progress={progress} gate={onGate} />
+        {!isOffer && <ProgressBar progress={progress} gate={onGate} />}
 
         {onGate && (
           <EmailGate
