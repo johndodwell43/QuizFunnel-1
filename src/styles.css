@@ -1775,3 +1775,59 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .hv-side .hv-tile:last-child { border-radius: 0 0 0 22px; }
   .hv-body { margin-bottom: -44px; }
 }
+/* Headline sits right on the blue card */
+.offer-screen .cr-head { margin-bottom: 6px; }
+/* Range row: 4 partials along the bottom of the blue card, kept apart from the main partial */
+.hv-body { margin-bottom: 0; }
+.hv-side .hv-tile:last-child { aspect-ratio: 1 / 1; border-radius: 0 0 0 16px; }
+.offer-screen .hero-card.hv { padding-bottom: 12px; }
+.hv-range { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: center; padding: 2px 4px 0; }
+.hv-range img { display: block; width: 100%; height: auto; filter: drop-shadow(0 6px 10px rgba(10, 22, 40, 0.3)); }
+@media (min-width: 1024px) {
+  .hv-side .hv-tile:last-child { border-radius: 0 0 0 22px; }
+  .offer-screen .hero-card.hv { padding-bottom: 18px; }
+  .hv-range { gap: 20px; padding: 6px 30px 0; }
+}
+.offer-screen .cr-head { margin-bottom: 0; }
+.offer-screen .hero-card.hv { padding-bottom: 34px; }
+@media (min-width: 1024px) { .offer-screen .hero-card.hv { padding-bottom: 22px; } }
+/* Tighter kit bar, taller video, partial row tucked right above the Flex card */
+.hv-kit { padding: 4px 10px 4px 4px; gap: 8px; }
+.hv-kit img { flex-basis: 64%; width: 64%; border-radius: 12px; }
+.hv-kit span { font-size: 25px; }
+.offer-screen .hero-card.hv { gap: 8px; padding-bottom: 28px; }
+.hv-side .hv-tile:last-child { aspect-ratio: 4 / 5; }
+.hv-range { padding-top: 0; }
+@media (min-width: 1024px) { .hv-kit span { font-size: 40px; } .offer-screen .hero-card.hv { padding-bottom: 16px; gap: 12px; } }
+/* Mobile: row right above the Flex card, video taller toward the row */
+.offer-screen .hero-card.hv { padding-bottom: 22px; gap: 6px; }
+.hv-side .hv-tile:last-child { aspect-ratio: 2 / 3; }
+.hv-range { margin-top: 2px; }
+@media (min-width: 1024px) { .hv-side .hv-tile:last-child { aspect-ratio: 4 / 5; } .offer-screen .hero-card.hv { padding-bottom: 16px; gap: 12px; } }
+/* Trust badges top-left of the blue, partial a bit lower */
+.hv-left { display: flex; flex-direction: column; align-self: stretch; padding: 4px 0 6px 2px; }
+.hv-badges { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.hv-badge { padding: 6px 11px; border-radius: 10px; background: #ffffff; color: #0a1628; font-size: 13px; font-weight: 800; white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(10, 22, 40, 0.18); }
+.hv-left .hv-partial { margin: auto 0; padding-top: 18px; }
+@media (min-width: 1024px) { .hv-badge { font-size: 17px; padding: 8px 16px; border-radius: 12px; } .hv-badges { gap: 10px; } .hv-left { padding: 8px 0 10px 8px; } }
+/* Partial centered, trust badges right under it (leading into the Flex card) */
+.hv-left { justify-content: center; gap: 12px; padding: 6px 0 4px 2px; }
+.hv-left .hv-partial { margin: 0; padding-top: 0; }
+.hv-badges { gap: 6px; }
+.hv-badge { display: inline-flex; align-items: flex-start; gap: 6px; padding: 6px 10px; font-size: 12.5px; line-height: 1.25; white-space: normal; border-radius: 10px; }
+.hv-badge i { flex: 0 0 auto; display: grid; place-items: center; width: 15px; height: 15px; margin-top: 1px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 9px; font-style: normal; font-weight: 900; }
+@media (min-width: 1024px) { .hv-badge { font-size: 17px; padding: 8px 14px; } .hv-badge i { width: 20px; height: 20px; font-size: 12px; } .hv-left { gap: 22px; } }
+/* Subtle badges: one above, one below the partial, left-aligned */
+.hv-left { align-items: flex-start; justify-content: center; gap: 10px; padding: 4px 0 4px 2px; }
+.hv-left .hv-partial { width: 100%; }
+.hv-badge { display: inline-block; padding: 5px 10px; border-radius: 9px; background: #ffffff; color: #0a1628; font-size: 11.5px; font-weight: 800;
+  line-height: 1.2; white-space: nowrap; box-shadow: 0 3px 10px rgba(10, 22, 40, 0.16); }
+@media (min-width: 1024px) { .hv-badge { font-size: 17px; padding: 8px 15px; border-radius: 12px; } .hv-left { gap: 18px; padding-left: 8px; } }
+.hv-body { grid-template-columns: minmax(0, 1fr) 39%; }
+.hv-left { min-width: 0; }
+.hv-badge { font-size: 11px; max-width: 100%; white-space: normal; }
+@media (min-width: 1024px) { .hv-body { grid-template-columns: minmax(0, 1fr) 34%; } .hv-badge { font-size: 17px; white-space: nowrap; } }
+.hv-badge { text-wrap: balance; }
+.hv-badge { white-space: nowrap; text-align: left; }
+@media (min-width: 1024px) { .hv-br { display: none; } }

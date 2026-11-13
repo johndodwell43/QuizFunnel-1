@@ -309,11 +309,15 @@ function HeroCard({ shots, teeth }) {
   return (
     <figure className="hero-card hv">
       <div className="hv-kit">
-        <img src="/images/offer/kit-banner.webp" alt="The Klyros impression kit" width="720" height="251" />
+        <img src="/images/offer/kit-banner.webp" alt="The Klyros impression kit" width="720" height="218" />
         <span>Kit included</span>
       </div>
       <div className="hv-body">
-        <img className="hv-partial" src="/images/partials/flex-partial.webp" alt="Flex Partial" width="1158" height="711" />
+        <div className="hv-left">
+          <span className="hv-badge">Licensed Dentist Oversight</span>
+          <img className="hv-partial" src="/images/partials/flex-partial.webp" alt="Flex Partial" width="1158" height="711" />
+          <span className="hv-badge">Made by a U.S.<br className="hv-br" /> Dental Lab Technician</span>
+        </div>
         <div className="hv-side">
           <figure className="hv-tile hv-ba">
             <img src="/images/offer/hero-ba.webp" alt="A real patient's smile before and after a partial" width="520" height="528" />
@@ -333,6 +337,11 @@ function HeroCard({ shots, teeth }) {
             />
           </figure>
         </div>
+      </div>
+      <div className="hv-range" aria-label="Partials for different gaps">
+        {['p1', 'p2', 'p4', 'pmany'].map((k) => (
+          <img key={k} src={`/images/partials/range-${k}.webp`} alt="" loading="lazy" />
+        ))}
       </div>
     </figure>
   );
