@@ -1699,3 +1699,11 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .fitassure-ribbon { white-space: nowrap; }
 .cr-promise--end { margin: 18px 0 14px; }
 @media (min-width: 1024px) { .fitassure-kicker { font-size: 22px; } }
+/* Hero: two trust badges stacked bottom-right */
+.offer-screen .hero-chips { position: absolute; right: 14px; bottom: 42px; z-index: 3; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.offer-screen .hero-chips .hero-chip { position: static; white-space: nowrap; }
+@media (max-width: 400px) { .offer-screen .hero-chips .hero-chip { font-size: 14px; padding: 7px 12px; } }
+/* FAQ moved below the steps */
+.cr-faq--below { grid-column: 1 / -1; margin-top: 30px; }
+.faq-title { margin: 0 0 12px; font-size: 26px; font-weight: 900; letter-spacing: -0.01em; color: #0a1628; }
+@media (min-width: 1024px) { .cr-faq--below { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .cr-faq--below .faq-title { grid-column: 1 / -1; font-size: 34px; } }
