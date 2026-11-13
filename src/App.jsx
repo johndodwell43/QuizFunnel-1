@@ -13,8 +13,9 @@ import { trackQuizStarted, trackStep } from './lib/track.js';
 
 const SELECT_DELAY_MS = 170;
 
-// quiz.klyrosdental.com/shop: straight to the product page, for website visitors who skip the quiz.
-const DIRECT = typeof window !== 'undefined' && /^\/shop\/?$/.test(window.location.pathname);
+// quiz.klyrosdental.com/new: the results lander without the quiz, for website visitors who already
+// know what they want ("Shop" / "Buy now"). /shop redirects here (vercel.json).
+const DIRECT = typeof window !== 'undefined' && /^\/new\/?$/.test(window.location.pathname);
 
 export default function App() {
   if (DIRECT) return <DirectShop />;

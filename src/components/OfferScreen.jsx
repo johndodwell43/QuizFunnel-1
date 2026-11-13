@@ -23,6 +23,7 @@ import {
   toothAttributes
 } from '../lib/offerMatch.js';
 import { setupScrollTracking, trackOfferPageViewed, trackSendKitClicked } from '../lib/track.js';
+import { loadSavedCase, saveCase } from '../lib/savedCase.js';
 
 const REVIEW_LINE =
   "A partner dentist licensed in your state reviews your photos and decides whether it's a fit. Placing your order starts that review.";
@@ -164,7 +165,7 @@ function PartialPhoto({ arch, teeth }) {
   );
 }
 
-// Amazon-style gallery for the /shop page: big photo, thumbnails underneath.
+// Amazon-style gallery for the /new page: big photo, thumbnails underneath.
 // First slide(s) are the partial for the chosen arch + tooth count, then the product shots.
 function Thumb({ slide, teeth }) {
   const [failed, setFailed] = useState(false);
@@ -484,10 +485,16 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const initial = offerForAnswers(answers);
   const arches = direct ? DIRECT_ARCHES : archOptions(answers.arch);
   // Separate counts so 'Both' can be e.g. 2 on top and 3 on the bottom.
-  // /shop starts with nothing picked (no quiz answers); the quiz result starts from the answers.
-  const [teeth, setTeeth] = useState(direct ? { upper: null, lower: null } : { upper: answers.teeth || '1', lower: answers.teeth || '1' });
+  // /new starts from the visitor's own saved answers (same device, 30 days) or with nothing picked.
+  // The quiz result starts from the answers.
+  const [saved] = useState(() => (direct ? loadSavedCase() : null));
+  const [teeth, setTeeth] = useState(
+    direct ? (saved ? saved.teeth : { upper: null, lower: null }) : { upper: answers.teeth || '1', lower: answers.teeth || '1' }
+  );
   // Quiz takers who said "both" start on one arch; the second arch comes back at the both-arch total.
-  const [arch, setArch] = useState(direct ? null : initial.arch === 'both' ? 'upper' : initial.arch);
+  const [arch, setArch] = useState(direct ? (saved ? saved.arch : null) : initial.arch === 'both' ? 'upper' : initial.arch);
+  // /new: arch + teeth pickers show in the Flex card until the visitor has a complete pick.
+  const [editing, setEditing] = useState(direct && !saved);
   const [selected, setSelected] = useState(initial.selected);
   const [details, setDetails] = useState(false);
   const [bothOpen, setBothOpen] = useState(false);
@@ -511,6 +518,11 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
     setupScrollTracking();
   }, []);
 
+  // Remember this visitor's arch + tooth counts on their device so /new can show them later.
+  useEffect(() => {
+    if (ready && arch) saveCase(arch, teeth);
+  }, [ready, arch, teeth]);
+
   // Checkout bar pinned to the bottom whenever the main checkout button is off screen.
   useEffect(() => {
     const el = checkoutRef.current;
@@ -524,6 +536,8 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   const reward = rewardEarned();
   const total = Math.max(0, active.price - (reward ? SMS_REWARD.amount : 0));
+  // Price shown on the lower buy buttons; /new shows the starting price until an arch is picked.
+  const priceText = ready ? money(total) : `From ${money(oneArchPrice)}`;
   const orderArches = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
   const orderSpec = orderArches.map((a) => `${ARCH_WORD[a]}: ${toothWord(teeth[a])}`).join(' · ');
 
@@ -549,9 +563,33 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
     });
   };
 
+  // /new: tapping the last tooth count closes the pickers, so the card shows their arch,
+  // teeth and the price, the same way the quiz result card does.
+  const pickTeeth = (update) => {
+    const next = typeof update === 'function' ? update(teeth) : update;
+    setTeeth(next);
+    const need = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
+    if (need.length && need.every((a) => next[a])) setTimeout(() => setEditing(false), 250);
+  };
+
+  // /new: any buy button tapped before the arch + teeth are picked brings the pickers into view.
+  const toPickers = () => {
+    setEditing(true);
+    requestAnimationFrame(() => {
+      const el = document.querySelector('.offer-screen .your-partial');
+      if (!el) return;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const top = el.getBoundingClientRect().top + window.scrollY - 14;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
+    });
+  };
+
   const buy = (event) => {
     event.preventDefault();
-    if (!ready) return;
+    if (!ready) {
+      toPickers();
+      return;
+    }
     const tracking = { ...trackSendKitClicked(active.sku, offer.arch, active.price), ...toothAttributes(offer.arch, teeth), ...rewardParams() };
     if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
     else checkoutOneArch(active.sku, offer.arch, tracking);
@@ -559,63 +597,21 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   return (
     <main data-screen-label="Offer" data-arch={offer.arch} className={inPersonFirst ? 'offer-screen has-visit' : 'offer-screen'}>
-      {!direct && (
-        <header className="cr-head">
-          <h1 className="cr-title">
-            <span className="cr-pill">Based on your results...</span>
-          </h1>
-          <p className="cr-sub">
-            <span className="u-smile">Here are a few of your options.</span>
-          </p>
-        </header>
-      )}
+      <header className="cr-head">
+        <h1 className="cr-title">
+          <span className="cr-pill">{direct && !saved ? 'Get your smile back.' : 'Based on your results...'}</span>
+        </h1>
+        <p className="cr-sub">
+          <span className="u-smile">{direct && !saved ? 'Pick your partial below.' : 'Here are a few of your options.'}</span>
+        </p>
+      </header>
       <div className="offer-top rec">
-        {direct ? (
-          <ProductGallery arch={arch} teeth={teeth} />
-        ) : (
-          <HeroCard shots={shots} teeth={teeth} />
-        )}
+        <HeroCard shots={shots} teeth={teeth} />
 
         <div className="offer-buy">
-          {direct ? (
-            <>
-              <h1 className="offer-title">{active.name}</h1>
-              <p className="offer-price" data-shop-price>{arch ? money(active.price) : `From ${money(oneArchPrice)}`}</p>
-              {reward && (
-                <p className="reward-line" data-reward>
-                  Your {money(SMS_REWARD.amount)} off is applied at checkout
-                </p>
-              )}
-              <p className="offer-note">{REVIEW_LINE}</p>
-            </>
-          ) : (
-            null
-          )}
-
-          {direct && (
-            <>
-              <p className="pick-label">Select arch</p>
-              <div className="pick-row" role="group" aria-label="Arch">
-                {[['upper', 'Upper teeth'], ['lower', 'Lower teeth'], ['both', 'Both']].map(([value, label]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
-                    aria-pressed={arch === value}
-                    onClick={() => setArch(value)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-
-          {direct && arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={setTeeth} />}
-
-          {!direct && (
+          {(
             <div
-              className={selected === 'flex' ? 'your-partial is-sel' : 'your-partial'}
+              className={(selected === 'flex' ? 'your-partial is-sel' : 'your-partial') + (editing ? ' is-picking' : '')}
               data-selected={selected}
               role="button"
               tabIndex={0}
@@ -629,11 +625,12 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               }}
             >
               <span className="yp-flagrow">
-                <span className="yp-badge">Recommended for you</span>
+                {(!direct || saved) && <span className="yp-badge">{direct ? 'Your partial' : 'Recommended for you'}</span>}
                 <SelFlag on={selected === 'flex'} />
               </span>
               <span className="your-partial-name">
                 {offer.flex.name}
+                {!editing && (
                 <span className="yp-answers">
                   {orderArches.map((a) => (
                     <span key={a} className="yp-row">
@@ -647,7 +644,20 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                       <span className="yp-v">{toothWord(teeth[arch]).replace(/ (tooth|teeth)$/, '')}</span>
                     </span>
                   )}
+                  {direct && (
+                    <button
+                      type="button"
+                      className="yp-change"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditing(true);
+                      }}
+                    >
+                      Change
+                    </button>
+                  )}
                 </span>
+                )}
               </span>
               <span className="yp-price">
                 <span className="yp-ref-label">Traditional options</span>
@@ -655,13 +665,32 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 <span className="your-partial-price">{money(offer.flex.price)}</span>
                 <span className="yp-flat">Same price for 1 tooth or 6</span>
               </span>
+              {editing && (
+                <div className="yp-pick" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                  <p className="pick-label">Where are your missing teeth?</p>
+                  <div className="pick-row" role="group" aria-label="Arch">
+                    {[['upper', 'Top'], ['lower', 'Bottom'], ['both', 'Both']].map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
+                        aria-pressed={arch === value}
+                        onClick={() => setArch(value)}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  {arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={pickTeeth} />}
+                </div>
+              )}
               <span className="yp-feel">
                 <strong>Smile, chew and talk with ease again.</strong> Take it out to clean, to sleep, or whenever you like. It pops
                 right back in.
               </span>
             </div>
           )}
-          {!direct && (
+          {(
             <>
               <div
                 className={'pro-drop' + (proOpen ? ' is-open' : '') + (selected === 'precision' ? ' is-sel' : '')}
@@ -754,44 +783,12 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          {!direct && (
+          {(
             <p className="cr-lead">
               <span className="sr-only" data-match-price>{money(offer.flex.price)}</span>
               Custom-made by a U.S. dental lab technician from your own impressions, with a licensed dentist overseeing your case at every step.
             </p>
           )}
-
-          {direct && (<>
-          <p className="pick-label">Choose your partial</p>
-          <div id="offer-cards" className="plan-list" role="group" aria-label="Partial choices">
-            <button
-              type="button"
-              className={selected === 'flex' ? 'plan-row is-on' : 'plan-row'}
-              aria-pressed={selected === 'flex'}
-              onClick={() => setSelected('flex')}
-            >
-              <span className="plan-name">
-                <span className="plan-name-row">
-                  Flex Partial
-                </span>
-                <span className="plan-sub">Flexible, lightweight, gum-colored</span>
-              </span>
-              <span className="plan-price">{money(offer.flex.price)}</span>
-            </button>
-            <button
-              type="button"
-              className={selected === 'precision' ? 'plan-row is-on' : 'plan-row'}
-              aria-pressed={selected === 'precision'}
-              onClick={() => setSelected('precision')}
-            >
-              <span className="plan-name">
-                Precision Partial Pro
-                <span className="plan-sub">Milled upgrade, firmer feel</span>
-              </span>
-              <span className="plan-price">{money(offer.precision.price)}</span>
-            </button>
-          </div>
-          </>)}
 
           {direct && (
             <div className="screen-check">
@@ -891,30 +888,22 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          <p className={direct ? "offer-selected" : "offer-selected sr-only"} data-selected-offer>
-            {ready ? purchaseLine(active) : !arch ? 'Pick your arch to see your price' : 'Pick how many teeth to replace'}
+          <p className={ready ? 'offer-selected sr-only' : 'offer-selected'} data-selected-offer>
+            {ready ? purchaseLine(active) : !arch ? 'Pick where your missing teeth are, above' : 'Pick how many teeth to replace, above'}
           </p>
           <a
             ref={checkoutRef}
-            className={ready ? (direct ? 'offer-checkout' : 'offer-checkout atc') : 'offer-checkout is-locked'}
+            className={ready ? 'offer-checkout atc' : 'offer-checkout is-locked'}
             data-checkout
             href={ready ? active.url : undefined}
             aria-disabled={!ready}
             onClick={buy}
           >
-            <span>{ready ? (direct ? 'Continue to checkout' : 'Add to cart') : 'Choose your options above'}</span>
-            <span>{ready ? money(direct ? active.price : total) : ''}</span>
+            <span>{ready ? 'Add to cart' : 'Choose your options above'}</span>
+            <span>{ready ? money(total) : ''}</span>
           </a>
 
-          {direct ? (
-            <div className="cr-assure">
-              <p className="cr-secure">
-                <LockIcon />
-                <span>Secure checkout. Pay in full, or choose {AFFIRM_LINE}.</span>
-              </p>
-              <PayRow />
-            </div>
-          ) : (
+          {(
             <>
               <div className="atc-panel">
                 {reward && (
@@ -955,22 +944,10 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          {direct && (
-          <div className="details-links">
-            <button type="button" className="details-link" onClick={() => openDetails('details')}>
-              <span>See product details</span>
-              <span aria-hidden="true">→</span>
-            </button>
-            <button type="button" className="details-link" onClick={() => openDetails('how')}>
-              <span>How it works</span>
-              <span aria-hidden="true">→</span>
-            </button>
-          </div>
-          )}
         </div>
       </div>
 
-      {!direct && (
+      {(
         <div className="cr-below">
               <figure className="ba" aria-label="Before and after a Flex Partial">
                 <h2 className="ba-title"><span className="ba-pill">No more avoiding your favorite foods.</span></h2>
@@ -1014,7 +991,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                   </p>
                   <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
                     <span className="tl-cta-btn">Start with step 1</span>
-                    <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)} · 2-day shipping on us &amp; live support every step of the way.</span>
+                    <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {priceText} · 2-day shipping on us &amp; live support every step of the way.</span>
                   </a>
                   </div>
                 </div>
@@ -1044,7 +1021,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               </section>
 
               <hr className="sec-rule" aria-hidden="true" />
-              <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
+              <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={priceText} />
 
 
         </div>
@@ -1101,7 +1078,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       </div>
 
 
-      {!direct && (
+      {(
         <>
           <div className="cr-promise cr-promise--end">
             <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
@@ -1115,7 +1092,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             <span className="final-cta-text">
               <strong>Your fit is covered.</strong>
               <em>Next, we send your impression kit.</em>
-              <span>{active.name} · {money(total)}</span>
+              <span>{active.name} · {priceText}</span>
             </span>
             <span className="final-cta-btn">Send my kit</span>
           </a>

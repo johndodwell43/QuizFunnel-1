@@ -626,7 +626,7 @@ button { font-family: inherit; }
   .plan-price { font-size: 20px; }
 }
 
-/* /shop direct page: big, plain pickers. Filled blue = picked. */
+/* /new direct page: big, plain pickers. Filled blue = picked. */
 .pick-label { margin: 18px 0 10px 0; font-size: 22px; font-weight: 700; line-height: 1.2; color: #0a1628; }
 .pick-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 .pick-btn {
@@ -1108,7 +1108,7 @@ button { font-family: inherit; }
 .pro-drop.is-open .both-toggle svg { transform: rotate(180deg); }
 .pro-price { color: #0a1628; font-size: 22px; }
 
-/* ---- Results page + /shop on white: give cards and panels clear edges ---- */
+/* ---- Results page + /new on white: give cards and panels clear edges ---- */
 .shell-offer .offer-screen .cr-tags li { background: #eef5ff; }
 .shell-offer .atc-panel, .shell-offer .affirm-panel { background: #eef5ff; border: 1.5px solid #d3e4fb; border-top: none; }
 .shell-offer .offer-checkout.atc, .shell-offer .affirm-btn { box-shadow: none; }
@@ -1867,3 +1867,13 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 @media (max-width: 1023px) {
   .offer-screen .cr-lead { margin-left: -8px; margin-right: -8px; font-size: 15.5px; letter-spacing: -0.01em; text-wrap: balance; }
 }
+
+/* /new: arch + teeth pickers inside the Flex card, and a Change link once picked */
+.your-partial .yp-pick { grid-column: 1 / -1; padding-top: 4px; cursor: default; }
+.your-partial .yp-pick .pick-label { margin: 8px 0 8px; font-size: 17px; font-weight: 800; }
+.your-partial .yp-pick .pick-label:first-child { margin-top: 0; }
+.your-partial .yp-pick .pick-btn, .your-partial .yp-pick .teeth-tile { min-height: 46px; font-size: 16px; }
+.yp-change { align-self: flex-start; margin-top: 2px; padding: 0; border: 0; background: none; color: #1d4ed8; font: inherit;
+  font-size: 14px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.offer-screen .offer-selected:not(.sr-only) { margin: 12px 0 6px; text-align: center; font-size: 15px; font-weight: 700; color: #1d4ed8; }
+.offer-screen .yp-flagrow:has(> .sel-flag:only-child), .offer-screen .yp-flagrow:not(:has(.yp-badge)) { justify-content: flex-end; }

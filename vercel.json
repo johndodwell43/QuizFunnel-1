@@ -8,5 +8,17 @@
       "source": "/((?!robots\\.txt|api/).*)",
       "destination": "/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/shop",
+      "destination": "/new",
+      "permanent": false
+    },
+    {
+      "source": "/shop/",
+      "destination": "/new",
+      "permanent": false
+    }
   ]
 }
