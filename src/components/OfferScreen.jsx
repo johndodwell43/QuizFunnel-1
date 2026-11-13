@@ -102,7 +102,7 @@ const COMPARE_ROWS = [
   ['Longer lifespan', '✓', '—'],
   ['Warranty', '1 year', '—']
 ];
-const SHARED_ROWS = ['Impression kit', 'Dentist review', 'U.S. dental lab', '2-day shipping', 'Klyros Fit Assurance'];
+const SHARED_ROWS = ['Tooth & gum shade match', 'Impression kit', 'Dentist review', 'U.S. dental lab', '2-day shipping', 'Klyros Fit Assurance'];
 
 const YesMark = ({ strong }) => (
   <span className={strong ? 'yes-mark is-strong' : 'yes-mark'} role="img" aria-label="Yes">
@@ -294,28 +294,46 @@ function InsertClip() {
   );
 }
 
+// Precision Pro photo on the blue card, shown when "What's the difference?" is open; hidden until the file exists.
+function ProShot() {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <span className="pro-shot">
+      <img src="/images/partials/precision-partial.webp" alt="Precision Partial Pro" width="1200" height="743" onError={() => setFailed(true)} />
+    </span>
+  );
+}
+
 function HeroCard({ shots, teeth }) {
   return (
-    <figure className={shots.length > 1 ? 'hero-card is-both' : 'hero-card'}>
-      <img className="hero-partial" src="/images/partials/flex-partial.webp" alt="Flex Partial" width="1158" height="711" />
-      <video
-        className="hero-vid"
-        src="/images/offer/insert.mp4"
-        poster="/images/offer/insert-poster.jpg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-label="A Flex Partial being put in"
-      />
-      <div className="hero-tag">
-        <Slot src="/images/offer/kit-corner.png" className="hero-kit" label="Kit" />
+    <figure className="hero-card hv">
+      <div className="hv-kit">
+        <img src="/images/offer/kit-banner.webp" alt="The Klyros impression kit" width="720" height="251" />
         <span>Kit included</span>
       </div>
-      <div className="hero-chips">
-        <span className="hero-chip">Licensed Dentist Review</span>
-        <span className="hero-chip">Made in a U.S. Lab</span>
+      <div className="hv-body">
+        <img className="hv-partial" src="/images/partials/flex-partial.webp" alt="Flex Partial" width="1158" height="711" />
+        <div className="hv-side">
+          <figure className="hv-tile hv-ba">
+            <img src="/images/offer/hero-ba.webp" alt="A real patient's smile before and after a partial" width="520" height="528" />
+            <i className="hv-tag">Before</i>
+            <i className="hv-tag hv-tag--after">After</i>
+          </figure>
+          <figure className="hv-tile">
+            <video
+              src="/images/offer/insert.mp4"
+              poster="/images/offer/insert-poster.jpg"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label="A Flex Partial being put in"
+            />
+            <span className="hv-cap">Pops right in</span>
+          </figure>
+        </div>
       </div>
     </figure>
   );
@@ -663,6 +681,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                     <span className="pro-name">Precision Partial Pro</span>
                     <span className="pro-price">{money(offer.precision.price)}</span>
                   </span>
+                  {proOpen && <ProShot />}
                   <span className="pro-why">The same partial, built to last even longer.</span>
                 </div>
                 <div className="pro-cta-wrap">

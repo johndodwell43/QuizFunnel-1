@@ -49,7 +49,7 @@ export const NEXT_STEPS = [
 export const ORDER_STEPS = [
   ['Your kit arrives', 'Ships to you 2-day air. A step-by-step guide and app walk you through it, with unlimited impression tries at no additional cost.', '/images/offer/step-kit.jpg'],
   ['A licensed dentist reviews your case', "Send in your impression photos. A licensed dentist reviews them, and you'll usually hear back within 48 hours.", '/images/offer/step-review.jpg'],
-  ['Mail it in, and your partial comes to you', "Once you're approved, put your impressions in the prepaid 2-day shipping mailer and drop it in your mailbox to be picked up. A licensed U.S. lab makes your partial in about 11–14 business days and ships it 2-day to your door. Smile, talk and eat again without thinking twice.", '/images/offer/step-smile.jpg']
+  ['Mail it in, and your partial comes to you', "Once you're approved, pick your tooth and gum shade with the shade cards in your kit. Then put your impressions in the prepaid 2-day shipping mailer and drop it in your mailbox to be picked up. A licensed U.S. lab makes your partial in about 11–14 business days and ships it 2-day to your door. Smile, talk and eat again without thinking twice.", '/images/offer/step-smile.jpg']
 ];
 
 // Quiz result page questions, written the way buyers ask them.
