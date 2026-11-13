@@ -351,7 +351,7 @@ function WhyKlyros({ href, onBuy, name, price }) {
   return (
     <section className="why" aria-label="What you get with Klyros">
       <h2 className="why-title">
-        Everything you need, <span>kit to finished partial.</span>
+        Everything your <span>new smile</span> comes with.
       </h2>
       <div className="why-grid">
         {WHY_ROWS.map(([icon, title, get, why]) => (
@@ -372,10 +372,10 @@ function WhyKlyros({ href, onBuy, name, price }) {
       </div>
       <a className="why-cta" href={href} onClick={onBuy} data-checkout-mid>
         <span className="why-cta-text">
-          <strong>A partial made for your mouth.</strong>
+          <strong>Your new smile starts here.</strong>
           <span>{name} · {price}</span>
         </span>
-        <span className="why-cta-btn">Add to cart</span>
+        <span className="why-cta-btn">Start my case</span>
       </a>
     </section>
   );
@@ -405,6 +405,13 @@ function FitAssurance() {
       </a>
     </section>
   );
+}
+
+// Photo under each timeline step; hidden until the file exists.
+function StepPhoto({ src }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return <img className="tl-photo" src={src} alt="" loading="lazy" onError={() => setFailed(true)} />;
 }
 
 const DIRECT_ARCHES = ['upper', 'lower', 'both'];
@@ -567,18 +574,11 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </div>
           )}
           {!direct && (
-            <p className="cr-lead">
-              <span className="sr-only" data-match-price>{money(offer.flex.price)}</span>
-              Custom-made from your own impressions, with a licensed dentist overseeing your case at every step.
-            </p>
-          )}
-
-          {!direct && (
             <>
               <div className={proOpen ? 'pro-drop is-open' : 'pro-drop'}>
                 <button type="button" className="pro-toggle" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
                   <span className="pro-pill">Upgrade · Precision Partial Pro</span>
-                  <span className="pro-title">The same partial, built to last longer.</span>
+                  <span className="pro-title">The same partial, built to last even longer.</span>
                   <span className="pro-why">Handmade start to finish with DuraFlex and a 1-year warranty. +{money(offer.precision.price - offer.flex.price)}</span>
                   <span className="pro-cta">
                     {proOpen ? 'Hide the comparison' : 'See what else is included'}
@@ -669,6 +669,14 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               </div>
             </>
           )}
+
+          {!direct && (
+            <p className="cr-lead">
+              <span className="sr-only" data-match-price>{money(offer.flex.price)}</span>
+              Custom-made from your own impressions, with a licensed dentist overseeing your case at every step.
+            </p>
+          )}
+
           {direct && (<>
           <p className="pick-label">Choose your partial</p>
           <div id="offer-cards" className="plan-list" role="group" aria-label="Partial choices">
@@ -903,13 +911,17 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         <div className="cr-below">
               <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
 
-              <section className="cr-steps" aria-label="What happens after you order">
-                <h2>What happens after you order</h2>
-                <ol>
-                  {ORDER_STEPS.map(([title, body]) => (
-                    <li key={title}>
-                      <span className="cr-step-title">{title}</span>
-                      <span className="cr-step-body">{body}</span>
+              <section className="tl" aria-label="What happens after you order">
+                <h2 className="tl-title">What happens after you order</h2>
+                <ol className="tl-list">
+                  {ORDER_STEPS.map(([title, body, photo], i) => (
+                    <li key={title} className="tl-step">
+                      <span className="tl-dot">{i + 1}</span>
+                      <div className="tl-card">
+                        <h3>{title}</h3>
+                        <p className="tl-body">{body}</p>
+                        <StepPhoto src={photo} />
+                      </div>
                     </li>
                   ))}
                 </ol>
