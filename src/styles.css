@@ -1686,3 +1686,11 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .offer-screen .hero-vid { position: absolute; left: 14px; bottom: 14px; z-index: 3; width: 40%; aspect-ratio: 1 / 1; object-fit: cover;
   border-radius: 16px; border: 3px solid #ffffff; background: #0a1628; box-shadow: 0 8px 20px rgba(10, 22, 40, 0.35); }
 @media (min-width: 1024px) { .offer-screen .hero-vid { left: 20px; bottom: 20px; width: 38%; border-radius: 20px; } }
+/* Soft divider between the Step 1 ask and "Everything that's included" */
+.sec-rule { grid-column: 1 / -1; width: 34%; height: 2px; margin: 18px auto 8px; border: 0; border-radius: 2px; background: #d3e0f0; }
+@media (min-width: 1024px) { .sec-rule { width: 22%; margin: 28px auto 12px; } }
+/* Compare chart: make the shared section obvious */
+.cmp3-sep { height: 46px; border-top: 2px solid rgba(29, 78, 216, 0.25); text-transform: none; letter-spacing: 0; }
+.cmp3-both { display: inline-block; padding: 5px 11px; border-radius: 999px; background: #1d4ed8; color: #ffffff;
+  font-size: 13.5px; font-weight: 900; letter-spacing: 0.01em; white-space: nowrap; }
+.cmp3-same { display: inline-block; font-size: 12.5px; font-weight: 800; color: #1d4ed8; letter-spacing: 0.02em; }
