@@ -313,7 +313,10 @@ function HeroCard({ shots, teeth }) {
         <Slot src="/images/offer/kit-corner.png" className="hero-kit" label="Kit" />
         <span>Kit included</span>
       </div>
-      <span className="hero-chip">Made in a U.S. lab</span>
+      <div className="hero-chips">
+        <span className="hero-chip">Licensed Dentist Review</span>
+        <span className="hero-chip">Made in a U.S. Lab</span>
+      </div>
     </figure>
   );
 }
@@ -923,27 +926,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 <p>Monthly payments at checkout, subject to eligibility.</p>
               </div>
 
-              <section className="faq cr-faq" aria-label="Questions">
-                {QUIZ_FAQ.map(([title, body], i) => (
-                  <details key={title} className="faq-row">
-                    <summary>
-                      <span>{title}</span>
-                      <span className="faq-plus" aria-hidden="true">+</span>
-                    </summary>
-                    <p>
-                      {body}
-                      {i === QUIZ_FAQ.length - 1 && (
-                        <>
-                          {' '}
-                          <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
-                            Refund policy
-                          </a>
-                        </>
-                      )}
-                    </p>
-                  </details>
-                ))}
-              </section>
 
             </>
           )}
@@ -1007,6 +989,29 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                     <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)} · 2-day shipping on us, every step of the way.</span>
                   </a>
                 </div>
+              </section>
+
+              <section className="faq cr-faq cr-faq--below" aria-label="Questions">
+                <h2 className="faq-title">Still have questions?</h2>
+                {QUIZ_FAQ.map(([title, body], i) => (
+                  <details key={title} className="faq-row">
+                    <summary>
+                      <span>{title}</span>
+                      <span className="faq-plus" aria-hidden="true">+</span>
+                    </summary>
+                    <p>
+                      {body}
+                      {i === QUIZ_FAQ.length - 1 && (
+                        <>
+                          {' '}
+                          <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+                            Refund policy
+                          </a>
+                        </>
+                      )}
+                    </p>
+                  </details>
+                ))}
               </section>
 
               <hr className="sec-rule" aria-hidden="true" />
