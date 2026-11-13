@@ -682,7 +682,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                     <span className="pro-price">{money(offer.precision.price)}</span>
                   </span>
                   {proOpen && <ProShot />}
-                  <span className="pro-why">The same partial, built to last even longer.</span>
+                  <span className="pro-why">Our premium partial, handcrafted start to finish and backed by a 1-year warranty.</span>
                 </div>
                 <div className="pro-cta-wrap">
                   <button type="button" className="pro-cta" aria-expanded={proOpen} onClick={() => setProOpen((v) => !v)}>
