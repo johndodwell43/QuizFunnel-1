@@ -99,12 +99,12 @@ test('a discount code is only added when one is passed (the text-signup reward)'
   assert.equal(rewarded, 'https://tfvziu-ia.myshopify.com/cart/63304032158065:1?did=kly_2&discount=KLYROS50');
 });
 
-test('result photo follows arch and tooth count (1-6, 6+ and most use 6)', async () => {
+test('one partial photo for every arch and tooth count', async () => {
   const { partialImage, teethCount, archOptions } = await import('./offerMatch.js');
-  assert.equal(partialImage('upper', '1'), '/images/partials/upper-1.jpg');
-  assert.equal(partialImage('lower', '4'), '/images/partials/lower-4.jpg');
-  assert.equal(partialImage('upper', '6+'), '/images/partials/upper-6.jpg');
-  assert.equal(partialImage('lower', 'most'), '/images/partials/lower-6.jpg');
+  assert.equal(partialImage('upper', '1'), '/images/partials/flex-partial.webp');
+  assert.equal(partialImage('lower', '4'), '/images/partials/flex-partial.webp');
+  assert.equal(partialImage('upper', '6+'), '/images/partials/flex-partial.webp');
+  assert.equal(partialImage('lower', 'most'), '/images/partials/flex-partial.webp');
   assert.equal(teethCount(''), 1);
   assert.deepEqual(archOptions('upper'), ['upper']);
   assert.deepEqual(archOptions('lower'), ['lower']);

@@ -54,10 +54,10 @@ export function teethCount(answer = '') {
   return Math.min(n, 6);
 }
 
-// Photo of the recommended partial for one arch and tooth count.
-// Drop files at public/images/partials/upper-1.jpg … lower-6.jpg.
+// Photo of the partial. Same price for every tooth count, so one clean product shot covers
+// every arch and count (public/images/partials/flex-partial.webp).
 export function partialImage(arch, teeth) {
-  return `/images/partials/${arch === 'lower' ? 'lower' : 'upper'}-${teethCount(teeth)}.jpg`;
+  return '/images/partials/flex-partial.webp';
 }
 
 // One arch answered → only that arch is offered.
