@@ -1694,3 +1694,8 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .cmp3-both { display: inline-block; padding: 5px 11px; border-radius: 999px; background: #1d4ed8; color: #ffffff;
   font-size: 13.5px; font-weight: 900; letter-spacing: 0.01em; white-space: nowrap; }
 .cmp3-same { display: inline-block; font-size: 12.5px; font-weight: 800; color: #1d4ed8; letter-spacing: 0.02em; }
+/* Fit Assurance: bigger lead-in, wider badge text */
+.fitassure-kicker { font-size: 19px; font-weight: 800; color: rgba(10, 22, 40, 0.72); margin-top: 10px; }
+.fitassure-ribbon { white-space: nowrap; }
+.cr-promise--end { margin: 18px 0 14px; }
+@media (min-width: 1024px) { .fitassure-kicker { font-size: 22px; } }
