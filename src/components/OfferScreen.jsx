@@ -983,8 +983,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 </figcaption>
               </figure>
 
-              <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
-
               <section className="tl" aria-label="What happens after you order">
                 <h2 className="tl-title">What happens after you order</h2>
                 <ol className="tl-list">
@@ -1010,6 +1008,9 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                   </a>
                 </div>
               </section>
+
+              <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
+
 
         </div>
       )}
