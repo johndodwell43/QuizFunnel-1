@@ -1640,3 +1640,14 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .tl-kitrow .tl-cta-btn { width: 100%; min-width: 0; }
   .tl-kitrow .tl-cta-sub { text-align: center; padding-left: 0; }
 }
+/* Mid CTA: set apart from the light-blue value cards above - dark card, white text */
+.shell-offer .why-cta, .why-cta { margin-top: 22px; background: #0a1628; border: none; color: #ffffff;
+  box-shadow: 0 14px 34px rgba(10, 22, 40, 0.22); }
+.why-cta .why-cta-text strong { color: #ffffff; }
+.why-cta .why-cta-text span { color: rgba(255, 255, 255, 0.72); }
+.why-cta:hover .why-cta-btn { background: #15803d; }
+/* Before/after heading: one solid black box instead of a box per line */
+.ba-title { line-height: 1.2; }
+.ba-pill { display: inline-block; max-width: 100%; padding: 10px 18px 12px; border-radius: 12px; text-wrap: balance;
+  -webkit-box-decoration-break: slice; box-decoration-break: slice; }
+@media (min-width: 1024px) { .ba-pill { padding: 12px 26px 14px; border-radius: 14px; } }
