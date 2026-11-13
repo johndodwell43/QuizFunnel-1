@@ -1722,3 +1722,43 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .tl-step1-pill { font-size: 0.98em; padding: 3px 12px 4px; box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3); }
 .tl-step1-hl { padding: 0 0.2em; border-radius: 0.3em; background: #dbeafe; color: #1d4ed8; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .tl-step1-hl { padding: 0 0.12em; }
+
+/* Hero v3: kit banner on top, partial left, before/after + video stacked right */
+.offer-screen .hero-card.hv { aspect-ratio: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px 10px 34px;
+  background: radial-gradient(circle at 35% 55%, #4f86f0, #2558d8 75%); }
+.hv-kit { display: flex; align-items: center; gap: 12px; padding: 6px 14px 6px 6px; border-radius: 16px; background: rgba(10, 22, 40, 0.16); }
+.hv-kit img { display: block; flex: 0 0 62%; width: 62%; height: auto; border-radius: 12px; }
+.hv-kit span { flex: 1; text-align: center; color: #ffffff; font-size: 24px; font-weight: 900; line-height: 1.05; letter-spacing: -0.01em; }
+.hv-body { display: grid; grid-template-columns: 1fr 34%; gap: 10px; align-items: center; }
+.hv-partial { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 24px rgba(10, 22, 40, 0.35)); }
+.hv-side { display: grid; gap: 8px; }
+.hv-tile { position: relative; margin: 0; aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden; border: 2.5px solid #ffffff; background: #0a1628;
+  box-shadow: 0 6px 16px rgba(10, 22, 40, 0.28); }
+.hv-tile img, .hv-tile video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hv-tag { position: absolute; left: 4px; padding: 1px 6px 2px; border-radius: 999px; color: #ffffff; font-size: 9.5px; font-weight: 800; font-style: normal; background: #c62828; top: 4px; }
+.hv-tag--after { top: calc(50% + 3px); background: #15803d; }
+.hv-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 0 4px; text-align: center; background: rgba(10, 22, 40, 0.78); color: #ffffff; font-size: 11px; font-weight: 800; }
+@media (min-width: 1024px) {
+  .offer-screen .hero-card.hv { padding: 16px 16px 44px; gap: 18px; }
+  .hv-kit span { font-size: 38px; }
+  .hv-body { grid-template-columns: 1fr 30%; gap: 18px; }
+  .hv-tag { font-size: 13px; padding: 2px 9px; top: 8px; left: 8px; } .hv-tag--after { top: calc(50% + 8px); }
+  .hv-cap { font-size: 15px; padding: 6px 0; }
+}
+@media (prefers-reduced-motion: reduce) { .hv-tile video { display: none; } .hv-tile:has(video) { background: url(/images/offer/insert-poster.jpg) center / cover; } }
+/* Precision Pro photo inside its card when the comparison is open */
+.pro-shot { display: grid; place-items: center; margin: 6px 0 4px; padding: 14px; border-radius: 18px;
+  background: radial-gradient(circle at 50% 45%, #4f86f0, #2558d8 75%); }
+.pro-shot img { display: block; width: 86%; height: auto; filter: drop-shadow(0 16px 22px rgba(10, 22, 40, 0.35)); }
+/* Hero v3 tweaks: bigger right column flush to the card edge, video tallest, tags bottom-right */
+.hv-body { grid-template-columns: 1fr 39%; gap: 8px; margin-right: -10px; }
+.hv-side { gap: 8px; }
+.hv-tile { border: none; border-radius: 16px 0 0 16px; box-shadow: -8px 8px 22px rgba(10, 22, 40, 0.28); }
+.hv-tile:last-child { aspect-ratio: 4 / 5; }
+.hv-tag { top: auto; left: auto; right: 6px; bottom: calc(50% + 6px); }
+.hv-tag--after { top: auto; bottom: 6px; }
+@media (min-width: 1024px) {
+  .hv-body { grid-template-columns: 1fr 34%; gap: 18px; margin-right: -16px; }
+  .hv-tile { border-radius: 22px 0 0 22px; }
+  .hv-tag { right: 10px; bottom: calc(50% + 10px); top: auto; left: auto; } .hv-tag--after { bottom: 10px; top: auto; }
+}

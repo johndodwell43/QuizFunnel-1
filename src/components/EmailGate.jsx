@@ -98,18 +98,6 @@ export default function EmailGate({
           </label>
         </form>
       </section>
-      <figure className="gate-proof">
-        <div className="gate-proof-pair">
-          <div className="gate-proof-shot">
-            <img src="/images/beforecomp-3x2.jpg" alt="Lower arch with a missing molar, before a partial is seated" width="1200" height="800" loading="eager" />
-            <span className="gate-proof-tag">Before</span>
-          </div>
-          <div className="gate-proof-shot">
-            <img src="/images/aftercomp-3x2.jpg" alt="The same lower arch with a custom partial seated" width="1200" height="800" loading="eager" />
-            <span className="gate-proof-tag is-after">After</span>
-          </div>
-        </div>
-      </figure>
       <nav className="gate-links" aria-label="More">
         <a className="gate-row" href={`${LINKS.home}/how-it-works`} target="_blank" rel="noopener">
           <span>How it works</span>

@@ -21,7 +21,7 @@ export default function Header({ showBack, onBack, stepLabel, gate = false, offe
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 8,
-        padding: gate ? '6px 0 4px 0' : '14px 0 10px 0'
+        padding: gate ? '6px 0 4px 0' : offer ? 'calc(env(safe-area-inset-top, 0px) + 30px) 0 4px 0' : '14px 0 10px 0'
       }}
     >
       {showBack ? (
@@ -51,7 +51,7 @@ export default function Header({ showBack, onBack, stepLabel, gate = false, offe
         }}
       >
         <a href={LINKS.home} aria-label="Klyros home" style={{ display: 'block', lineHeight: 0 }}>
-          <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: 30, width: 'auto', display: 'block' }} />
+          <img src="/images/klyros-logo.png" alt="Klyros" style={{ height: offer ? 38 : 30, width: 'auto', display: 'block' }} />
         </a>
         {!gate && !plain && (
           <div style={{ fontSize: 18, color: muted, lineHeight: 1.3 }}>

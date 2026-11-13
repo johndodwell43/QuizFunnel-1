@@ -12,8 +12,8 @@ test('the gate has no error copy and keeps Continue off until the email is valid
   assert.equal(source.includes('disabled={!emailReady || submitting}'), true);
   assert.equal(source.includes("submitting ? 'Sending…' : 'Continue'"), true);
   assert.equal(source.includes('First name'), false);
-  assert.equal(source.includes('src="/images/beforecomp-3x2.jpg"'), true);
-  assert.equal(source.includes('src="/images/aftercomp-3x2.jpg"'), true);
+  assert.equal(source.includes('beforecomp'), false);
+  assert.equal(source.includes('aftercomp'), false);
   assert.equal(source.includes('PLACEHOLDER'), false);
   assert.equal(source.toLowerCase().includes('impression kit'), false);
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
