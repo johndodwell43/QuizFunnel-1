@@ -1762,3 +1762,16 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .hv-tile { border-radius: 22px 0 0 22px; }
   .hv-tag { right: 10px; bottom: calc(50% + 10px); top: auto; left: auto; } .hv-tag--after { bottom: 10px; top: auto; }
 }
+/* Hero video: taller (cropped, not stretched) to fill the space down to the card's bottom */
+.hv-tile:last-child { aspect-ratio: 3 / 4; }
+.offer-screen .hero-card.hv { padding-bottom: 30px; }
+/* Hero right column: tiles touch, video runs to the card's bottom edge */
+.hv-side { gap: 0; }
+.hv-side .hv-tile:first-child { border-radius: 16px 0 0 0; }
+.hv-side .hv-tile:last-child { border-radius: 0 0 0 16px; }
+.hv-body { margin-bottom: -30px; }
+@media (min-width: 1024px) {
+  .hv-side .hv-tile:first-child { border-radius: 22px 0 0 0; }
+  .hv-side .hv-tile:last-child { border-radius: 0 0 0 22px; }
+  .hv-body { margin-bottom: -44px; }
+}
