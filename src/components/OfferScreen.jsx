@@ -288,7 +288,7 @@ function InsertClip() {
       loop
       playsInline
       preload="metadata"
-      aria-label="Putting the partial in"
+      aria-label="Flex Partial up close"
       onError={() => setFailed(true)}
     />
   );
@@ -297,15 +297,10 @@ function InsertClip() {
 function HeroCard({ shots, teeth }) {
   return (
     <figure className={shots.length > 1 ? 'hero-card is-both' : 'hero-card'}>
-      <InsertClip />
+      <img className="hero-partial" src="/images/partials/flex-partial.webp" alt="Flex Partial" width="1158" height="711" />
       <div className="hero-tag">
         <Slot src="/images/offer/kit-corner.png" className="hero-kit" label="Kit" />
         <span>Kit included</span>
-      </div>
-      <div className="hero-shots">
-        {shots.map((a) => (
-          <HeroShot key={`${a}-${teeth[a]}`} arch={a} teeth={teeth[a]} />
-        ))}
       </div>
       <span className="hero-chip">Made in a U.S. lab</span>
     </figure>
