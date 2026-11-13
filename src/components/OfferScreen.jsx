@@ -959,6 +959,17 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
       {!direct && (
         <div className="cr-below">
+              <figure className="ba" aria-label="Before and after a Flex Partial">
+                <div className="ba-side">
+                  <span className="ba-label">Before Flex Partial</span>
+                  <img src="/images/offer/ba-before.webp" alt="Lower teeth before a Flex Partial, with a gap on one side" width="954" height="816" loading="lazy" />
+                </div>
+                <div className="ba-side">
+                  <span className="ba-label ba-label--after">After Flex Partial</span>
+                  <img src="/images/offer/ba-after.webp" alt="The same lower teeth with a Flex Partial filling the gap" width="954" height="816" loading="lazy" />
+                </div>
+              </figure>
+
               <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
 
               <section className="tl" aria-label="What happens after you order">
