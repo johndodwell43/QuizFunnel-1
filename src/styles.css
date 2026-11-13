@@ -1681,3 +1681,8 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .offer-screen .hero-kit { height: 76px; max-width: 56%; }
 .offer-screen .hero-tag span { font-size: 24px; }
 @media (min-width: 1024px) { .offer-screen .hero-tag span { font-size: 40px; } .offer-screen .hero-kit { height: 104px; } }
+/* Hero card: partial up and to the right, square "pops right in" video bottom-left */
+.offer-screen .hero-partial { left: auto; right: 4%; top: 24%; transform: none; width: 64%; }
+.offer-screen .hero-vid { position: absolute; left: 14px; bottom: 14px; z-index: 3; width: 40%; aspect-ratio: 1 / 1; object-fit: cover;
+  border-radius: 16px; border: 3px solid #ffffff; background: #0a1628; box-shadow: 0 8px 20px rgba(10, 22, 40, 0.35); }
+@media (min-width: 1024px) { .offer-screen .hero-vid { left: 20px; bottom: 20px; width: 38%; border-radius: 20px; } }
