@@ -1636,7 +1636,7 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .tl-kitrow .tl-kit { margin: 0; max-width: none; }
   .tl-kitrow .tl-kit figcaption { display: none; }
   .tl-kitrow .tl-cta { margin: 0; align-items: stretch; gap: 10px; }
-  .tl-kitrow .tl-cta::before { content: 'Step 1: your impression kit. 2-day shipping, on us.'; font-size: 26px; font-weight: 800; line-height: 1.25; color: #0a1628; margin-bottom: 8px; }
+  .tl-kitrow .tl-cta::before { content: 'Step 1: Take your impressions with our step-by-step guide. Unlimited tries, at no extra cost.'; font-size: 26px; font-weight: 800; line-height: 1.25; color: #0a1628; margin-bottom: 8px; }
   .tl-kitrow .tl-cta-btn { width: 100%; min-width: 0; }
   .tl-kitrow .tl-cta-sub { text-align: center; padding-left: 0; }
 }
@@ -1660,3 +1660,6 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .tl-cta-sub.cta-price b { color: #0a1628; }
 .why-cta .cta-price b { color: #ffffff; }
 .tl-cta-sub.cta-price { text-align: center; }
+/* Step 1 line above the button: bigger and darker on phones */
+.tl-kit figcaption { font-size: 19px; font-weight: 800; line-height: 1.3; color: #0a1628; margin-top: 12px; text-wrap: balance; }
+.cr-promise--end { margin: 18px 0 4px; }
