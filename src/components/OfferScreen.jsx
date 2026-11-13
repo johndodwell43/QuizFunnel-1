@@ -492,6 +492,20 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const orderArches = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
   const orderSpec = orderArches.map((a) => `${ARCH_WORD[a]}: ${toothWord(teeth[a])}`).join(' · ');
 
+  // Choose / No thanks in the compare chart: set the pick, close the chart, and bring
+  // both cards plus the Add to cart total back into view so the change is obvious.
+  const pickAndClose = (pick) => {
+    setSelected(pick);
+    setProOpen(false);
+    requestAnimationFrame(() => {
+      const el = document.querySelector('.offer-screen .your-partial');
+      if (!el) return;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const top = el.getBoundingClientRect().top + window.scrollY - 14;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
+    });
+  };
+
   const openDetails = (target) => {
     setDetails(true);
     requestAnimationFrame(() => {
@@ -688,35 +702,13 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                         <div className="cmp3-cell cmp3-price" role="cell">{money(offer.flex.price)}</div>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className={selected === 'precision' ? 'both-pick is-on' : 'both-pick'}
-                      aria-pressed={selected === 'precision'}
-                      onClick={() => {
-                        setSelected(selected === 'precision' ? 'flex' : 'precision');
-                        requestAnimationFrame(() => {
-                          const el = checkoutRef.current;
-                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        });
-                      }}
-                    >
-                      {selected === 'precision' ? 'Precision Pro selected ✓ (tap to go back to Flex)' : "Choose Precision Pro"}
+                    <button type="button" className="both-pick pro-choose" onClick={() => pickAndClose('precision')}>
+                      Choose Precision Pro
                     </button>
                     <button
                       type="button"
                       className="pro-skip"
-                      onClick={() => {
-                        setSelected('flex');
-                        setProOpen(false);
-                        // Back up to the Flex card so they see it selected with the Add to cart total under it.
-                        requestAnimationFrame(() => {
-                          const el = document.querySelector('.offer-screen .your-partial');
-                          if (!el) return;
-                          const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                          const top = el.getBoundingClientRect().top + window.scrollY - 14;
-                          window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
-                        });
-                      }}
+                      onClick={() => pickAndClose('flex')}
                     >
                       No thanks, keep Flex Partial
                     </button>
