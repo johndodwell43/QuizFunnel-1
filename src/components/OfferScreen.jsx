@@ -298,6 +298,17 @@ function HeroCard({ shots, teeth }) {
   return (
     <figure className={shots.length > 1 ? 'hero-card is-both' : 'hero-card'}>
       <img className="hero-partial" src="/images/partials/flex-partial.webp" alt="Flex Partial" width="1158" height="711" />
+      <video
+        className="hero-vid"
+        src="/images/offer/insert.mp4"
+        poster="/images/offer/insert-poster.jpg"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-label="A Flex Partial being put in"
+      />
       <div className="hero-tag">
         <Slot src="/images/offer/kit-corner.png" className="hero-kit" label="Kit" />
         <span>Kit included</span>
