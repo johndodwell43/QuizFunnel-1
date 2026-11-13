@@ -389,7 +389,7 @@ function WhyKlyros({ href, onBuy, name, price }) {
       </div>
       <a className="why-cta" href={href} onClick={onBuy} data-checkout-mid>
         <span className="why-cta-text">
-          <strong>The sooner your impressions are in, the sooner the lab can start on your partial.</strong>
+          <strong>The sooner your impressions are in, the sooner a professional lab tech can start on your partial.</strong>
           <span className="cta-price"><b>{name}</b> · {price}. Everything above is included.</span>
         </span>
         <span className="why-cta-btn">Start my case</span>
@@ -678,7 +678,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                         {COMPARE_ROWS.map(([label]) => (
                           <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
                         ))}
-                        <div className="cmp3-cell cmp3-sep" role="rowheader">Both include</div>
+                        <div className="cmp3-cell cmp3-sep" role="rowheader"><span className="cmp3-both">Both include</span></div>
                         {SHARED_ROWS.map((label) => (
                           <div key={label} className="cmp3-cell" role="rowheader">{label}</div>
                         ))}
@@ -690,9 +690,9 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                         {COMPARE_ROWS.map(([label, pro]) => (
                           <div key={label} className="cmp3-cell" role="cell">{cellValue(pro, true)}</div>
                         ))}
-                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
+                        <div className="cmp3-cell cmp3-sep" aria-hidden="true"><span className="cmp3-same">Same</span></div>
                         {SHARED_ROWS.map((label) => (
-                          <div key={label} className="cmp3-cell" role="cell"><YesMark strong /></div>
+                          <div key={label} className="cmp3-cell" role="cell"><YesMark /></div>
                         ))}
                         <div className="cmp3-cell cmp3-price" role="cell">
                           {money(offer.precision.price)}
@@ -703,7 +703,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                         {COMPARE_ROWS.map(([label, , flex]) => (
                           <div key={label} className="cmp3-cell" role="cell">{cellValue(flex, false)}</div>
                         ))}
-                        <div className="cmp3-cell cmp3-sep" aria-hidden="true" />
+                        <div className="cmp3-cell cmp3-sep" aria-hidden="true"><span className="cmp3-same">Same</span></div>
                         {SHARED_ROWS.map((label) => (
                           <div key={label} className="cmp3-cell" role="cell"><YesMark /></div>
                         ))}
@@ -1009,6 +1009,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 </div>
               </section>
 
+              <hr className="sec-rule" aria-hidden="true" />
               <WhyKlyros href={active.url} onBuy={buy} name={active.name} price={money(total)} />
 
 
@@ -1069,13 +1070,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       {!direct && (
         <>
           <FitAssurance />
-          <div className="cr-promise cr-promise--end">
-            <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
-            <p>{DENTIST_LINE}</p>
-            <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
-              Read our refund policy
-            </a>
-          </div>
           <a className="final-cta" href={active.url} onClick={buy} data-checkout-end>
             <span className="final-cta-text">
               <strong>Your fit is covered.</strong>
@@ -1084,6 +1078,13 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </span>
             <span className="final-cta-btn">Send my kit</span>
           </a>
+          <div className="cr-promise cr-promise--end">
+            <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
+            <p>{DENTIST_LINE}</p>
+            <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+              Read our refund policy
+            </a>
+          </div>
         </>
       )}
 
