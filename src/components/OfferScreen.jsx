@@ -396,7 +396,15 @@ function WhyKlyros({ href, onBuy, name, price }) {
   return (
     <section className="why" aria-label="What you get with Klyros">
       <h2 className="why-title">
-        Everything that's included with your <span>new smile</span>.
+        Everything that's included with your{' '}
+        <span className="why-smile">
+          new smile
+          <svg className="why-smile-face" viewBox="0 0 32 26" aria-hidden="true" focusable="false">
+            <ellipse cx="10.5" cy="7" rx="2.7" ry="4" fill="currentColor" />
+            <ellipse cx="21.5" cy="7" rx="2.7" ry="4" fill="currentColor" />
+            <path d="M5 14.5 Q16 27 27 14.5" fill="none" stroke="currentColor" strokeWidth="3.6" strokeLinecap="round" />
+          </svg>
+        </span>
       </h2>
       <div className="why-grid">
         {WHY_ROWS.map(([icon, title, get, why]) => (
@@ -597,14 +605,25 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   return (
     <main data-screen-label="Offer" data-arch={offer.arch} className={inPersonFirst ? 'offer-screen has-visit' : 'offer-screen'}>
-      <header className="cr-head">
-        <h1 className="cr-title">
-          <span className="cr-pill">{direct && !saved ? 'Get your smile back.' : 'Based on your results...'}</span>
-        </h1>
-        <p className="cr-sub">
-          <span className="u-smile">{direct && !saved ? 'Pick your partial below.' : 'Here are a few of your options.'}</span>
-        </p>
-      </header>
+      {direct ? (
+        // /new: visitors didn't come from the quiz here, so no "Based on your results".
+        <header className="cr-head cr-head--direct">
+          <h1 className="cr-title">
+            <span className="cr-pill">
+              Here are a few of<br className="cr-br" /> your options.
+            </span>
+          </h1>
+        </header>
+      ) : (
+        <header className="cr-head">
+          <h1 className="cr-title">
+            <span className="cr-pill">Based on your results...</span>
+          </h1>
+          <p className="cr-sub">
+            <span className="u-smile">Here are a few of your options.</span>
+          </p>
+        </header>
+      )}
       <div className="offer-top rec">
         <HeroCard shots={shots} teeth={teeth} />
 
