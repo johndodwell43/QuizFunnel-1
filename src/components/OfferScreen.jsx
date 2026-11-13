@@ -996,22 +996,15 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 <div className="tl-kitrow">
                   <figure className="tl-kit">
                     <img src="/images/offer/kit.webp" alt="The Klyros impression kit: pouch, guide card, app steps, impression trays and a phone photo of an impression" width="1400" height="749" loading="lazy" />
-                    <figcaption>Step 1: your impression kit. 2-day shipping, on us.</figcaption>
+                    <figcaption>Step 1: Take your impressions with our step-by-step guide. Unlimited tries, at no extra cost.</figcaption>
                   </figure>
                   <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
                     <span className="tl-cta-btn">Start with step 1</span>
-                    <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)}. Everything above is included.</span>
+                    <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)} · 2-day shipping on us, every step of the way.</span>
                   </a>
                 </div>
               </section>
 
-              <div className="cr-promise">
-                <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
-                <p>{DENTIST_LINE}</p>
-                <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
-                  Read our refund policy
-                </a>
-              </div>
         </div>
       )}
 
@@ -1069,6 +1062,13 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       {!direct && (
         <>
           <FitAssurance />
+          <div className="cr-promise cr-promise--end">
+            <p className="cr-promise-title">Nothing is made until a dentist says yes.</p>
+            <p>{DENTIST_LINE}</p>
+            <a href={LINKS.refund} target="_blank" rel="noopener" className="cr-policy">
+              Read our refund policy
+            </a>
+          </div>
           <a className="final-cta" href={active.url} onClick={buy} data-checkout-end>
             <span className="final-cta-text">
               <strong>Your fit is covered.</strong>
