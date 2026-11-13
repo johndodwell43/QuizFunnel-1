@@ -985,11 +985,11 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                   </figure>
                   <div className="tl-cta-col">
                   <p className="tl-step1">
-                    <span className="tl-step1-pill">Step 1</span> Take your impressions with our step-by-step guide. Unlimited impression attempts, at no extra cost.
+                    <span className="tl-step1-pill">Step 1</span> Take your impressions with our step-by-step guide. <span className="tl-step1-hl">Unlimited impression attempts</span>, at no extra cost.
                   </p>
                   <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
                     <span className="tl-cta-btn">Start with step 1</span>
-                    <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)} · 2-day shipping on us, every step of the way.</span>
+                    <span className="tl-cta-sub cta-price"><b>{active.name}</b> · {money(total)} · 2-day shipping on us &amp; live support every step of the way.</span>
                   </a>
                   </div>
                 </div>
