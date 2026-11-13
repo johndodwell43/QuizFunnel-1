@@ -1718,3 +1718,7 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .tl-step1 { margin: 0; text-align: left; font-size: 26px; line-height: 1.3; }
 }
 @media (min-width: 1024px) { .tl-step1 { font-size: 23px; } }
+/* Step 1 line: bigger pill, baby-blue highlight on the fear-killer */
+.tl-step1-pill { font-size: 0.98em; padding: 3px 12px 4px; box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3); }
+.tl-step1-hl { padding: 0 0.2em; border-radius: 0.3em; background: #dbeafe; color: #1d4ed8; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.tl-step1-hl { padding: 0 0.12em; }
