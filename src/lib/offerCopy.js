@@ -57,7 +57,6 @@ export const QUIZ_FAQ = [
   ['What if it does not fit?', 'Klyros Fit Assurance covers you. If the fit needs work, we adjust it, or remake it once.'],
   ['How do I take my impressions?', 'Your kit comes with a step-by-step app, visual guide and PDF. Not happy with a mold? Retake it as many times as you need, at no extra cost.'],
   ['Who checks that this is right for me?', 'A licensed dentist oversees your case at every step. Nothing is made until they say yes.'],
-  ['What does custom-made mean?', 'A licensed U.S. dental lab makes your partial from your own impressions, matched to your gum and tooth shade.'],
   ['How does shipping work?', '2-day shipping both ways is included, and we text you an update at every step.'],
   ["What if the dentist says it's not a fit?", 'Nothing is made until a dentist reviews your case. See our refund policy for what happens next.']
 ];
