@@ -314,9 +314,12 @@ function HeroCard({ shots, teeth }) {
       </div>
       <div className="hv-body">
         <div className="hv-left">
-          <span className="hv-badge">Licensed Dentist Oversight</span>
           <img className="hv-partial" src="/images/partials/flex-partial.webp" alt="Flex Partial" width="1158" height="711" />
-          <span className="hv-badge">Made by a U.S.<br className="hv-br" /> Dental Lab Technician</span>
+          <div className="hv-range" aria-label="Partials for different gaps">
+            {['p1', 'p2', 'p4', 'pmany'].map((k) => (
+              <img key={k} src={`/images/partials/range-${k}.webp`} alt="" loading="lazy" />
+            ))}
+          </div>
         </div>
         <div className="hv-side">
           <figure className="hv-tile hv-ba">
@@ -337,11 +340,6 @@ function HeroCard({ shots, teeth }) {
             />
           </figure>
         </div>
-      </div>
-      <div className="hv-range" aria-label="Partials for different gaps">
-        {['p1', 'p2', 'p4', 'pmany'].map((k) => (
-          <img key={k} src={`/images/partials/range-${k}.webp`} alt="" loading="lazy" />
-        ))}
       </div>
     </figure>
   );
@@ -759,7 +757,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           {!direct && (
             <p className="cr-lead">
               <span className="sr-only" data-match-price>{money(offer.flex.price)}</span>
-              Custom-made from your own impressions, with a licensed dentist overseeing your case at every step.
+              Custom-made by a U.S. dental lab technician from your own impressions, with a licensed dentist overseeing your case at every step.
             </p>
           )}
 
@@ -1152,6 +1150,9 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             <a key={label} href={href} target="_blank" rel="noopener">{label}</a>
           ))}
         </nav>
+        <a className="help-logo" href={LINKS.home} aria-label="Klyros home">
+          <img src="/images/klyros-logo.png" alt="Klyros" />
+        </a>
       </section>
     </main>
   );
