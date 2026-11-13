@@ -1623,3 +1623,20 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   .ba-tag { top: 14px; right: 14px; font-size: 15px; padding: 6px 14px; }
   .ba-proof { font-size: 16px; margin-top: 16px; }
 }
+/* Before/after card: same light blue as the Add to cart panel */
+.ba { background: #eef5ff; border-color: #d3e4fb; box-shadow: none; }
+/* Impression kit photo above "Start with step 1" */
+.tl-kit { margin: 18px 0 0; }
+.tl-kit img { display: block; width: 100%; height: auto; border-radius: 18px; background: #dbeafe; }
+.tl-kit figcaption { margin-top: 8px; text-align: center; font-size: 14.5px; font-weight: 700; color: #3b4558; }
+.tl-kit + .tl-cta { margin-top: 12px; }
+@media (min-width: 1024px) { .tl-kit { max-width: 760px; } .tl-kit figcaption { text-align: left; padding-left: 4px; } }
+@media (min-width: 1024px) {
+  .tl-kitrow { margin-top: 22px; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+  .tl-kitrow .tl-kit { margin: 0; max-width: none; }
+  .tl-kitrow .tl-kit figcaption { display: none; }
+  .tl-kitrow .tl-cta { margin: 0; align-items: stretch; gap: 10px; }
+  .tl-kitrow .tl-cta::before { content: 'Step 1: your impression kit, at your door.'; font-size: 26px; font-weight: 800; line-height: 1.25; color: #0a1628; margin-bottom: 8px; }
+  .tl-kitrow .tl-cta-btn { width: 100%; min-width: 0; }
+  .tl-kitrow .tl-cta-sub { text-align: center; padding-left: 0; }
+}

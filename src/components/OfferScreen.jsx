@@ -993,10 +993,16 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                     </li>
                   ))}
                 </ol>
-                <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
-                  <span className="tl-cta-btn">Start with step 1</span>
-                  <span className="tl-cta-sub">{active.name} · {money(total)}</span>
-                </a>
+                <div className="tl-kitrow">
+                  <figure className="tl-kit">
+                    <img src="/images/offer/kit.webp" alt="The Klyros impression kit: pouch, guide card, app steps, impression trays and a phone photo of an impression" width="1400" height="749" loading="lazy" />
+                    <figcaption>Step 1: your impression kit, at your door.</figcaption>
+                  </figure>
+                  <a className="tl-cta" href={active.url} onClick={buy} data-checkout-steps>
+                    <span className="tl-cta-btn">Start with step 1</span>
+                    <span className="tl-cta-sub">{active.name} · {money(total)}</span>
+                  </a>
+                </div>
               </section>
 
               <div className="cr-promise">
