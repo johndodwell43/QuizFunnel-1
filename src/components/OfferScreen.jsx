@@ -474,6 +474,80 @@ function FitAssurance() {
   );
 }
 
+// Above Add to cart: the aftercare kit that ships with every finished partial.
+// The box is shown already checked; it's included with every order, so there is nothing to toggle.
+const KIT_ITEMS = [
+  ['brush', '2', 'denture brushes'],
+  ['tablet', '9', 'cleaning tablets'],
+  ['case', '2', 'denture cases']
+];
+
+function KitIcon({ name }) {
+  if (name === 'tablet') {
+    return (
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <ellipse cx="18" cy="27" rx="13" ry="6.5" fill="#bcd3fb" stroke="currentColor" strokeWidth="2.2" />
+        <path d="M5 27v-4.2C5 19.3 10.8 16.5 18 16.5s13 2.8 13 6.3V27" fill="#bcd3fb" stroke="currentColor" strokeWidth="2.2" />
+        <ellipse cx="18" cy="22.8" rx="13" ry="6.3" fill="#ffffff" stroke="currentColor" strokeWidth="2.2" />
+        <path d="M11 22.6h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" opacity="0.45" />
+        <circle cx="31.5" cy="9.5" r="3.2" fill="#ffffff" stroke="currentColor" strokeWidth="2" />
+        <circle cx="25" cy="6" r="1.9" fill="currentColor" />
+        <circle cx="36" cy="16" r="1.7" fill="currentColor" />
+      </svg>
+    );
+  }
+  if (name === 'brush') {
+    return (
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <g transform="rotate(-30 20 21)">
+          <rect x="2" y="21" width="19" height="8" rx="4" fill="#bcd3fb" stroke="currentColor" strokeWidth="2.2" />
+          <path d="M8 22.5v5M11.5 22.5v5M15 22.5v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" opacity="0.55" />
+          <path d="M21 23h5v4h-5" fill="#ffffff" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+          <rect x="25.5" y="21" width="12.5" height="8" rx="2.4" fill="#ffffff" stroke="currentColor" strokeWidth="2.2" />
+          <rect x="27" y="12" width="9.5" height="8" rx="1.6" fill="currentColor" />
+          <path d="M29.4 13.4v5.2M31.8 13.4v5.2M34.2 13.4v5.2" stroke="#ffffff" strokeWidth="1.1" strokeLinecap="round" />
+        </g>
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M5 21c0-7.2 6.7-11.5 15-11.5S35 13.8 35 21" fill="#bcd3fb" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+      <path d="M5 21h30v3.5c0 5.7-6.7 9.5-15 9.5S5 30.2 5 24.5V21z" fill="#ffffff" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+      <path d="M11 15.5c2.4-1.9 5.6-2.9 9-2.9" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" />
+      <circle cx="15.5" cy="17" r="1.2" fill="currentColor" />
+      <circle cx="20" cy="16" r="1.2" fill="currentColor" />
+      <circle cx="24.5" cy="17" r="1.2" fill="currentColor" />
+      <rect x="16.5" y="18.8" width="7" height="5.4" rx="1.8" fill="currentColor" />
+    </svg>
+  );
+}
+
+function AftercareKit() {
+  return (
+    <div className="kit-inc" role="note" aria-label="Aftercare kit included with your partial">
+      <span className="kit-inc-box" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+      </span>
+      <div className="kit-inc-body">
+        <p className="kit-inc-title">
+          Aftercare kit included
+          <span>Ships with your finished partial denture, on us</span>
+        </p>
+        <ul className="kit-inc-items">
+          {KIT_ITEMS.map(([icon, count, label, note]) => (
+            <li key={icon}>
+              <span className="kit-inc-ico"><KitIcon name={icon} /></span>
+              <span className="kit-inc-txt"><b>{count}</b> {label}</span>
+              {note && <span className="kit-inc-note">{note}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 // Photo under each timeline step; hidden until the file exists.
 function StepPhoto({ src }) {
   const [failed, setFailed] = useState(false);
@@ -906,6 +980,8 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               {arch === 'both' && <TeethPickers arch="both" teeth={teeth} setTeeth={setTeeth} />}
             </>
           )}
+
+          <AftercareKit />
 
           <p className={ready ? 'offer-selected sr-only' : 'offer-selected'} data-selected-offer>
             {ready ? purchaseLine(active) : !arch ? 'Pick where your missing teeth are, above' : 'Pick how many teeth to replace, above'}
