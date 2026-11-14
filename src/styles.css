@@ -1877,3 +1877,18 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
   font-size: 14px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .offer-screen .offer-selected:not(.sr-only) { margin: 12px 0 6px; text-align: center; font-size: 15px; font-weight: 700; color: #1d4ed8; }
 .offer-screen .yp-flagrow:has(> .sel-flag:only-child), .offer-screen .yp-flagrow:not(:has(.yp-badge)) { justify-content: flex-end; }
+
+/* /new: one main header, "Here are a few of your options." Wraps to two pill lines on phones. */
+.cr-head--direct .cr-title { font-size: clamp(30px, 8.2vw, 46px); line-height: 1.32; }
+.cr-head--direct .cr-pill { display: inline; white-space: normal; border-radius: 16px; padding: 0.04em 0.36em 0.1em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.offer-screen .cr-head--direct { margin-bottom: 10px; }
+@media (min-width: 1024px) { .cr-head--direct .cr-title { font-size: 38px; } }
+
+/* "new smile" heading: little smile face instead of the period, kept on the same line as the words */
+.why-smile { white-space: nowrap; }
+.why-smile-face { display: inline-block; width: 0.94em; height: 0.76em; margin-left: 0.14em; vertical-align: -0.04em; }
+
+/* /new header on phones: "Here are a few of" / "your options." */
+.cr-head--direct .cr-title { font-size: clamp(26px, 7.4vw, 46px); }
+@media (min-width: 1024px) { .cr-head--direct .cr-br { display: none; } .cr-head--direct .cr-title { font-size: 38px; } }
