@@ -659,10 +659,6 @@ button { font-family: inherit; }
   cursor: pointer;
 }
 .teeth-tile.is-on { background: #2563eb; color: #ffffff; }
-.screen-check { margin-top: 12px; padding: 10px 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.6); }
-.screen-check-title { margin: 0 0 4px 0; font-size: 14px; font-weight: 700; }
-.screen-check ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.45; }
-.screen-check-note { margin: 4px 0 0 0; font-size: 13px; color: rgba(10, 22, 40, 0.62); }
 .pg { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .pg-thumbs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
 .pg-thumbs::-webkit-scrollbar { display: none; }
