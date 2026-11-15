@@ -153,11 +153,11 @@ function Quiz() {
     setSel(null);
   }, [lead, pause.step, screen, step]);
 
+  // "Yes, start over": back to question 1. They already gave their email, so skip the gate.
   const restart = useCallback(() => {
     setStep(0);
-    setScreen('email');
+    setScreen(leadRef.current ? 'quiz' : 'email');
     setAnswers({});
-    setLead(null);
     setSel(null);
     setPause({ kind: 'healing', step: 2 });
   }, []);
@@ -213,7 +213,7 @@ function Quiz() {
         {isQuiz && (
           <QuestionScreen question={QUESTIONS[step]} sel={sel} onPick={pick} />
         )}
-        {isPause && <PauseScreen kind={pause.kind} onRestart={restart} />}
+        {isPause && <PauseScreen onRestart={restart} />}
         {isSms && (
           <SmsScreen
             lead={lead}

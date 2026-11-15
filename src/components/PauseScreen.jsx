@@ -1,100 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const COPY = {
-  healing: {
-    title: "Let's pick this up a little later.",
-    body:
-      "Thanks for telling us. Based on your answer, we can't send your case to a licensed dentist in your state just yet. A licensed dentist in your state usually wants the gums to settle for a few months after a tooth is taken out, since a partial is made to match the shape of your mouth that day.",
-    tip2: 'A licensed dentist in your state can tell you when your mouth is ready for a partial.'
-  },
-  loose: {
-    title: "Let's start with your own dentist.",
-    body:
-      "Thanks for telling us. Based on your answer, we can't send your case to a dentist in our network right now. Loose or shifting teeth are something a licensed dentist in your state needs to look at in person first, and only they can say what it means for you.",
-    tip2: 'A licensed dentist in your state can look at this in person and tell you what it means for a partial.'
-  },
-  pain: {
-    title: "Let's start with your own dentist.",
-    body:
-      "Thanks for telling us. Based on your answer, we can't send your case to a dentist in our network right now. Pain, swelling, or bleeding is something a licensed dentist in your state needs to look at in person, and only they can say what is going on.",
-    tip2: 'A licensed dentist in your state can look at this in person and tell you what it means for a partial.'
-  }
-};
+// Shown when an answer means we can't take the case right now
+// (tooth removed in the last 90 days, pain or swelling, loose teeth).
+// One question: start over? Big buttons, same look as the quiz.
+const btn = (on) => ({
+  width: '100%',
+  minHeight: 72,
+  border: on ? '2px solid #111827' : '2px solid #8ec2f7',
+  borderRadius: 20,
+  background: on ? '#111827' : '#ffffff',
+  color: on ? '#ffffff' : '#111827',
+  boxShadow: '0 2px 10px rgba(37,99,235,0.08)',
+  cursor: 'pointer',
+  fontSize: 22,
+  fontWeight: 700,
+  textAlign: 'left',
+  padding: '18px 22px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 12
+});
 
-const TIP_1 = "We're keeping your spot. Nothing has been charged and nothing has been ordered.";
-const TIP_3 = "When your own dentist says the time is right, come back and finish the quiz. We'll be here.";
+const Chevron = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35, flexShrink: 0 }}>
+    <path d="M9 18l6-6-6-6" />
+  </svg>
+);
 
-function Bullet({ children }) {
-  return (
-    <li style={{ display: 'flex', gap: 10 }}>
-      <span style={{ flexShrink: 0, width: 8, height: 8, borderRadius: '50%', background: '#2F5BEA', marginTop: 9 }} />
-      <span>{children}</span>
-    </li>
-  );
-}
-
-export default function PauseScreen({ kind, onRestart }) {
-  const copy = COPY[kind] || COPY.pain;
+export default function PauseScreen({ onRestart }) {
+  const [no, setNo] = useState(false);
 
   return (
-    <main className="pause-screen" data-screen-label="See a dentist first">
-      <div className="pause-mark"
-        style={{
-          width: 68,
-          height: 68,
-          borderRadius: '50%',
-          background: '#ffffff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 18,
-          boxShadow: '0 2px 10px rgba(17,24,39,0.07)'
-        }}
-      >
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2F5BEA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <path d="M12 9v4" />
-          <path d="M12 16h.01" />
-        </svg>
-      </div>
-
-      <h1 style={{ fontSize: 'clamp(30px, 5vw, 40px)', lineHeight: 1.15, fontWeight: 700, margin: '0 0 12px 0', textWrap: 'pretty' }}>
-        {copy.title}
-      </h1>
-      <p className="pause-body" style={{ fontSize: 'clamp(18px, 3vw, 21px)', lineHeight: 1.55, color: '#454e5c', margin: '0 0 20px 0' }}>
-        {copy.body}
+    <main className="question-screen pause-screen" data-screen-label="Not a fit right now">
+      <header className="question-card">
+        <h1 style={{ fontSize: 'clamp(34px, 5.5vw, 44px)', lineHeight: 1.15, fontWeight: 700, margin: 0, textWrap: 'pretty' }}>
+          It looks like you may not qualify right now.
+        </h1>
+      </header>
+      <p style={{ fontSize: 'clamp(18px, 3vw, 21px)', lineHeight: 1.5, color: '#454e5c', margin: '0 0 24px 0', padding: '0 20px' }}>
+        Would you like to start over?
       </p>
 
-      <div className="pause-card" style={{ background: '#ffffff', borderRadius: 20, boxShadow: '0 2px 10px rgba(17,24,39,0.07)', padding: '20px 22px', marginBottom: 22 }}>
-        <h2 style={{ margin: '0 0 12px 0', fontSize: 20, fontWeight: 700 }}>Where things stand</h2>
-        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, fontSize: 18, lineHeight: 1.45, color: '#454e5c' }}>
-          <Bullet>{TIP_1}</Bullet>
-          <Bullet>{copy.tip2}</Bullet>
-          <Bullet>{TIP_3}</Bullet>
-        </ul>
+      <div className="answer-grid" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <button onClick={onRestart} style={btn(false)}>
+          <span>Yes, start over</span>
+          <Chevron />
+        </button>
+        <button onClick={() => setNo(true)} style={btn(no)} aria-pressed={no}>
+          <span>No, thanks</span>
+          <Chevron />
+        </button>
       </div>
 
-      <button
-        onClick={onRestart}
-        style={{
-          width: '100%',
-          minHeight: 66,
-          border: 'none',
-          borderRadius: 16,
-          background: '#2F5BEA',
-          color: '#ffffff',
-          fontSize: 20,
-          fontWeight: 700,
-          cursor: 'pointer'
-        }}
-      >
-        Back to the start
-      </button>
-
-      <p className="pause-foot" style={{ fontSize: 18, lineHeight: 1.5, color: '#454e5c', margin: '14px 0 0 0', textAlign: 'center' }}>
-        Klyros handles the paperwork and shipping. We don't practice dentistry and nothing here is
-        dental advice — only a licensed dentist in your state who sees you in person can tell you what is right for you.
-      </p>
+      {no && (
+        <p role="status" style={{ fontSize: 19, lineHeight: 1.5, color: '#454e5c', margin: '22px 0 0 0', textAlign: 'center' }}>
+          No problem. Thanks for checking with us. You can come back any time.
+        </p>
+      )}
     </main>
   );
 }

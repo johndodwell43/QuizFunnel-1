@@ -615,7 +615,7 @@ function FitAssurance() {
   );
 }
 
-// Above Add to cart: the aftercare kit that ships with every finished partial.
+// Right below Add to cart: the aftercare kit that ships with every finished partial.
 // The box is shown already checked; it's included with every order, so there is nothing to toggle.
 const KIT_ITEMS = [
   ['brush', '2', 'denture brushes'],
@@ -1117,7 +1117,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </>
           )}
 
-          <AftercareKit />
           {direct && popup && (
             <CasePopup onDone={donePick} onClose={() => setPopup(false)} />
           )}
@@ -1136,6 +1135,8 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             <span>{ready ? 'Add to cart' : 'See your price'}</span>
             <span>{ready ? money(total) : ''}</span>
           </a>
+
+          <AftercareKit />
 
           {(
             <>
