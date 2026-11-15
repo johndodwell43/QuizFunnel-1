@@ -54,7 +54,7 @@ export const ORDER_STEPS = [
 
 // Quiz result page questions, written the way buyers ask them.
 export const QUIZ_FAQ = [
-  ['What if I am missing more than one tooth?', `Same price for 1 tooth or 6 on one arch: ${money(PRICING.flexPrice)}. Need top and bottom? Both arches together are ${money(PRICING.flexBoth)}.`],
+  ['What if I am missing more than one tooth?', `One tooth on one arch is ${money(PRICING.flexOneTooth)}. 2 to 6 teeth on the same arch are one price: ${money(PRICING.flexPrice)}. Need top and bottom? Both arches together are ${money(PRICING.flexBoth)}.`],
   ['What if it does not fit?', 'Klyros Fit Assurance covers you. If the fit needs work, we adjust it, or remake it once.'],
   ['How do I take my impressions?', 'Your kit comes with a step-by-step app, visual guide and PDF. Not happy with a mold? Retake it as many times as you need, at no extra cost.'],
   ['Who checks that this is right for me?', 'A licensed dentist oversees your case at every step. Nothing is made until they say yes.'],

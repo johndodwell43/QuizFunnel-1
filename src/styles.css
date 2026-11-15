@@ -1928,3 +1928,24 @@ body, button, input { font-family: 'Plus Jakarta Sans Variable', 'Inter', -apple
 .kit-inc-title span { text-wrap: balance; }
 .kit-inc-note { white-space: nowrap; }
 .kit-inc-items li { justify-content: center; padding: 9px 4px 9px; }
+
+/* /new: 2-question popup (where + how many), replaces the in-card pickers */
+.case-pop { position: fixed; inset: 0; z-index: 80; background: rgba(10, 22, 40, 0.48); display: flex; align-items: center; justify-content: center; padding: 16px; animation: casePopIn 0.18s ease-out; }
+.case-pop-box { position: relative; width: 100%; max-width: 460px; max-height: calc(100vh - 32px); overflow-y: auto; background: #ffffff; border-radius: 22px; padding: 26px 22px 22px; box-shadow: 0 24px 60px rgba(10, 22, 40, 0.28); }
+.case-pop-x { position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #f1f5fb; color: #0a1628; display: grid; place-items: center; cursor: pointer; }
+.case-pop-kicker { margin: 0 0 4px; font-size: 14px; font-weight: 700; color: #2563eb; }
+.case-pop-title { margin: 0 44px 6px 0; font-size: 26px; line-height: 1.15; font-weight: 800; color: #0a1628; }
+.case-pop .pick-label { margin: 18px 0 10px; font-size: 18px; font-weight: 800; }
+.case-pop .pick-btn, .case-pop .teeth-tile { min-height: 50px; font-size: 17px; border: 2px solid #d3e4fb; }
+.case-pop .pick-btn.is-on, .case-pop .teeth-tile.is-on { border-color: #2563eb; }
+.case-pop-wait { margin: 16px 0 0; font-size: 15px; color: #5b6b7c; }
+.case-pop-note { margin: 16px 0 0; font-size: 14px; color: #5b6b7c; }
+body.has-popup { overflow: hidden; }
+@keyframes casePopIn { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .case-pop { animation: none; } }
+@media (max-width: 560px) {
+  .case-pop { align-items: flex-end; padding: 0; }
+  .case-pop-box { max-width: none; border-radius: 22px 22px 0 0; max-height: 92vh; padding: 24px 18px 26px; }
+}
+.your-partial .yp-from { font-size: 0.55em; font-weight: 700; }
+.your-partial .yp-findprice { grid-column: 1 / -1; justify-self: start; margin-top: 4px; min-height: 46px; padding: 10px 18px; border-radius: 12px; border: 0; background: #2563eb; color: #ffffff; font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ImagePlaceholder from './ImagePlaceholder.jsx';
 import { AFFIRM_LINE, DENTIST_LINE, LINKS, SMS_REWARD, money } from '../config.js';
 import { rewardEarned, rewardParams } from '../lib/reward.js';
-import { checkoutBothArches, checkoutOneArch } from '../lib/checkout.js';
+import { checkoutVariant } from '../lib/checkout.js';
 import {
   FAQ_COPY,
   INCLUDED_COPY,
@@ -220,11 +220,11 @@ function ProductGallery({ arch, teeth }) {
 
 const TEETH = ['1', '2', '3', '4', '5', '6+'];
 // "How many teeth to replace?" — one picker per arch; Both shows top and bottom separately.
-function TeethPickers({ arch, teeth, setTeeth }) {
+function TeethPickers({ arch, teeth, setTeeth, label = 'How many teeth to replace' }) {
   return (arch === 'both' ? ['upper', 'lower'] : [arch]).map((a) => (
     <React.Fragment key={a}>
       <p className="pick-label">
-        How many teeth to replace
+        {label}
         {arch === 'both' && (
           <>
             {' on the '}
@@ -251,6 +251,71 @@ function TeethPickers({ arch, teeth, setTeeth }) {
   ));
 }
 
+
+// /new: one quick popup instead of pickers on the page. Where, then how many; closes itself
+// on the last answer and the card below shows the price for exactly that.
+function CasePopup({ arch, teeth, pickArch, pickTeeth, onClose }) {
+  const boxRef = useRef(null);
+  useEffect(() => {
+    const prev = document.activeElement;
+    const first = boxRef.current && boxRef.current.querySelector('button.pick-btn');
+    if (first) first.focus();
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'Tab' && boxRef.current) {
+        const f = [...boxRef.current.querySelectorAll('button')];
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.classList.add('has-popup');
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.classList.remove('has-popup');
+      if (prev && prev.focus) prev.focus();
+    };
+  }, []);
+  return (
+    <div className="case-pop" onClick={onClose}>
+      <div
+        className="case-pop-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="case-pop-title"
+        ref={boxRef}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button type="button" className="case-pop-x" aria-label="Close" onClick={onClose}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+        <p className="case-pop-kicker">2 quick questions</p>
+        <h2 id="case-pop-title" className="case-pop-title">See the price for your smile</h2>
+        <p className="pick-label">Where are your missing teeth?</p>
+        <div className="pick-row" role="group" aria-label="Arch">
+          {[['upper', 'Top'], ['lower', 'Bottom'], ['both', 'Both']].map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
+              aria-pressed={arch === value}
+              onClick={() => pickArch(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {arch ? (
+          <TeethPickers arch={arch} teeth={teeth} setTeeth={pickTeeth} label="How many teeth are you missing" />
+        ) : (
+          <p className="case-pop-wait">Then how many teeth you're missing.</p>
+        )}
+        <p className="case-pop-note">Your best guess is fine. Skip teeth that have crowns or bridges.</p>
+      </div>
+    </div>
+  );
+}
 
 // Quiz result hero: big blue card, the partial(s) for their answers, short callouts on top.
 function HeroShot({ arch, teeth }) {
@@ -575,8 +640,13 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   );
   // Quiz takers who said "both" start on one arch; the second arch comes back at the both-arch total.
   const [arch, setArch] = useState(direct ? (saved ? saved.arch : null) : initial.arch === 'both' ? 'upper' : initial.arch);
-  // /new: arch + teeth pickers show in the Flex card until the visitor has a complete pick.
-  const [editing, setEditing] = useState(direct && !saved);
+  // /new: a quick popup (where + how many teeth) opens on arrival until the visitor has a complete pick.
+  const [popup, setPopup] = useState(false);
+  useEffect(() => {
+    if (!direct || saved) return undefined;
+    const t = setTimeout(() => setPopup(true), 350);
+    return () => clearTimeout(t);
+  }, []);
   const [selected, setSelected] = useState(initial.selected);
   const [details, setDetails] = useState(false);
   const [bothOpen, setBothOpen] = useState(false);
@@ -585,11 +655,17 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const howRef = useRef(null);
   const checkoutRef = useRef(null);
   const [sticky, setSticky] = useState(false);
-  const offer = offerForAnswers({ arch: arch || 'upper' });
+  // On one arch, 1 tooth has its own price; 2-6 teeth share the arch price.
+  const offer = offerForAnswers({ arch: arch || 'upper', teeth: arch && arch !== 'both' ? teeth[arch] : undefined });
   const needArches = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
   const ready = !direct || (needArches.length > 0 && needArches.every((a) => teeth[a]));
   const active = activeChoice(offer, selected);
   const oneArchPrice = activeChoice(offerForAnswers({ arch: 'upper' }), selected).price;
+  const fromPrice = activeChoice(offerForAnswers({ arch: 'upper', teeth: '1' }), selected).price;
+  const fromFlex = offerForAnswers({ arch: 'upper', teeth: '1' }).flex.price;
+  const fromPro = offerForAnswers({ arch: 'upper', teeth: '1' }).precision.price;
+  const startArch = arch === 'both' || !arch ? 'upper' : arch;
+  const startPrice = activeChoice(offerForAnswers({ arch: startArch, teeth: teeth[startArch] }), selected).price;
   const bothPrice = activeChoice(offerForAnswers({ arch: 'both' }), selected).price;
   const secondArchPrice = bothPrice - oneArchPrice;
   const secondArchOff = oneArchPrice - secondArchPrice;
@@ -619,7 +695,14 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
   const reward = rewardEarned();
   const total = Math.max(0, active.price - (reward ? SMS_REWARD.amount : 0));
   // Price shown on the lower buy buttons; /new shows the starting price until an arch is picked.
-  const priceText = ready ? money(total) : `From ${money(oneArchPrice)}`;
+  const priceText = ready ? money(total) : `From ${money(fromPrice)}`;
+  const flatLine = !ready
+    ? `1 tooth ${money(fromFlex)} · 2 to 6 teeth ${money(offerForAnswers({ arch: 'upper' }).flex.price)}`
+    : arch === 'both'
+      ? 'Both arches together'
+      : offer.flex.oneTooth
+        ? 'Price for 1 tooth'
+        : 'Same price for 2 to 6 teeth';
   const orderArches = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
   const orderSpec = orderArches.map((a) => `${ARCH_WORD[a]}: ${toothWord(teeth[a])}`).join(' · ');
 
@@ -645,26 +728,35 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
     });
   };
 
-  // /new: tapping the last tooth count closes the pickers, so the card shows their arch,
-  // teeth and the price, the same way the quiz result card does.
+  // /new: the popup closes on the last answer, so the card shows their arch, teeth and price,
+  // the same way the quiz result card does.
+  const finishPick = (nextArch, nextTeeth) => {
+    const need = nextArch === 'both' ? ['upper', 'lower'] : nextArch ? [nextArch] : [];
+    if (!need.length || !need.every((a) => nextTeeth[a])) return;
+    setTimeout(() => {
+      setPopup(false);
+      // Bring their price into view.
+      requestAnimationFrame(() => {
+        const el = document.querySelector('.offer-screen .your-partial');
+        if (!el) return;
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const top = el.getBoundingClientRect().top + window.scrollY - 14;
+        window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
+      });
+    }, 280);
+  };
+  const pickArch = (value) => {
+    setArch(value);
+    finishPick(value, teeth);
+  };
   const pickTeeth = (update) => {
     const next = typeof update === 'function' ? update(teeth) : update;
     setTeeth(next);
-    const need = arch === 'both' ? ['upper', 'lower'] : arch ? [arch] : [];
-    if (need.length && need.every((a) => next[a])) setTimeout(() => setEditing(false), 250);
+    finishPick(arch, next);
   };
 
-  // /new: any buy button tapped before the arch + teeth are picked brings the pickers into view.
-  const toPickers = () => {
-    setEditing(true);
-    requestAnimationFrame(() => {
-      const el = document.querySelector('.offer-screen .your-partial');
-      if (!el) return;
-      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const top = el.getBoundingClientRect().top + window.scrollY - 14;
-      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
-    });
-  };
+  // /new: any buy button tapped before the arch + teeth are picked opens the popup.
+  const toPickers = () => setPopup(true);
 
   const buy = (event) => {
     event.preventDefault();
@@ -673,8 +765,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
       return;
     }
     const tracking = { ...trackSendKitClicked(active.sku, offer.arch, active.price), ...toothAttributes(offer.arch, teeth), ...rewardParams() };
-    if (offer.arch === 'both') checkoutBothArches(active.sku, tracking);
-    else checkoutOneArch(active.sku, offer.arch, tracking);
+    checkoutVariant(active.variantId, tracking);
   };
 
   return (
@@ -704,7 +795,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         <div className="offer-buy">
           {(
             <div
-              className={(selected === 'flex' ? 'your-partial is-sel' : 'your-partial') + (editing ? ' is-picking' : '')}
+              className={selected === 'flex' ? 'your-partial is-sel' : 'your-partial'}
               data-selected={selected}
               role="button"
               tabIndex={0}
@@ -723,7 +814,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               </span>
               <span className="your-partial-name">
                 {offer.flex.name}
-                {!editing && (
+                {ready && (
                 <span className="yp-answers">
                   {orderArches.map((a) => (
                     <span key={a} className="yp-row">
@@ -743,7 +834,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                       className="yp-change"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setEditing(true);
+                        setPopup(true);
                       }}
                     >
                       Change
@@ -755,27 +846,20 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
               <span className="yp-price">
                 <span className="yp-ref-label">Traditional options</span>
                 <s className="yp-ref">{money(DENTAL_OFFICE_FROM * (offer.arch === 'both' ? 2 : 1))}+</s>
-                <span className="your-partial-price">{money(offer.flex.price)}</span>
-                <span className="yp-flat">Same price for 1 tooth or 6</span>
+                <span className="your-partial-price">{ready ? money(offer.flex.price) : <><small className="yp-from">From </small>{money(fromFlex)}</>}</span>
+                <span className="yp-flat">{flatLine}</span>
               </span>
-              {editing && (
-                <div className="yp-pick" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
-                  <p className="pick-label">Where are your missing teeth?</p>
-                  <div className="pick-row" role="group" aria-label="Arch">
-                    {[['upper', 'Top'], ['lower', 'Bottom'], ['both', 'Both']].map(([value, label]) => (
-                      <button
-                        key={value}
-                        type="button"
-                        className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
-                        aria-pressed={arch === value}
-                        onClick={() => setArch(value)}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                  {arch && <TeethPickers arch={arch} teeth={teeth} setTeeth={pickTeeth} />}
-                </div>
+              {direct && !ready && (
+                <button
+                  type="button"
+                  className="yp-findprice"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPopup(true);
+                  }}
+                >
+                  See your price
+                </button>
               )}
               <span className="yp-feel">
                 <strong>Smile, chew and talk with ease again.</strong> Take it out to clean, to sleep, or whenever you like. It pops
@@ -807,7 +891,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                   <SelFlag on={selected === 'precision'} />
                   <span className="pro-headrow">
                     <span className="pro-name">Precision Partial Pro</span>
-                    <span className="pro-price">{money(offer.precision.price)}</span>
+                    <span className="pro-price">{ready ? money(offer.precision.price) : `From ${money(fromPro)}`}</span>
                   </span>
                   {proOpen && <ProShot />}
                   <span className="pro-why">Our premium partial, handcrafted start to finish and backed by a 1-year warranty.</span>
@@ -917,7 +1001,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
                 >
                   <span className="plan-top">
                     <span className="plan-title">Just one arch for now</span>
-                    <span className="plan-price">{money(oneArchPrice)}</span>
+                    <span className="plan-price">{money(startPrice)}</span>
                   </span>
                   <span className="plan-detail" data-second-arch>
                     If you're satisfied, we'll take {money(secondArchOff)} off your second arch:
@@ -982,9 +1066,12 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           )}
 
           <AftercareKit />
+          {direct && popup && (
+            <CasePopup arch={arch} teeth={teeth} pickArch={pickArch} pickTeeth={pickTeeth} onClose={() => setPopup(false)} />
+          )}
 
           <p className={ready ? 'offer-selected sr-only' : 'offer-selected'} data-selected-offer>
-            {ready ? purchaseLine(active) : !arch ? 'Pick where your missing teeth are, above' : 'Pick how many teeth to replace, above'}
+            {ready ? purchaseLine(active) : 'Answer 2 quick questions to see your price'}
           </p>
           <a
             ref={checkoutRef}
@@ -994,7 +1081,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             aria-disabled={!ready}
             onClick={buy}
           >
-            <span>{ready ? 'Add to cart' : 'Choose your options above'}</span>
+            <span>{ready ? 'Add to cart' : 'See your price'}</span>
             <span>{ready ? money(total) : ''}</span>
           </a>
 
