@@ -252,14 +252,19 @@ function TeethPickers({ arch, teeth, setTeeth, label = 'How many teeth to replac
 }
 
 
-// /new: one quick popup instead of pickers on the page. Where, then how many; closes itself
-// on the last answer and the card below shows the price for exactly that.
-function CasePopup({ arch, teeth, pickArch, pickTeeth, onClose }) {
+// /new: a 2-tap popup over a blurred page. Tap where, tap how many, a short "matching" beat,
+// then the card behind it shows their arch, tooth count and price. Big buttons, almost no words.
+const POP_ARCHES = [['upper', 'Top'], ['lower', 'Bottom'], ['both', 'Both']];
+function CasePopup({ onDone, onClose }) {
   const boxRef = useRef(null);
+  const [step, setStep] = useState(0); // 0 = where, 1 = how many (top or only arch), 2 = how many bottom (Both), 3 = matching
+  const [where, setWhere] = useState(null);
+  const [count, setCount] = useState({ upper: null, lower: null });
+  const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const total = where === 'both' ? 3 : 2;
+
   useEffect(() => {
     const prev = document.activeElement;
-    const first = boxRef.current && boxRef.current.querySelector('button.pick-btn');
-    if (first) first.focus();
     const onKey = (e) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'Tab' && boxRef.current) {
@@ -277,44 +282,115 @@ function CasePopup({ arch, teeth, pickArch, pickTeeth, onClose }) {
       if (prev && prev.focus) prev.focus();
     };
   }, []);
+  // Keyboard users go straight to the next step's first button; tap users get no focus ring.
+  const kbd = useRef(false);
+  useEffect(() => {
+    if (!boxRef.current) return;
+    const b = kbd.current && boxRef.current.querySelector('.cp-opt');
+    (b || boxRef.current).focus({ preventScroll: true });
+  }, [step]);
+
+  const finish = (a, c) => {
+    setStep(3);
+    setTimeout(() => onDone(a, c), reduce ? 250 : 1300);
+  };
+  const pickWhere = (a, e) => {
+    kbd.current = !!e && e.detail === 0;
+    setWhere(a);
+    setTimeout(() => setStep(1), 160);
+  };
+  const pickCount = (n, e) => {
+    kbd.current = !!e && e.detail === 0;
+    if (where === 'both' && step === 1) {
+      const c = { ...count, upper: n };
+      setCount(c);
+      setTimeout(() => setStep(2), 160);
+      return;
+    }
+    const key = where === 'both' ? 'lower' : where;
+    const c = { ...count, [key]: n };
+    setCount(c);
+    setTimeout(() => finish(where, c), 160);
+  };
+  const countFor = step === 2 ? 'lower' : where === 'both' ? 'upper' : where;
+  const title = step === 0 ? 'Where are your missing teeth?'
+    : where === 'both' ? (step === 1 ? 'How many on top?' : 'How many on the bottom?')
+    : 'How many teeth?';
+  const word = (a) => (a === 'upper' ? 'Top' : 'Bottom');
+  const summary = where === 'both'
+    ? `Top ${count.upper} · Bottom ${count.lower}`
+    : where ? `${word(where)} · ${count[where]} ${count[where] === '1' ? 'tooth' : 'teeth'}` : '';
+
   return (
-    <div className="case-pop" onClick={onClose}>
+    <div className="case-pop" onClick={step === 3 ? undefined : onClose}>
       <div
         className="case-pop-box"
         role="dialog"
         aria-modal="true"
         aria-labelledby="case-pop-title"
+        tabIndex={-1}
         ref={boxRef}
         onClick={(e) => e.stopPropagation()}
       >
-        <button type="button" className="case-pop-x" aria-label="Close" onClick={onClose}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-        </button>
-        <p className="case-pop-kicker">2 quick questions</p>
-        <h2 id="case-pop-title" className="case-pop-title">See the price for your smile</h2>
-        <p className="pick-label">Where are your missing teeth?</p>
-        <div className="pick-row" role="group" aria-label="Arch">
-          {[['upper', 'Top'], ['lower', 'Bottom'], ['both', 'Both']].map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              className={arch === value ? 'pick-btn is-on' : 'pick-btn'}
-              aria-pressed={arch === value}
-              onClick={() => pickArch(value)}
-            >
-              {label}
+        {step < 3 && (
+          <div className="cp-top">
+            {step > 0 ? (
+              <button type="button" className="cp-back" aria-label="Back" onClick={() => setStep(step - 1)}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+              </button>
+            ) : <span />}
+            <span className="cp-dots" aria-label={`Step ${step + 1} of ${total}`}>
+              {Array.from({ length: total }, (_, i) => <i key={i} className={i <= step ? 'on' : ''} />)}
+            </span>
+            <button type="button" className="cp-x" aria-label="Close" onClick={onClose}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
-          ))}
-        </div>
-        {arch ? (
-          <TeethPickers arch={arch} teeth={teeth} setTeeth={pickTeeth} label="How many teeth are you missing" />
-        ) : (
-          <p className="case-pop-wait">Then how many teeth you're missing.</p>
+          </div>
         )}
-        <p className="case-pop-note">Your best guess is fine. Skip teeth that have crowns or bridges.</p>
+
+        {step === 0 && (
+          <>
+            <h2 id="case-pop-title" className="cp-title">{title}</h2>
+            <div className="cp-arch" role="group" aria-label="Where are your missing teeth">
+              {POP_ARCHES.map(([value, label]) => (
+                <button key={value} type="button" className={'cp-opt' + (where === value ? ' is-on' : '')} aria-pressed={where === value} onClick={(e) => pickWhere(value, e)}>
+                  <ArchGlyph arch={value} />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {(step === 1 || step === 2) && (
+          <>
+            <h2 id="case-pop-title" className="cp-title">{title}</h2>
+            <div className="cp-count" role="group" aria-label={title}>
+              {TEETH.map((n) => (
+                <button key={n} type="button" className={'cp-opt' + (count[countFor] === n ? ' is-on' : '')} aria-pressed={count[countFor] === n} onClick={(e) => pickCount(n, e)}>
+                  {n}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {step === 3 && (
+          <div className="cp-match" role="status" aria-live="polite">
+            <span className="cp-spin" aria-hidden="true" />
+            <h2 id="case-pop-title" className="cp-title">Matching your partial…</h2>
+            <p className="cp-sum">{summary}</p>
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+// Real partial photo for each choice: teeth hanging down (top), teeth up (bottom), or both meeting.
+function ArchGlyph({ arch }) {
+  const src = { upper: '/images/partials/pop-top.webp', lower: '/images/partials/pop-bottom.webp', both: '/images/partials/pop-both.webp' }[arch];
+  return <img className="cp-glyph" src={src} alt="" width="320" height="240" />;
 }
 
 // Quiz result hero: big blue card, the partial(s) for their answers, short callouts on top.
@@ -730,29 +806,21 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
   // /new: the popup closes on the last answer, so the card shows their arch, teeth and price,
   // the same way the quiz result card does.
-  const finishPick = (nextArch, nextTeeth) => {
-    const need = nextArch === 'both' ? ['upper', 'lower'] : nextArch ? [nextArch] : [];
-    if (!need.length || !need.every((a) => nextTeeth[a])) return;
-    setTimeout(() => {
-      setPopup(false);
-      // Bring their price into view.
-      requestAnimationFrame(() => {
-        const el = document.querySelector('.offer-screen .your-partial');
-        if (!el) return;
-        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const top = el.getBoundingClientRect().top + window.scrollY - 14;
-        window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
-      });
-    }, 280);
-  };
-  const pickArch = (value) => {
-    setArch(value);
-    finishPick(value, teeth);
-  };
-  const pickTeeth = (update) => {
-    const next = typeof update === 'function' ? update(teeth) : update;
-    setTeeth(next);
-    finishPick(arch, next);
+  // /new: the popup hands back where + how many; fill the card, then glide to it with a short glow.
+  const [justSet, setJustSet] = useState(false);
+  const donePick = (nextArch, nextTeeth) => {
+    setArch(nextArch);
+    setTeeth({ upper: nextTeeth.upper || null, lower: nextTeeth.lower || null });
+    setPopup(false);
+    setJustSet(true);
+    setTimeout(() => setJustSet(false), 1600);
+    requestAnimationFrame(() => {
+      const el = document.querySelector('.offer-screen .your-partial');
+      if (!el) return;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const top = el.getBoundingClientRect().top + window.scrollY - 14;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
+    });
   };
 
   // /new: any buy button tapped before the arch + teeth are picked opens the popup.
@@ -795,7 +863,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
         <div className="offer-buy">
           {(
             <div
-              className={selected === 'flex' ? 'your-partial is-sel' : 'your-partial'}
+              className={(selected === 'flex' ? 'your-partial is-sel' : 'your-partial') + (justSet ? ' just-set' : '')}
               data-selected={selected}
               role="button"
               tabIndex={0}
@@ -1067,7 +1135,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
 
           <AftercareKit />
           {direct && popup && (
-            <CasePopup arch={arch} teeth={teeth} pickArch={pickArch} pickTeeth={pickTeeth} onClose={() => setPopup(false)} />
+            <CasePopup onDone={donePick} onClose={() => setPopup(false)} />
           )}
 
           <p className={ready ? 'offer-selected sr-only' : 'offer-selected'} data-selected-offer>
