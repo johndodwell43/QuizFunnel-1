@@ -1,7 +1,5 @@
 // The quiz, in order. Email is collected on the screen before question 1.
-// A "yes" on extraction still pauses after these questions.
-// Pain and loose do not pause: those answers continue, and the results screen
-// tells the visitor to see a dentist in person first.
+// A "yes" on extraction, pain or loose teeth goes to the simple "start over?" screen.
 export const QUESTIONS = [
   {
     key: 'arch',
@@ -31,14 +29,16 @@ export const QUESTIONS = [
     label: 'Q4 Pain',
     title: 'Are you experiencing tooth pain or swelling?',
     sub: 'Dentists in our network ask about this before they take on a case.',
-    opts: [['No, I feel fine', 'no'], ['Yes, I have pain or swelling', 'yes']]
+    opts: [['No, I feel fine', 'no'], ['Yes, I have pain or swelling', 'yes']],
+    pauseKind: 'pain'
   },
   {
     key: 'loose',
     label: 'Q5 Loose teeth',
     title: 'Do you have any loose or shifting teeth?',
     sub: 'Dentists in our network ask about this before they take on a case.',
-    opts: [['No, my teeth feel stable', 'no'], ['Yes, some teeth feel loose', 'yes']]
+    opts: [['No, my teeth feel stable', 'no'], ['Yes, some teeth feel loose', 'yes']],
+    pauseKind: 'loose'
   }
 ];
 
