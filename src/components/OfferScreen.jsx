@@ -697,11 +697,6 @@ function StepPhoto({ src }) {
 }
 
 const DIRECT_ARCHES = ['upper', 'lower', 'both'];
-const SCREEN_LINES = [
-  'No tooth removed in the last 90 days',
-  'No tooth pain or swelling',
-  'No loose or shifting teeth'
-];
 
 // direct: visitor came straight from the website (no quiz), so they pick arch and teeth here.
 export default function OfferScreen({ answers = {}, inPersonFirst = false, direct = false }) {
@@ -1035,17 +1030,6 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
             </p>
           )}
 
-          {direct && (
-            <div className="screen-check">
-              <p className="screen-check-title">Before you order</p>
-              <ul>
-                {SCREEN_LINES.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-              <p className="screen-check-note">If any of these apply, see a dentist in person first.</p>
-            </div>
-          )}
 
           {inPersonFirst && (
             <div className="offer-visit">
