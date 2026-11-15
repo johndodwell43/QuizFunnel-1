@@ -416,12 +416,37 @@ function Slot({ src, className, label }) {
   );
 }
 
+// Phones only auto-play a clip that is truly muted, and iPhones in Low Power Mode wait for a touch.
+// This forces muted, starts it, and retries on the first touch or scroll so no play button is needed.
+function useAutoLoop() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return undefined;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute('muted', '');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    const play = () => { if (v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } };
+    play();
+    const evs = ['touchstart', 'scroll', 'click', 'visibilitychange'];
+    evs.forEach((e) => document.addEventListener(e, play, { passive: true }));
+    v.addEventListener('loadeddata', play);
+    v.addEventListener('pause', () => { if (!document.hidden) setTimeout(play, 200); });
+    return () => evs.forEach((e) => document.removeEventListener(e, play));
+  }, []);
+  return ref;
+}
+
 // Corner clip: someone putting the partial in, so it's obvious it's removable. Muted, looping, plays inline.
 function InsertClip() {
   const [failed, setFailed] = useState(false);
+  const clipRef = useAutoLoop();
   if (failed) return <span className="hero-clip is-empty" aria-hidden="true">Clip</span>;
   return (
     <video
+      ref={clipRef}
       className="hero-clip"
       src="/images/offer/insert.mp4"
       poster="/images/offer/insert-poster.jpg"
@@ -429,7 +454,7 @@ function InsertClip() {
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="auto"
       aria-label="Flex Partial up close"
       onError={() => setFailed(true)}
     />
@@ -448,6 +473,7 @@ function ProShot() {
 }
 
 function HeroCard({ shots, teeth }) {
+  const tileClipRef = useAutoLoop();
   return (
     <figure className="hero-card hv">
       <div className="hv-kit">
@@ -471,13 +497,14 @@ function HeroCard({ shots, teeth }) {
           </figure>
           <figure className="hv-tile">
             <video
+              ref={tileClipRef}
               src="/images/offer/insert.mp4"
               poster="/images/offer/insert-poster.jpg"
               autoPlay
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="auto"
               aria-label="A Flex Partial being put in"
             />
           </figure>
