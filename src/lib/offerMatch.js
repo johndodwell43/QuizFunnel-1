@@ -2,29 +2,36 @@ import { PRICING, money } from '../config.js';
 import { CART_VARIANTS, archFromAnswer, cartUrl } from './checkout.js';
 export { archFromAnswer };
 
-function choice(sku, arch) {
+// One tooth on one arch has its own, lower price (its own Shopify variant). 2-6 teeth share one price.
+export const isOneTooth = (teeth) => String(teeth ?? '').trim() === '1';
+
+function choice(sku, arch, teeth) {
+  const one = arch !== 'both' && isOneTooth(teeth);
   const price = arch === 'both'
     ? (sku === 'flex' ? PRICING.flexBoth : PRICING.precisionBoth)
-    : (sku === 'flex' ? PRICING.flexPrice : PRICING.precisionPrice);
-  const variantId = CART_VARIANTS[sku][arch];
+    : one
+      ? (sku === 'flex' ? PRICING.flexOneTooth : PRICING.precisionOneTooth)
+      : (sku === 'flex' ? PRICING.flexPrice : PRICING.precisionPrice);
+  const variantId = CART_VARIANTS[sku][one ? `${arch}1` : arch];
   return {
     sku,
     name: sku === 'flex' ? 'Flex Partial' : 'Precision Partial Pro',
     price,
+    oneTooth: one,
     variantId,
     url: cartUrl(variantId)
   };
 }
 
-// Q1 arch picks the variant. Q2 and the later answers do not change the product.
+// Q1 arch picks the variant; on one arch, Q2 = 1 tooth picks the 1-tooth variant.
 // Flex is the primary match. Precision is the same arch, shown second.
 export function offerForAnswers(answers = {}) {
   const arch = archFromAnswer(answers.arch);
   return {
     arch,
     selected: 'flex',
-    flex: choice('flex', arch),
-    precision: choice('precision', arch)
+    flex: choice('flex', arch, answers.teeth),
+    precision: choice('precision', arch, answers.teeth)
   };
 }
 

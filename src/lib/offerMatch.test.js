@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { PRICING, money } from '../config.js';
-import { cartUrl } from './checkout.js';
+import { CART_VARIANTS, cartUrl } from './checkout.js';
 import { activeChoice, offerForAnswers, purchaseLine } from './offerMatch.js';
 
 const FLEX = {
@@ -42,9 +42,27 @@ for (const arch of ['upper', 'lower', 'both']) {
     assert.doesNotMatch(offer.flex.url, /discount=/);
     assert.doesNotMatch(offer.precision.url, /discount=/);
 
-    const otherTeeth = offerForAnswers({ arch, teeth: '1' });
-    assert.equal(otherTeeth.flex.url, offer.flex.url);
-    assert.equal(otherTeeth.precision.url, offer.precision.url);
+    // Every count from 2 up shares the arch price; on both arches 1 tooth changes nothing.
+    const two = offerForAnswers({ arch, teeth: '2' });
+    assert.equal(two.flex.url, offer.flex.url);
+    assert.equal(two.precision.url, offer.precision.url);
+    const one = offerForAnswers({ arch, teeth: '1' });
+    if (arch === 'both') {
+      assert.equal(one.flex.url, offer.flex.url);
+      assert.equal(one.flex.oneTooth, false);
+    }
+  });
+}
+
+for (const arch of ['upper', 'lower']) {
+  test(`${arch} with 1 tooth uses the 1-tooth variant and price`, () => {
+    const one = offerForAnswers({ arch, teeth: '1' });
+    assert.equal(one.flex.price, PRICING.flexOneTooth);
+    assert.equal(one.precision.price, PRICING.precisionOneTooth);
+    assert.equal(one.flex.url, cart(CART_VARIANTS.flex[arch + '1']));
+    assert.equal(one.precision.url, cart(CART_VARIANTS.precision[arch + '1']));
+    assert.equal(one.flex.oneTooth, true);
+    assert.ok(PRICING.flexOneTooth < PRICING.flexPrice && PRICING.precisionOneTooth < PRICING.precisionPrice);
   });
 }
 

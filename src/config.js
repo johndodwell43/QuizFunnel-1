@@ -1,9 +1,11 @@
 // Single source of truth for pricing and checkout hand-off.
 // Both-arch amounts are the Shopify variant prices, not a derived discount.
 export const PRICING = {
-  flexPrice: 489,
+  flexPrice: 489,          // one arch, 2-6 teeth
+  flexOneTooth: 459,       // one arch, 1 tooth
   flexBoth: 879,
   precisionPrice: 788,
+  precisionOneTooth: 758,
   precisionBoth: 1477
 };
 
