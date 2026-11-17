@@ -3,7 +3,7 @@ import { SMS_REWARD, money } from '../config.js';
 import { phoneForLead } from '../lib/email.js';
 import { persistQuizLead } from '../lib/lead.js';
 import { scheduleLeadRetry } from '../lib/pendingLead.js';
-import { isTaggedLink, markRewardEarned } from '../lib/reward.js';
+import { markRewardEarned, textRewardOffered } from '../lib/reward.js';
 import { trackSmsOptIn, trackSmsScreenViewed } from '../lib/track.js';
 import { burstConfetti, clearConfetti } from '../lib/confetti.js';
 
@@ -22,7 +22,7 @@ export default function SmsScreen({ lead, onDone, inPersonFirst = false }) {
   const phoneId = useId();
   const [phone, setPhone] = useState('');
   const [sending, setSending] = useState(false);
-  const reward = isTaggedLink();
+  const reward = textRewardOffered();
   const ready = phoneForLead(phone) !== '';
   const off = money(SMS_REWARD.amount);
 
