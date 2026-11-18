@@ -7,7 +7,7 @@ import EmailGate from './components/EmailGate.jsx';
 import PauseScreen from './components/PauseScreen.jsx';
 import OfferScreen from './components/OfferScreen.jsx';
 import SmsScreen from './components/SmsScreen.jsx';
-import { captureAttribution } from './lib/reward.js';
+import { captureAttribution, emailCode } from './lib/reward.js';
 import { resumePendingQuizLead } from './lib/pendingLead.js';
 import { trackQuizStarted, trackStep } from './lib/track.js';
 
@@ -91,6 +91,7 @@ function Quiz() {
   // Fire once when the funnel first mounts. The gate is the first screen.
   useEffect(() => {
     captureAttribution();          // first touch: our tagged link, an ad click, or unknown
+    emailCode();                   // keep a credit code from one of our emails for this visit
     trackQuizStarted();
   }, []);
 

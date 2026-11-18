@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ImagePlaceholder from './ImagePlaceholder.jsx';
 import { AFFIRM_LINE, DENTIST_LINE, LINKS, SMS_REWARD, money } from '../config.js';
-import { rewardEarned, rewardParams } from '../lib/reward.js';
+import { emailCode, rewardEarned, rewardParams } from '../lib/reward.js';
 import { checkoutVariant } from '../lib/checkout.js';
 import {
   FAQ_COPY,
@@ -790,6 +790,7 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
     return () => io.disconnect();
   }, []);
 
+  const credit = emailCode();        // a credit code from one of our emails; it comes off at checkout
   const reward = rewardEarned();
   const total = Math.max(0, active.price - (reward ? SMS_REWARD.amount : 0));
   // Price shown on the lower buy buttons; /new shows the starting price until an arch is picked.
@@ -1168,6 +1169,11 @@ export default function OfferScreen({ answers = {}, inPersonFirst = false, direc
           {(
             <>
               <div className="atc-panel">
+                {credit && (
+                  <p className="atc-reward" data-email-credit>
+                    Email offer applies at checkout <CheckIcon />
+                  </p>
+                )}
                 {reward && (
                   <p className="atc-reward" data-reward>
                     Your {money(SMS_REWARD.amount)} off is applied <CheckIcon />
